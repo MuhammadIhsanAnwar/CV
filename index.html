@@ -3,64 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curriculum Vitae | Futuristic</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <title>Muhammad Ihsan Anwar - Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- NAVBAR -->
+  <navbar>
+    <nav>
+      <a href="index.html" class="nav-brand">MIA</a>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="cv/cv.html" class="nav-link">CV</a></li>
+        <li><a href="admin/admin.html" class="nav-link">Admin</a></li>
+      </ul>
+    </nav>
+  </navbar>
 
-  <div class="cv-container">
-
-    <!-- SIDEBAR -->
-    <div class="card profile">
-      <div class="avatar" id="avatar">A</div>
-
-      <h1 contenteditable="true" class="editable" id="name">Nama Lengkap</h1>
-      <p contenteditable="true" class="editable job" id="job">Web Developer / UI Designer</p>
-
-      <div class="info">
-        <p contenteditable="true" class="editable"><i class="fas fa-envelope"></i> email@example.com</p>
-        <p contenteditable="true" class="editable"><i class="fas fa-phone"></i> 08xxxxxxxxxx</p>
-        <p contenteditable="true" class="editable"><i class="fas fa-map-marker-alt"></i> Medan, Indonesia</p>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <img src="foto/fotoprofil.png" alt="Foto Profil" class="hero-avatar">
+        <h1 id="heroName">Muhammad Ihsan Anwar</h1>
+        <p class="job-title" id="heroJob">Web Developer / UI Designer</p>
+        <p class="bio" id="heroBio">Saya adalah seorang pengembang web yang tertarik pada UI modern, teknologi terkini, dan pengalaman pengguna yang luar biasa.</p>
       </div>
     </div>
+  </section>
 
-    <!-- MAIN -->
-    <div class="main">
-
-      <div class="card section">
-        <div class="toolbar">
-          <button onclick="resetCV()">Reset</button>
-          <button onclick="downloadCV()">Download HTML</button>
+  <!-- MAIN CONTENT -->
+  <section>
+    <div class="container">
+      <h2>Profil Saya</h2>
+      <div class="content-grid">
+        <!-- TENTANG SAYA -->
+        <div class="section-card">
+          <h3>Tentang Saya</h3>
+          <p class="about-text" id="aboutMe">Saya adalah seorang pengembang web yang tertarik pada UI futuristik, teknologi modern, dan pengalaman pengguna. Saya memiliki passion untuk menciptakan website yang tidak hanya berfungsi dengan baik tetapi juga menarik secara visual.</p>
         </div>
 
-        <h2>Tentang Saya</h2>
-        <div contenteditable="true" class="editable" id="about">
-          Saya adalah seorang pengembang web yang tertarik pada UI futuristik, teknologi modern, dan pengalaman pengguna.
+        <!-- PENDIDIKAN -->
+        <div class="section-card">
+          <h3>Pendidikan</h3>
+          <ul id="educationList">
+            <li>S1 Teknologi Informasi – Universitas Sumatera Utara (2025 - Sekarang)</li>
+            <li>SMA Negeri Asahan (2022 - 2025)</li>
+          </ul>
+        </div>
+
+        <!-- KEAHLIAN -->
+        <div class="section-card">
+          <h3>Keahlian</h3>
+          <div class="skill-list" id="skillsList">
+            <span class="skill-tag">HTML</span>
+            <span class="skill-tag">CSS</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">UI/UX Design</span>
+            <span class="skill-tag">Git & GitHub</span>
+            <span class="skill-tag">Responsive Design</span>
+          </div>
+        </div>
+
+        <!-- PENGALAMAN ORGANISASI -->
+        <div class="section-card">
+          <h3>Pengalaman Organisasi</h3>
+          <ul id="experienceList">
+            <li>Junior Web Developer – Contoh Perusahaan (2024 - Sekarang)</li>
+            <li>Freelance UI Designer (2023 - 2024)</li>
+          </ul>
+        </div>
+
+        <!-- PRESTASI -->
+        <div class="section-card">
+          <h3>Prestasi</h3>
+          <ul id="achievementList">
+            <li>Pemenang Kompetisi Web Design (2024)</li>
+            <li>Best UI/UX Developer Award (2023)</li>
+          </ul>
         </div>
       </div>
-
-      <div class="card section">
-        <h2>Pendidikan</h2>
-        <ul contenteditable="true" class="editable" id="education">
-          <li>S1 Teknologi Informasi – Universitas Contoh (2022 - 2026)</li>
-          <li>SMA Negeri Contoh (2019 - 2022)</li>
-        </ul>
-      </div>
-
-      <div class="card section">
-        <h2>Keahlian</h2>
-        <ul contenteditable="true" class="editable" id="skills">
-          <li>HTML, CSS, JavaScript</li>
-          <li>UI/UX Design</li>
-          <li>Git & GitHub</li>
-          <li>Responsive Web Design</li>
-        </ul>
-      </div>
-
     </div>
-  </div>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Muhammad Ihsan Anwar. All rights reserved.</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
 </html>

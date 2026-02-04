@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Muhammad Ihsan Anwar</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <navbar>
+    <nav>
+      <a href="../index.html" class="nav-brand">MIA</a>
+      <ul class="nav-menu">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="../cv/cv.html" class="nav-link">CV</a></li>
+        <li><a href="admin.html" class="nav-link active">Admin</a></li>
+      </ul>
+    </nav>
+  </navbar>
+
+  <!-- ADMIN SECTION -->
+  <section>
+    <div class="container">
+      <h2>Panel Admin</h2>
+      
+      <div class="admin-container">
+        <div class="success-message" id="successMessage">Data berhasil disimpan! ✓</div>
+        
+        <form id="adminForm">
+          <div class="form-group">
+            <label for="adminName">Nama Lengkap</label>
+            <input type="text" id="adminName" placeholder="Masukkan nama lengkap">
+          </div>
+
+          <div class="form-group">
+            <label for="adminJob">Posisi / Jabatan</label>
+            <input type="text" id="adminJob" placeholder="Masukkan posisi">
+          </div>
+
+          <div class="form-group">
+            <label for="adminEmail">Email</label>
+            <input type="email" id="adminEmail" placeholder="Masukkan email">
+          </div>
+
+          <div class="form-group">
+            <label for="adminPhone">Telepon</label>
+            <input type="text" id="adminPhone" placeholder="Masukkan nomor telepon">
+          </div>
+
+          <div class="form-group">
+            <label for="adminLocation">Lokasi</label>
+            <input type="text" id="adminLocation" placeholder="Masukkan lokasi">
+          </div>
+
+          <div class="form-group">
+            <label for="adminBio">Bio Singkat</label>
+            <textarea id="adminBio" placeholder="Masukkan bio singkat Anda"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="adminAbout">Tentang Saya</label>
+            <textarea id="adminAbout" placeholder="Masukkan deskripsi tentang Anda"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="adminEducation">Pendidikan (Pisahkan dengan ,)</label>
+            <textarea id="adminEducation" placeholder="Contoh: S1 IT - USU, SMA Negeri Asahan"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="adminSkills">Keahlian (Pisahkan dengan ,)</label>
+            <textarea id="adminSkills" placeholder="Contoh: HTML, CSS, JavaScript, UI/UX Design"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="adminExperience">Pengalaman Organisasi (Pisahkan dengan ,)</label>
+            <textarea id="adminExperience" placeholder="Contoh: Junior Developer - PT Abc, Freelance Designer"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="adminAchievement">Prestasi (Pisahkan dengan ,)</label>
+            <textarea id="adminAchievement" placeholder="Contoh: Juara Web Design 2024, Award UI/UX 2023"></textarea>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="button" onclick="saveData()">💾 Simpan Data</button>
+            <button type="button" class="button button-secondary" onclick="resetForm()">🔄 Reset Form</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Muhammad Ihsan Anwar. All rights reserved.</p>
+  </footer>
+
+  <script src="../js/script.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

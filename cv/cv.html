@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV - Muhammad Ihsan Anwar</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <navbar>
+    <nav>
+      <a href="../index.html" class="nav-brand">MIA</a>
+      <ul class="nav-menu">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="cv.html" class="nav-link active">CV</a></li>
+        <li><a href="../admin/admin.html" class="nav-link">Admin</a></li>
+      </ul>
+    </nav>
+  </navbar>
+
+  <!-- CV CONTENT -->
+  <section>
+    <div class="container">
+      <h2>Curriculum Vitae</h2>
+      <div class="content-grid">
+        <div class="section-card">
+          <h3>Data Diri</h3>
+          <p><strong>Nama:</strong> <span id="cvName">Muhammad Ihsan Anwar</span></p>
+          <p><strong>Posisi:</strong> <span id="cvJob">Web Developer / UI Designer</span></p>
+          <p><strong>Email:</strong> <span id="cvEmail">muhammadihsananwar3@gmail.com</span></p>
+          <p><strong>Telepon:</strong> <span id="cvPhone">085279788815</span></p>
+          <p><strong>Lokasi:</strong> <span id="cvLocation">Medan, Indonesia</span></p>
+        </div>
+
+        <div class="section-card">
+          <h3>Tentang Saya</h3>
+          <p id="cvAbout">Saya adalah seorang pengembang web yang tertarik pada UI futuristik, teknologi modern, dan pengalaman pengguna. Saya memiliki passion untuk menciptakan website yang tidak hanya berfungsi dengan baik tetapi juga menarik secara visual.</p>
+        </div>
+
+        <div class="section-card">
+          <h3>Pendidikan</h3>
+          <ul id="cvEducation">
+            <li>S1 Teknologi Informasi – Universitas Sumatera Utara (2025 - Sekarang)</li>
+            <li>SMA Negeri Asahan (2022 - 2025)</li>
+          </ul>
+        </div>
+
+        <div class="section-card">
+          <h3>Keahlian</h3>
+          <ul id="cvSkills">
+            <li>HTML, CSS, JavaScript</li>
+            <li>UI/UX Design</li>
+            <li>Git & GitHub</li>
+            <li>Responsive Web Design</li>
+          </ul>
+        </div>
+
+        <div class="section-card">
+          <h3>Pengalaman Organisasi</h3>
+          <ul id="cvExperience">
+            <li>Junior Web Developer – Contoh Perusahaan (2024 - Sekarang)</li>
+            <li>Freelance UI Designer (2023 - 2024)</li>
+          </ul>
+        </div>
+
+        <div class="section-card">
+          <h3>Prestasi</h3>
+          <ul id="cvAchievement">
+            <li>Pemenang Kompetisi Web Design (2024)</li>
+            <li>Best UI/UX Developer Award (2023)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Muhammad Ihsan Anwar. All rights reserved.</p>
+  </footer>
+
+  <script src="../js/script.js"></script>
+</body>
+</html>
+<body>
+
+  <div class="cv-container">
+
+    <!-- SIDEBAR -->
+    <div class="card profile">
+      <img src="fotoprofil.png" alt="Foto Profil" class="avatar" id="avatar">
+
+      <h1 contenteditable="true" class="editable" id="name">Muhammad Ihsan Anwar</h1>
+      <p contenteditable="true" class="editable job" id="job">Web Developer / UI Designer</p>
+
+      <div class="info">
+        <p contenteditable="true" class="editable"><i class="fas fa-envelope"></i> muhammadihsananwar3@gmail.com</p>
+        <p contenteditable="true" class="editable"><i class="fas fa-phone"></i> 085279788815</p>
+        <p contenteditable="true" class="editable"><i class="fas fa-map-marker-alt"></i> Medan, Indonesia</p>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="card section">
+        <div class="toolbar">
+          <button id="editBtn" onclick="toggleEditMode()"><i class="fas fa-edit"></i> Edit</button>
+          <button onclick="downloadCV()">Download HTML</button>
+        </div>
+
+        <h2>Tentang Saya</h2>
+        <div contenteditable="true" class="editable" id="about">
+          Saya adalah seorang pengembang web yang tertarik pada UI futuristik, teknologi modern, dan pengalaman pengguna.
+        </div>
+      </div>
+
+      <div class="card section">
+        <h2>Pendidikan</h2>
+        <ul contenteditable="true" class="editable" id="education">
+          <li>S1 Teknologi Informasi – Universitas Sumatera Utara (2025 - Sekarang)</li>
+          <li>MAN Asahan (2022 - 2025)</li>
+        </ul>
+      </div>
+
+      <div class="card section">
+        <h2>Keahlian</h2>
+        <ul contenteditable="true" class="editable" id="skills">
+          <li>HTML, CSS, JavaScript</li>
+          <li>UI/UX Design</li>
+          <li>Git & GitHub</li>
+          <li>Responsive Web Design</li>
+        </ul>
+      </div>
+
+      <div class="card section">
+        <h2>Pengalaman Organisasi</h2>
+        <ul contenteditable="true" class="editable" id="experience">
+          <li>Junior Web Developer – Contoh Perusahaan (2024 - Sekarang)</li>
+          <li>Freelance UI Designer (2023 - 2024)</li>
+        </ul>
+      </div>
+
+      <div class="card section">
+        <h2>Prestasi</h2>
+        <ul contenteditable="true" class="editable" id="achievement">
+          <li>Pemenang Kompetisi Web Design (2024)</li>
+          <li>Best UI/UX Developer Award (2023)</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</html>
