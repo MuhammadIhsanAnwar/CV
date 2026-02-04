@@ -1,11 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curriculum Vitae | Futuristic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-</body>
+
+  <div class="cv-container">
+
+    <!-- SIDEBAR -->
+    <div class="card profile">
+      <div class="avatar" id="avatar">A</div>
+
+      <h1 contenteditable="true" class="editable" id="name">Nama Lengkap</h1>
+      <p contenteditable="true" class="editable job" id="job">Web Developer / UI Designer</p>
+
+      <div class="info">
+        <p contenteditable="true" class="editable"><i class="fas fa-envelope"></i> email@example.com</p>
+        <p contenteditable="true" class="editable"><i class="fas fa-phone"></i> 08xxxxxxxxxx</p>
+        <p contenteditable="true" class="editable"><i class="fas fa-map-marker-alt"></i> Medan, Indonesia</p>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="card section">
+        <div class="toolbar">
+          <button onclick="resetCV()">Reset</button>
+          <button onclick="downloadCV()">Download HTML</button>
+        </div>
+
+        <h2>Tentang Saya</h2>
+        <div contenteditable="true" class="editable" id="about">
+          Saya adalah seorang pengembang web yang tertarik pada UI futuristik, teknologi modern, dan pengalaman pengguna.
+        </div>
+      </div>
+
+      <div class="card section">
+        <h2>Pendidikan</h2>
+        <ul contenteditable="true" class="editable" id="education">
+          <li>S1 Teknologi Informasi – Universitas Contoh (2022 - 2026)</li>
+          <li>SMA Negeri Contoh (2019 - 2022)</li>
+        </ul>
+      </div>
+
+      <div class="card section">
+        <h2>Keahlian</h2>
+        <ul contenteditable="true" class="editable" id="skills">
+          <li>HTML, CSS, JavaScript</li>
+          <li>UI/UX Design</li>
+          <li>Git & GitHub</li>
+          <li>Responsive Web Design</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </html>
