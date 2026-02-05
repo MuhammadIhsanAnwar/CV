@@ -1,3 +1,51 @@
+// PIN Password
+const ADMIN_PIN = "10982345";
+let isAuthenticated = false;
+
+// Verify password
+function verifyPassword() {
+  const passwordInput = document.getElementById('passwordInput');
+  const passwordError = document.getElementById('passwordError');
+  
+  if (passwordInput.value === ADMIN_PIN) {
+    isAuthenticated = true;
+    sessionStorage.setItem('adminAuthenticated', 'true');
+    document.getElementById('passwordModal').classList.remove('show');
+    loadAdminForm();
+  } else {
+    passwordInput.value = '';
+    passwordError.classList.add('show');
+    setTimeout(() => {
+      passwordError.classList.remove('show');
+    }, 3000);
+  }
+}
+
+// Go back to home
+function goBack() {
+  window.location.href = '../index.html';
+}
+
+// Handle Enter key on password input
+document.addEventListener('DOMContentLoaded', function() {
+  const passwordInput = document.getElementById('passwordInput');
+  if (passwordInput) {
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verifyPassword();
+      }
+    });
+    passwordInput.focus();
+  }
+
+  // Check if already authenticated
+  if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+    isAuthenticated = true;
+    document.getElementById('passwordModal').classList.remove('show');
+    setTimeout(loadAdminForm, 100);
+  }
+});
+
 // Load admin form dengan data yang ada
 function loadAdminForm() {
   document.getElementById('adminName').value = profileData.name;
@@ -49,9 +97,3 @@ function saveData() {
 function resetForm() {
   loadAdminForm();
 }
-
-// Load admin form saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-  // Tunggu script.js selesai load
-  setTimeout(loadAdminForm, 100);
-});

@@ -126,3 +126,31 @@ function updateNavbar() {
 
 // Load data saat halaman dimuat
 document.addEventListener('DOMContentLoaded', loadData);
+
+// Intersection Observer untuk scroll animation
+function initScrollAnimation() {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('scroll-visible');
+        entry.target.classList.remove('scroll-hidden');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Observasi semua section cards
+  const cards = document.querySelectorAll('.section-card');
+  cards.forEach(card => {
+    card.classList.add('scroll-hidden');
+    observer.observe(card);
+  });
+}
+
+// Initialize scroll animation setelah halaman dimuat
+window.addEventListener('load', initScrollAnimation);

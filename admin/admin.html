@@ -4,9 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Muhammad Ihsan Anwar</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+  <!-- PASSWORD MODAL -->
+  <div class="password-modal show" id="passwordModal">
+    <div class="password-modal-content">
+      <i class="fas fa-lock" style="font-size: 48px; color: var(--primary); margin-bottom: 20px;"></i>
+      <h2>Akses Admin</h2>
+      <p>Masukkan PIN untuk mengakses panel admin</p>
+      <div class="password-input-group">
+        <input type="password" id="passwordInput" placeholder="Masukkan PIN" maxlength="8">
+      </div>
+      <div class="password-error" id="passwordError">
+        <i class="fas fa-exclamation-circle"></i> PIN salah! Silakan coba lagi.
+      </div>
+      <div class="password-button-group">
+        <button class="btn-submit" onclick="verifyPassword()"><i class="fas fa-check"></i> Verifikasi</button>
+        <button class="btn-cancel" onclick="goBack()"><i class="fas fa-times"></i> Batal</button>
+      </div>
+    </div>
+  </div>
+
   <!-- NAVBAR -->
   <navbar>
     <nav>
@@ -25,7 +45,7 @@
       <h2>Panel Admin</h2>
       
       <div class="admin-container">
-        <div class="success-message" id="successMessage">Data berhasil disimpan! ✓</div>
+        <div class="success-message" id="successMessage"><i class="fas fa-check-circle"></i> Data berhasil disimpan!</div>
         
         <form id="adminForm">
           <div class="form-group">
@@ -84,8 +104,8 @@
           </div>
 
           <div class="button-group">
-            <button type="button" class="button" onclick="saveData()">💾 Simpan Data</button>
-            <button type="button" class="button button-secondary" onclick="resetForm()">🔄 Reset Form</button>
+            <button type="button" class="button" onclick="saveData()"><i class="fas fa-save"></i> Simpan Data</button>
+            <button type="button" class="button button-secondary" onclick="resetForm()"><i class="fas fa-redo"></i> Reset Form</button>
           </div>
         </form>
       </div>
