@@ -11,6 +11,8 @@ function verifyPassword() {
     isAuthenticated = true;
     sessionStorage.setItem('adminAuthenticated', 'true');
     document.getElementById('passwordModal').classList.remove('show');
+    document.getElementById('blurOverlay').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
     loadAdminForm();
   } else {
     passwordInput.value = '';
@@ -19,6 +21,17 @@ function verifyPassword() {
       passwordError.classList.remove('show');
     }, 3000);
   }
+}
+
+// Logout function
+function logout() {
+  sessionStorage.removeItem('adminAuthenticated');
+  isAuthenticated = false;
+  document.getElementById('passwordModal').classList.add('show');
+  document.getElementById('blurOverlay').style.display = 'block';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('passwordInput').focus();
 }
 
 // Go back to home
@@ -42,7 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (sessionStorage.getItem('adminAuthenticated') === 'true') {
     isAuthenticated = true;
     document.getElementById('passwordModal').classList.remove('show');
+    document.getElementById('blurOverlay').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
     setTimeout(loadAdminForm, 100);
+  } else {
+    document.getElementById('blurOverlay').style.display = 'block';
   }
 });
 
@@ -59,6 +76,29 @@ function loadAdminForm() {
   document.getElementById('adminSkills').value = profileData.skills.join(', ');
   document.getElementById('adminExperience').value = profileData.experience.join(', ');
   document.getElementById('adminAchievement').value = profileData.achievement.join(', ');
+}
+
+// Simpan data dengan SweetAlert2 confirmation
+function saveDataWithConfirm() {
+  Swal.fire({
+    title: 'Konfirmasi Penyimpanan',
+    text: 'Apakah Anda yakin ingin menyimpan perubahan data ini?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#0066cc',
+    cancelButtonColor: '#666',
+    confirmButtonText: 'Ya, Simpan',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      saveData();
+      Swal.fire(
+        'Berhasil!',
+        'Data Anda telah berhasil disimpan.',
+        'success'
+      );
+    }
+  });
 }
 
 // Simpan data

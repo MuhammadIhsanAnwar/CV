@@ -4,10 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Muhammad Ihsan Anwar</title>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+  <!-- BLUR OVERLAY -->
+  <div class="blur-overlay" id="blurOverlay"></div>
+
   <!-- PASSWORD MODAL -->
   <div class="password-modal show" id="passwordModal">
     <div class="password-modal-content">
@@ -36,6 +41,7 @@
         <li><a href="../cv/cv.html" class="nav-link">CV</a></li>
         <li><a href="admin.html" class="nav-link active">Admin</a></li>
       </ul>
+      <button class="btn-logout" id="logoutBtn" onclick="logout()" style="display: none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </nav>
   </navbar>
 
@@ -104,7 +110,7 @@
           </div>
 
           <div class="button-group">
-            <button type="button" class="button" onclick="saveData()"><i class="fas fa-save"></i> Simpan Data</button>
+            <button type="button" class="button" onclick="saveDataWithConfirm()"><i class="fas fa-save"></i> Simpan Data</button>
             <button type="button" class="button button-secondary" onclick="resetForm()"><i class="fas fa-redo"></i> Reset Form</button>
           </div>
         </form>
@@ -117,6 +123,8 @@
     <p>&copy; 2026 Muhammad Ihsan Anwar. All rights reserved.</p>
   </footer>
 
+  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
   <script src="../js/script.js"></script>
   <script src="../js/admin.js"></script>
 </body>
