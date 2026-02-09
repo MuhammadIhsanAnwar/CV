@@ -178,24 +178,12 @@
 
     <script src="../js/bootstrap.bundle.min.js"></script>
     <script src="../js/script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
       function downloadPDF() {
-        const element = document.querySelector('section');
-        const cvName = document.getElementById('cvName').textContent || 'CV';
-        
-        const options = {
-          margin: [8, 8, 8, 8],
-          filename: `CV_${cvName.replace(/\s+/g, '_')}_${new Date().getFullYear()}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-        };
-        
-        console.log('[DOWNLOAD] Generating PDF...');
-        html2pdf().set(options).from(element).save();
-        console.log('[OK] PDF downloaded successfully!');
+        console.log('[DOWNLOAD] Generating PDF using FPDF...');
+        // Redirect ke PHP yang akan generate PDF
+        window.location.href = '../api/generate-cv-pdf.php';
+        console.log('[OK] PDF download started!');
       }
     </script>
   </body>
