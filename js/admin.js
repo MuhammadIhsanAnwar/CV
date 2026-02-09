@@ -283,7 +283,7 @@ function renderProjectsTable() {
   tbody.innerHTML = projects.map((project, index) => `
     <tr>
       <td>${index + 1}</td>
-      <td><i class="${project.icon}" style="font-size: 18px; color: var(--primary);"></i></td>
+      <td>${project.foto_proyek ? `<img src="../foto_proyek/${project.foto_proyek}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" alt="${project.title}">` : '<span style="color: #999;">Tidak ada foto</span>'}</td>
       <td><strong>${project.title}</strong></td>
       <td>${project.description.substring(0, 50)}...</td>
       <td>${project.tech_stack.join(', ')}</td>
@@ -320,13 +320,22 @@ function openProjectModal(projectId = null) {
     
     if (project) {
       document.getElementById('projectModalTitle').textContent = 'Edit Proyek';
-      document.getElementById('projectIcon').value = project.icon || 'fas fa-code';
       document.getElementById('projectTitle').value = project.title || '';
       document.getElementById('projectDescription').value = project.description || '';
       document.getElementById('projectTech').value = Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : '';
       document.getElementById('projectDemoLink').value = project.demo_link || '';
       document.getElementById('projectGithubLink').value = project.github_link || '';
       document.getElementById('projectOrder').value = project.display_order || 1;
+      
+      // Load existing photo if available
+      const photoPreview = document.getElementById('projectPhotoPreview');
+      if (project.foto_proyek) {
+        photoPreview.src = '../foto_proyek/' + project.foto_proyek;
+        photoPreview.style.display = 'block';
+      } else {
+        photoPreview.style.display = 'none';
+      }
+      
       deleteBtn.style.display = 'inline-block';
       console.log('[OK] Project data loaded:', project);
     } else {
@@ -339,13 +348,13 @@ function openProjectModal(projectId = null) {
   } else {
     // Add mode
     document.getElementById('projectModalTitle').textContent = 'Tambah Proyek Baru';
-    document.getElementById('projectIcon').value = 'fas fa-code';
     document.getElementById('projectTitle').value = '';
     document.getElementById('projectDescription').value = '';
     document.getElementById('projectTech').value = '';
     document.getElementById('projectDemoLink').value = '';
     document.getElementById('projectGithubLink').value = '';
     document.getElementById('projectOrder').value = projects.length + 1 || 1;
+    document.getElementById('projectPhotoPreview').style.display = 'none';
     deleteBtn.style.display = 'none';
   }
   
@@ -369,21 +378,38 @@ function closeProjectModal() {
   document.getElementById('projectForm').reset();
 }
 
-// Handle project form submission
+// Handle project form submission and photo preview
 document.addEventListener('DOMContentLoaded', function() {
   const projectForm = document.getElementById('projectForm');
   if (projectForm) {
     projectForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      saveProject();
+      saveProjectWithPhoto();
+    });
+  }
+  
+  // Photo preview for project
+  const photoInput = document.getElementById('projectPhoto');
+  const photoPreview = document.getElementById('projectPhotoPreview');
+  if (photoInput) {
+    photoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          photoPreview.src = event.target.result;
+          photoPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
     });
   }
 });
 
-// Save project (insert or update)
-function saveProject() {
+// Save project with photo (insert or update)
+function saveProjectWithPhoto() {
+  const projectPhoto = document.getElementById('projectPhoto').files[0];
   const projectData = {
-    icon: document.getElementById('projectIcon').value.trim(),
     title: document.getElementById('projectTitle').value.trim(),
     description: document.getElementById('projectDescription').value.trim(),
     tech_stack: document.getElementById('projectTech').value
@@ -394,7 +420,7 @@ function saveProject() {
   };
 
   // Validate required fields
-  if (!projectData.icon || !projectData.title || !projectData.description || !projectData.github_link) {
+  if (!projectData.title || !projectData.description || !projectData.github_link) {
     Swal.fire('Error', 'Harap isi semua field yang wajib', 'error');
     return;
   }
@@ -403,6 +429,52 @@ function saveProject() {
     projectData.id = currentEditingProjectId;
   }
 
+  // If there's a photo, upload it first
+  if (projectPhoto) {
+    const formData = new FormData();
+    formData.append('project_photo', projectPhoto);
+    if (currentEditingProjectId) {
+      formData.append('project_id', currentEditingProjectId);
+    }
+
+    console.log('[UPLOAD] Uploading project photo...');
+
+    fetch(`${API_BASE_URL}/upload-project-photo.php`, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
+    })
+    .then(photoData => {
+      if (photoData.success) {
+        console.log('[OK] Project photo uploaded:', photoData.filename);
+        projectData.foto_proyek = photoData.filename;
+        saveProjectData(projectData);
+      } else {
+        console.warn('[WARN] Photo upload failed:', photoData.message);
+        Swal.fire('Error', photoData.message || 'Gagal upload foto proyek', 'error');
+      }
+    })
+    .catch(error => {
+      console.error('[ERROR] Error uploading photo:', error.message);
+      Swal.fire('Error', 'Gagal upload foto: ' + error.message, 'error');
+    });
+  } else {
+    // No photo, just save project data
+    saveProjectData(projectData);
+  }
+}
+
+// Save project data to database
+function saveProjectData(projectData) {
   fetch(`${API_BASE_URL}/save-projects.php`, {
     method: 'POST',
     headers: {
@@ -503,5 +575,165 @@ function deleteProjectWithConfirm() {
         Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
       });
     }
+  });
+}
+
+// ===== PHOTO MANAGEMENT FUNCTIONS =====
+
+// Preview foto saat user select file
+document.addEventListener('DOMContentLoaded', function() {
+  // Photo 1 preview
+  const foto1Input = document.getElementById('adminFoto1');
+  const preview1 = document.getElementById('preview1');
+  if (foto1Input) {
+    foto1Input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          preview1.src = event.target.result;
+          preview1.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Photo 2 preview
+  const foto2Input = document.getElementById('adminFoto2');
+  const preview2 = document.getElementById('preview2');
+  if (foto2Input) {
+    foto2Input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          preview2.src = event.target.result;
+          preview2.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Photo 3 preview
+  const foto3Input = document.getElementById('adminFoto3');
+  const preview3 = document.getElementById('preview3');
+  if (foto3Input) {
+    foto3Input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          preview3.src = event.target.result;
+          preview3.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Load current photos on page load
+  loadCurrentPhotos();
+});
+
+// Load current photos dari database
+function loadCurrentPhotos() {
+  fetch(`${API_BASE_URL}/upload-photos.php`)
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
+    })
+    .then(data => {
+      if (data.success && data.data) {
+        console.log('[OK] Current photos loaded:', data.data);
+        // Update preview images jika ada
+        if (data.data.foto1) {
+          const img1 = document.getElementById('preview1');
+          if (img1) {
+            img1.src = '../foto/' + data.data.foto1;
+            img1.style.display = 'block';
+          }
+        }
+        if (data.data.foto2) {
+          const img2 = document.getElementById('preview2');
+          if (img2) {
+            img2.src = '../foto/' + data.data.foto2;
+            img2.style.display = 'block';
+          }
+        }
+        if (data.data.foto3) {
+          const img3 = document.getElementById('preview3');
+          if (img3) {
+            img3.src = '../foto/' + data.data.foto3;
+            img3.style.display = 'block';
+          }
+        }
+      }
+    })
+    .catch(error => {
+      console.warn('[WARN] Could not load current photos:', error.message);
+    });
+}
+
+// Upload photos ke server
+function uploadPhotos() {
+  const foto1 = document.getElementById('adminFoto1').files[0];
+  const foto2 = document.getElementById('adminFoto2').files[0];
+  const foto3 = document.getElementById('adminFoto3').files[0];
+
+  if (!foto1 && !foto2 && !foto3) {
+    Swal.fire('Peringatan', 'Pilih minimal satu foto untuk diupload', 'warning');
+    return;
+  }
+
+  const formData = new FormData();
+  if (foto1) formData.append('foto1', foto1);
+  if (foto2) formData.append('foto2', foto2);
+  if (foto3) formData.append('foto3', foto3);
+
+  console.log('[UPLOAD] Uploading photos...');
+
+  fetch(`${API_BASE_URL}/upload-photos.php`, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+    return response.text().then(text => {
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(`Server error: ${text.substring(0, 100)}`);
+      }
+    });
+  })
+  .then(data => {
+    if (data.success) {
+      console.log('[OK] Photos uploaded successfully:', data.uploadedFiles);
+      
+      // Clear input fields
+      document.getElementById('adminFoto1').value = '';
+      document.getElementById('adminFoto2').value = '';
+      document.getElementById('adminFoto3').value = '';
+
+      // Reload current photos
+      loadCurrentPhotos();
+
+      Swal.fire('Berhasil!', 'Foto berhasil diupload dan disimpan ke database', 'success');
+    } else {
+      console.warn('[WARN] Upload failed:', data.message);
+      Swal.fire('Error', data.message || 'Gagal mengupload foto', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('[ERROR] Error uploading photos:', error.message);
+    Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
 }

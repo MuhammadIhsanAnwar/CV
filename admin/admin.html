@@ -117,6 +117,42 @@
             <textarea id="adminAchievement" placeholder="Contoh: Juara Web Design 2024, Award UI/UX 2023"></textarea>
           </div>
 
+          <div class="form-divider" style="margin: 30px 0; padding: 20px 0; border-top: 2px solid #e0e0e0;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-images"></i> Kelola Foto Profil</h3>
+            
+            <div class="form-group">
+              <label for="adminFoto1">Foto 1 (Hero Section)</label>
+              <div style="display: flex; gap: 15px; align-items: flex-start;">
+                <input type="file" id="adminFoto1" accept="image/*" style="flex: 1;">
+                <img id="preview1" src="" style="max-width: 100px; max-height: 100px; border-radius: 8px; display: none; border: 2px solid var(--primary);">
+              </div>
+              <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 5MB)</small>
+            </div>
+
+            <div class="form-group">
+              <label for="adminFoto2">Foto 2 (Section Profil)</label>
+              <div style="display: flex; gap: 15px; align-items: flex-start;">
+                <input type="file" id="adminFoto2" accept="image/*" style="flex: 1;">
+                <img id="preview2" src="" style="max-width: 100px; max-height: 100px; border-radius: 8px; display: none; border: 2px solid var(--primary);">
+              </div>
+              <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 5MB)</small>
+            </div>
+
+            <div class="form-group">
+              <label for="adminFoto3">Foto 3 (Section Kontak)</label>
+              <div style="display: flex; gap: 15px; align-items: flex-start;">
+                <input type="file" id="adminFoto3" accept="image/*" style="flex: 1;">
+                <img id="preview3" src="" style="max-width: 100px; max-height: 100px; border-radius: 8px; display: none; border: 2px solid var(--primary);">
+              </div>
+              <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 5MB)</small>
+            </div>
+
+            <div class="button-group" style="gap: 10px;">
+              <button type="button" class="button" onclick="uploadPhotos()" style="background: linear-gradient(135deg, #4ecdc4, #44b3aa);"><i class="fas fa-cloud-upload-alt"></i> Upload Foto</button>
+              <button type="button" class="button-secondary" onclick="loadCurrentPhotos()"><i class="fas fa-refresh"></i> Refresh</button>
+            </div>
+          </div>
+
           <div class="button-group">
             <button type="button" class="button" onclick="saveDataWithConfirm()"><i class="fas fa-save"></i> Simpan Data</button>
           </div>
@@ -135,7 +171,7 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Ikon</th>
+                  <th>Foto Proyek</th>
                   <th>Judul</th>
                   <th>Deskripsi</th>
                   <th>Teknologi</th>
@@ -165,9 +201,10 @@
 
       <form id="projectForm" class="project-form">
         <div class="form-group">
-          <label for="projectIcon">Ikon Font Awesome</label>
-          <input type="text" id="projectIcon" placeholder="Contoh: fas fa-code, fas fa-school" value="fas fa-code" required>
-          <small style="color: #666; display: block; margin-top: 5px;">Lihat <a href="https://fontawesome.com/icons" target="_blank" style="color: var(--primary);">Font Awesome</a> untuk daftar ikon</small>
+          <label for="projectPhoto">Foto Proyek</label>
+          <input type="file" id="projectPhoto" accept="image/*">
+          <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF, WEBP | Max: 5MB</small>
+          <img id="projectPhotoPreview" src="" style="max-width: 150px; max-height: 150px; margin-top: 10px; display: none; border-radius: 8px; object-fit: cover;" alt="Preview Foto Proyek">
         </div>
 
         <div class="form-group">

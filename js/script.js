@@ -105,7 +105,9 @@ function renderProjects(projects) {
   projectsGrid.innerHTML = projects.map(project => `
     <div class="project-card">
       <div class="project-image">
-        <i class="${project.icon}"></i>
+        ${project.foto_proyek 
+          ? `<img src="foto_proyek/${project.foto_proyek}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;">` 
+          : `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;"><i class="fas fa-image" style="font-size: 48px; color: white;"></i></div>`}
       </div>
       <div class="project-content">
         <h3>${project.title}</h3>
@@ -251,5 +253,61 @@ function initScrollAnimation() {
   });
 }
 
+// Load photos dari database
+function loadPhotos() {
+  fetch(`${API_BASE_URL}/upload-photos.php`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('[ERROR] Invalid JSON from photo API:', text);
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
+    })
+    .then(data => {
+      if (data.success && data.data) {
+        console.log('[OK] Photos loaded from database:', data.data);
+        
+        // Update foto 1 (hero-avatar)
+        if (data.data.foto1) {
+          const heroImg = document.querySelector('.hero-avatar');
+          if (heroImg) {
+            heroImg.src = 'foto/' + data.data.foto1;
+          }
+        }
+        
+        // Update foto 2 (profile-photo)
+        if (data.data.foto2) {
+          const profileImg = document.querySelector('.profile-photo');
+          if (profileImg) {
+            profileImg.src = 'foto/' + data.data.foto2;
+          }
+        }
+        
+        // Update foto 3 (contact-photo-img)
+        if (data.data.foto3) {
+          const contactImg = document.querySelector('.contact-photo-img');
+          if (contactImg) {
+            contactImg.src = 'foto/' + data.data.foto3;
+          }
+        }
+      } else {
+        console.log('[INFO] No custom photos in database, using default filenames');
+      }
+    })
+    .catch(error => {
+      console.warn('[WARN] Could not load custom photos:', error.message);
+      console.log('[INFO] Using default photo filenames');
+    });
+}
+
 // Initialize scroll animation setelah halaman dimuat
-window.addEventListener("load", initScrollAnimation);
+window.addEventListener("load", function() {
+  initScrollAnimation();
+  loadPhotos();
+});
