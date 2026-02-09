@@ -1,12 +1,22 @@
 <?php
+// Enable CORS for GitHub Pages cross-origin requests
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 // Enable error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
 // Connect to database
 require_once('koneksi.php');
-
-header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {

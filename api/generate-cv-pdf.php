@@ -1,4 +1,15 @@
 <?php
+// Enable CORS for GitHub Pages cross-origin requests
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -87,35 +98,51 @@ $pdf = new FPDF();
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 11);
 
-// Title
+// Add profile photo at the top (if exists)
+$photoPath = __DIR__ . '/../foto/';
+$profilePhoto = null;
+
+// Try to find first available profile photo
+$photoField = ['foto1', 'foto2', 'foto3'];
+if ($result && $result->num_rows > 0) {
+    foreach ($photoField as $field) {
+        if (!empty($row[$field])) {
+            $testPath = $photoPath . $row[$field];
+            if (file_exists($testPath)) {
+                $profilePhoto = $testPath;
+                break;
+            }
+        }
+    }
+}
+
+// Add name and photo in header
+$startY = $pdf->GetY();
 $pdf->SetFont('Arial', 'B', 18);
 $pdf->SetTextColor(0, 102, 204);
-$pdf->Cell(0, 10, 'CURRICULUM VITAE', 0, 1, 'C');
-$pdf->SetLineWidth(0.5);
-$pdf->Line(10, $pdf->GetY() + 2, 200, $pdf->GetY() + 2);
-$pdf->Ln(8);
 
-// Name
-$pdf->SetFont('Arial', 'B', 14);
-$pdf->SetTextColor(0, 0, 0);
-$pdf->Cell(0, 8, $profileData['name'], 0, 1);
+// Add photo if available
+if ($profilePhoto) {
+    $pdf->Image($profilePhoto, 10, $startY, 30, 30, 'PNG');
+    $pdf->SetXY(45, $startY);
+    $pdf->MultiCell(0, 8, $profileData['name']);
+} else {
+    $pdf->Cell(0, 10, $profileData['name'], 0, 1, 'C');
+}
 
-// Position
+$pdf->SetXY(45, $startY + 15);
 $pdf->SetFont('Arial', 'I', 11);
 $pdf->SetTextColor(102, 102, 102);
 $pdf->Cell(0, 6, $profileData['job'], 0, 1);
-$pdf->Ln(3);
-
-// Contact Info
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetXY(45, $startY + 22);
+$pdf->SetFont('Arial', '', 9);
 $pdf->SetTextColor(0, 0, 0);
-$pdf->Cell(30, 5, 'Email:', 0, 0);
-$pdf->Cell(0, 5, $profileData['email'], 0, 1);
-$pdf->Cell(30, 5, 'Telepon:', 0, 0);
-$pdf->Cell(0, 5, $profileData['phone'], 0, 1);
-$pdf->Cell(30, 5, 'Lokasi:', 0, 0);
-$pdf->Cell(0, 5, $profileData['location'], 0, 1);
-$pdf->Ln(3);
+$pdf->MultiCell(0, 4, $profileData['email'] . ' | ' . $profileData['phone'] . ' | ' . $profileData['location']);
+
+$pdf->SetY($startY + 40);
+$pdf->SetLineWidth(0.5);
+$pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
+$pdf->Ln(5);
 
 // Bio
 $pdf->SetFont('Arial', '', 10);
@@ -148,7 +175,7 @@ $pdf->SetTextColor(0, 0, 0);
 if (!empty($profileData['education']) && is_array($profileData['education'])) {
     foreach ($profileData['education'] as $edu) {
         if (!empty($edu)) {
-            $pdf->Cell(5, 5, '• ', 0, 0);
+            $pdf->Cell(5, 5, '- ', 0, 0);
             $pdf->MultiCell(0, 5, $edu);
         }
     }
@@ -168,7 +195,7 @@ $pdf->SetTextColor(0, 0, 0);
 if (!empty($profileData['skills']) && is_array($profileData['skills'])) {
     foreach ($profileData['skills'] as $skill) {
         if (!empty($skill)) {
-            $pdf->Cell(5, 5, '• ', 0, 0);
+            $pdf->Cell(5, 5, '- ', 0, 0);
             $pdf->MultiCell(0, 5, $skill);
         }
     }
@@ -188,7 +215,7 @@ $pdf->SetTextColor(0, 0, 0);
 if (!empty($profileData['experience']) && is_array($profileData['experience'])) {
     foreach ($profileData['experience'] as $exp) {
         if (!empty($exp)) {
-            $pdf->Cell(5, 5, '• ', 0, 0);
+            $pdf->Cell(5, 5, '- ', 0, 0);
             $pdf->MultiCell(0, 5, $exp);
         }
     }
@@ -208,7 +235,7 @@ $pdf->SetTextColor(0, 0, 0);
 if (!empty($profileData['achievement']) && is_array($profileData['achievement'])) {
     foreach ($profileData['achievement'] as $ach) {
         if (!empty($ach)) {
-            $pdf->Cell(5, 5, '• ', 0, 0);
+            $pdf->Cell(5, 5, '- ', 0, 0);
             $pdf->MultiCell(0, 5, $ach);
         }
     }

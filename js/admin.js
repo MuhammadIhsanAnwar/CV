@@ -6,7 +6,41 @@ let isAuthenticated = false;
 let projects = [];
 let currentEditingProjectId = null;
 
-// Verify password
+// ===== UTILITY FUNCTIONS =====
+
+// Parse JSON response safely
+function parseJSON(text) {
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error(`Invalid JSON: ${text.substring(0, 100)}`);
+  }
+}
+
+// Handle fetch response (convert to JSON)
+function handleFetchResponse(response) {
+  if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+  }
+  return response.text().then(text => parseJSON(text));
+}
+
+// Fill admin form with profile data
+function fillAdminForm(data) {
+  document.getElementById('adminName').value = data.name || '';
+  document.getElementById('adminJob').value = data.job || '';
+  document.getElementById('adminEmail').value = data.email || '';
+  document.getElementById('adminPhone').value = data.phone || '';
+  document.getElementById('adminLocation').value = data.location || '';
+  document.getElementById('adminBio').value = data.bio || '';
+  document.getElementById('adminAbout').value = data.about || '';
+  document.getElementById('adminEducation').value = (data.education || []).join(', ');
+  document.getElementById('adminSkills').value = (data.skills || []).join(', ');
+  document.getElementById('adminExperience').value = (data.experience || []).join(', ');
+  document.getElementById('adminAchievement').value = (data.achievement || []).join(', ');
+}
+
+// ===== PASSWORD & AUTHENTICATION =====
 function verifyPassword() {
   const passwordInput = document.getElementById('passwordInput');
   const passwordError = document.getElementById('passwordError');
@@ -27,16 +61,98 @@ function verifyPassword() {
   }
 }
 
-// Logout function
 function logout() {
   sessionStorage.removeItem('adminAuthenticated');
   isAuthenticated = false;
   window.location.href = '../index.html';
 }
 
-// Go back to home
 function goBack() {
   window.location.href = '../index.html';
+}
+
+// ===== INITIALIZATION =====
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle password input
+  const passwordInput = document.getElementById('passwordInput');
+  if (passwordInput) {
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verifyPassword();
+      }
+    });
+    passwordInput.focus();
+  }
+
+  // Check authentication status
+  if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+    isAuthenticated = true;
+    document.getElementById('passwordModal').classList.remove('show');
+    document.getElementById('blurOverlay').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    setTimeout(() => {
+      loadAdminForm();
+      loadProjects();
+    }, 100);
+  } else {
+    document.getElementById('blurOverlay').style.display = 'block';
+  }
+
+  // Project form submission
+  const projectForm = document.getElementById('projectForm');
+  if (projectForm) {
+    projectForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      saveProjectWithPhoto();
+    });
+  }
+
+  // Project photo preview
+  const photoInput = document.getElementById('projectPhoto');
+  if (photoInput) {
+    photoInput.addEventListener('change', function(e) {
+      handlePhotoPreview(e, 'projectPhotoPreview');
+    });
+  }
+
+  // Profile photo previews
+  setupPhotoPreview('adminFoto1', 'preview1');
+  setupPhotoPreview('adminFoto2', 'preview2');
+  setupPhotoPreview('adminFoto3', 'preview3');
+
+  // Load current profile photos
+  loadCurrentPhotos();
+});
+
+// ===== PROFILE MANAGEMENT =====
+
+function loadAdminForm() {
+  fetch(`${API_BASE_URL}/get-profile.php`)
+    .then(handleFetchResponse)
+    .then(data => {
+      // Update profileData
+      profileData.name = data.name || profileData.name;
+      profileData.job = data.job || profileData.job;
+      profileData.email = data.email || profileData.email;
+      profileData.phone = data.phone || profileData.phone;
+      profileData.location = data.location || profileData.location;
+      profileData.bio = data.bio || profileData.bio;
+      profileData.about = data.about || profileData.about;
+      profileData.education = Array.isArray(data.education) ? data.education : [];
+      profileData.skills = Array.isArray(data.skills) ? data.skills : [];
+      profileData.experience = Array.isArray(data.experience) ? data.experience : [];
+      profileData.achievement = Array.isArray(data.achievement) ? data.achievement : [];
+      
+      fillAdminForm(profileData);
+      console.log('[OK] Admin form loaded from API');
+    })
+    .catch(error => {
+      console.error('[ERROR] Error loading form data:', error.message);
+      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
+      fillAdminForm(profileData);
+      console.log('[INFO] Using default data as fallback');
+    });
 }
 
 // Handle Enter key on password input
@@ -217,11 +333,9 @@ function resetForm() {
   loadAdminForm();
 }
 
-// ===== PROJECT MANAGEMENT FUNCTIONS =====
+// ===== PROJECT MANAGEMENT =====
 
-// Switch between tabs
 function switchTab(tab) {
-  // Update tab buttons
   document.getElementById('tabProfil').classList.remove('active');
   document.getElementById('tabProyek').classList.remove('active');
   
@@ -237,22 +351,9 @@ function switchTab(tab) {
   }
 }
 
-// Load all projects from API
 function loadProjects() {
   fetch(`${API_BASE_URL}/get-projects.php`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
-      }
-      return response.text().then(text => {
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          console.error('API returned non-JSON response:', text);
-          throw new Error(`Server error: ${text.substring(0, 100)}`);
-        }
-      });
-    })
+    .then(handleFetchResponse)
     .then(data => {
       if (data.success) {
         projects = data.data;
@@ -266,7 +367,7 @@ function loadProjects() {
     })
     .catch(error => {
       console.error('[ERROR] Error loading projects:', error.message);
-      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
+      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
       Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
     });
 }
@@ -378,34 +479,6 @@ function closeProjectModal() {
   document.getElementById('projectForm').reset();
 }
 
-// Handle project form submission and photo preview
-document.addEventListener('DOMContentLoaded', function() {
-  const projectForm = document.getElementById('projectForm');
-  if (projectForm) {
-    projectForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      saveProjectWithPhoto();
-    });
-  }
-  
-  // Photo preview for project
-  const photoInput = document.getElementById('projectPhoto');
-  const photoPreview = document.getElementById('projectPhotoPreview');
-  if (photoInput) {
-    photoInput.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          photoPreview.src = event.target.result;
-          photoPreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-});
-
 // Save project with photo (insert or update)
 function saveProjectWithPhoto() {
   const projectPhoto = document.getElementById('projectPhoto').files[0];
@@ -443,16 +516,7 @@ function saveProjectWithPhoto() {
       method: 'POST',
       body: formData
     })
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-      return response.text().then(text => {
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error(`Server error: ${text.substring(0, 100)}`);
-        }
-      });
-    })
+    .then(handleFetchResponse)
     .then(photoData => {
       if (photoData.success) {
         console.log('[OK] Project photo uploaded:', photoData.filename);
@@ -480,21 +544,10 @@ function saveProjectData(projectData) {
   
   fetch(`${API_BASE_URL}/save-projects.php`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(projectData)
   })
-  .then(response => {
-    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-    return response.text().then(text => {
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        throw new Error(`Server error: ${text.substring(0, 100)}`);
-      }
-    });
-  })
+  .then(handleFetchResponse)
   .then(data => {
     if (data.success) {
       console.log('[OK] Project saved successfully:', data);
@@ -508,28 +561,23 @@ function saveProjectData(projectData) {
   })
   .catch(error => {
     console.error('[ERROR] Error saving project:', error.message);
-    console.warn('Check: Is API endpoint https://neoverse.my.id/api/save-projects.php working?');
+    console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/save-projects.php working?');
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
 }
 
-// Edit project
 function editProject(projectId) {
   openProjectModal(projectId);
 }
 
-// Delete project
 function deleteProject(projectId) {
   console.log('[DELETE] Delete button clicked for project ID:', projectId);
   currentEditingProjectId = projectId;
-  // Langsung tampil dialog konfirmasi hapus, jangan buka modal edit
   deleteProjectWithConfirm();
 }
 
-// Delete project with confirmation
 function deleteProjectWithConfirm() {
   console.log('[DELETE] Delete confirmation dialog for project ID:', currentEditingProjectId);
-  // Find project by comparing as strings to avoid type mismatch
   const project = projects.find(p => String(p.id) === String(currentEditingProjectId));
   console.log('[DATA] Found project:', project);
   
@@ -546,21 +594,10 @@ function deleteProjectWithConfirm() {
     if (result.isConfirmed) {
       fetch(`${API_BASE_URL}/delete-projects.php`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: currentEditingProjectId })
       })
-      .then(response => {
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-        return response.text().then(text => {
-          try {
-            return JSON.parse(text);
-          } catch (e) {
-            throw new Error(`Server error: ${text.substring(0, 100)}`);
-          }
-        });
-      })
+      .then(handleFetchResponse)
       .then(data => {
         if (data.success) {
           console.log('[OK] Project deleted successfully');
@@ -581,108 +618,54 @@ function deleteProjectWithConfirm() {
   });
 }
 
-// ===== PHOTO MANAGEMENT FUNCTIONS =====
+// ===== PHOTO MANAGEMENT =====
 
-// Preview foto saat user select file
-document.addEventListener('DOMContentLoaded', function() {
-  // Photo 1 preview
-  const foto1Input = document.getElementById('adminFoto1');
-  const preview1 = document.getElementById('preview1');
-  if (foto1Input) {
-    foto1Input.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          preview1.src = event.target.result;
-          preview1.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
+function setupPhotoPreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input) {
+    input.addEventListener('change', function(e) {
+      handlePhotoPreview(e, previewId);
     });
   }
+}
 
-  // Photo 2 preview
-  const foto2Input = document.getElementById('adminFoto2');
-  const preview2 = document.getElementById('preview2');
-  if (foto2Input) {
-    foto2Input.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          preview2.src = event.target.result;
-          preview2.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+function handlePhotoPreview(e, previewId) {
+  const file = e.target.files[0];
+  const preview = document.getElementById(previewId);
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      preview.src = event.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
   }
-
-  // Photo 3 preview
-  const foto3Input = document.getElementById('adminFoto3');
-  const preview3 = document.getElementById('preview3');
-  if (foto3Input) {
-    foto3Input.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          preview3.src = event.target.result;
-          preview3.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  // Load current photos on page load
-  loadCurrentPhotos();
-});
+}
 
 // Load current photos dari database
 function loadCurrentPhotos() {
   fetch(`${API_BASE_URL}/upload-photos.php`)
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-      return response.text().then(text => {
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error(`Server error: ${text.substring(0, 100)}`);
-        }
-      });
-    })
+    .then(handleFetchResponse)
     .then(data => {
       if (data.success && data.data) {
         console.log('[OK] Current photos loaded:', data.data);
-        // Update preview images jika ada
-        if (data.data.foto1) {
-          const img1 = document.getElementById('preview1');
-          if (img1) {
-            img1.src = '../foto/' + data.data.foto1;
-            img1.style.display = 'block';
-          }
-        }
-        if (data.data.foto2) {
-          const img2 = document.getElementById('preview2');
-          if (img2) {
-            img2.src = '../foto/' + data.data.foto2;
-            img2.style.display = 'block';
-          }
-        }
-        if (data.data.foto3) {
-          const img3 = document.getElementById('preview3');
-          if (img3) {
-            img3.src = '../foto/' + data.data.foto3;
-            img3.style.display = 'block';
-          }
-        }
+        if (data.data.foto1) updatePhotoPreview('preview1', data.data.foto1);
+        if (data.data.foto2) updatePhotoPreview('preview2', data.data.foto2);
+        if (data.data.foto3) updatePhotoPreview('preview3', data.data.foto3);
       }
     })
     .catch(error => {
       console.warn('[WARN] Could not load current photos:', error.message);
     });
+}
+
+function updatePhotoPreview(previewId, photoName) {
+  const img = document.getElementById(previewId);
+  if (img) {
+    img.src = '../foto/' + photoName;
+    img.style.display = 'block';
+  }
 }
 
 // Upload photos ke server
@@ -707,28 +690,14 @@ function uploadPhotos() {
     method: 'POST',
     body: formData
   })
-  .then(response => {
-    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-    return response.text().then(text => {
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        throw new Error(`Server error: ${text.substring(0, 100)}`);
-      }
-    });
-  })
+  .then(handleFetchResponse)
   .then(data => {
     if (data.success) {
       console.log('[OK] Photos uploaded successfully:', data.uploadedFiles);
-      
-      // Clear input fields
       document.getElementById('adminFoto1').value = '';
       document.getElementById('adminFoto2').value = '';
       document.getElementById('adminFoto3').value = '';
-
-      // Reload current photos
       loadCurrentPhotos();
-
       Swal.fire('Berhasil!', 'Foto berhasil diupload dan disimpan ke database', 'success');
     } else {
       console.warn('[WARN] Upload failed:', data.message);
