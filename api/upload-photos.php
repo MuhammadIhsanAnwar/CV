@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 chmod($filepath, 0644);
                 
                 $uploadedFiles[$field] = $filename;
-                $updates[] = $field . " = '" . $conn->real_escape_string($filename) . "'";
+                $updates[] = $field . " = '" . $koneksi->real_escape_string($filename) . "'";
             }
         }
         
@@ -106,9 +106,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($updates)) {
             $sql = "UPDATE profile SET " . implode(', ', $updates) . " LIMIT 1";
             
-            if (!$conn->query($sql)) {
-                $response['message'] = 'Error updating database: ' . $conn->error;
-                error_log('SQL Error in upload-photos.php: ' . $conn->error . ' | SQL: ' . $sql);
+            if (!$koneksi->query($sql)) {
+                $response['message'] = 'Error updating database: ' . $koneksi->error;
+                error_log('SQL Error in upload-photos.php: ' . $koneksi->error . ' | SQL: ' . $sql);
                 http_response_code(400);
                 echo json_encode($response);
                 exit;
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Get current photo filenames
     try {
-        $result = $conn->query("SELECT foto1, foto2, foto3 FROM profile LIMIT 1");
+        $result = $koneksi->query("SELECT foto1, foto2, foto3 FROM profile LIMIT 1");
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
             echo json_encode(array(
@@ -159,21 +159,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ));
 }
 
-$conn->close();
-?>
-        }
-    } catch (Exception $e) {
-        echo json_encode(array(
-            'success' => false,
-            'message' => $e->getMessage()
-        ));
-    }
-} else {
-    echo json_encode(array(
-        'success' => false,
-        'message' => 'Invalid request method'
-    ));
-}
-
-$conn->close();
+$koneksi->close();
 ?>

@@ -27,30 +27,34 @@ try {
 
     // Escape data
     $id = isset($data['id']) ? intval($data['id']) : 0;
-    $icon = mysqli_real_escape_string($koneksi, $data['icon'] ?? 'fas fa-code');
     $title = mysqli_real_escape_string($koneksi, $data['title']);
     $description = mysqli_real_escape_string($koneksi, $data['description'] ?? '');
     $tech_stack = json_encode($data['tech_stack'] ?? array());
     $demo_link = !empty($data['demo_link']) ? mysqli_real_escape_string($koneksi, $data['demo_link']) : NULL;
     $github_link = mysqli_real_escape_string($koneksi, $data['github_link']);
     $display_order = intval($data['display_order'] ?? 0);
+    $foto_proyek = !empty($data['foto_proyek']) ? mysqli_real_escape_string($koneksi, $data['foto_proyek']) : NULL;
 
     // Check if project exists (for update)
     if ($id > 0) {
         $query = "UPDATE projects SET 
-                  icon = '$icon',
                   title = '$title',
                   description = '$description',
                   tech_stack = '$tech_stack',
                   demo_link = " . ($demo_link ? "'$demo_link'" : "NULL") . ",
                   github_link = '$github_link',
-                  display_order = $display_order,
-                  updated_at = NOW()
-                  WHERE id = $id";
+                  display_order = $display_order";
+        
+        // Add foto_proyek to update if provided
+        if ($foto_proyek) {
+            $query .= ", foto_proyek = '$foto_proyek'";
+        }
+        
+        $query .= " WHERE id = $id";
     } else {
         // Insert new project
-        $query = "INSERT INTO projects (icon, title, description, tech_stack, demo_link, github_link, display_order) 
-                  VALUES ('$icon', '$title', '$description', '$tech_stack', " . ($demo_link ? "'$demo_link'" : "NULL") . ", '$github_link', $display_order)";
+        $query = "INSERT INTO projects (title, description, tech_stack, demo_link, github_link, display_order, foto_proyek) 
+                  VALUES ('$title', '$description', '$tech_stack', " . ($demo_link ? "'$demo_link'" : "NULL") . ", '$github_link', $display_order, " . ($foto_proyek ? "'$foto_proyek'" : "NULL") . ")";
     }
 
     if (mysqli_query($koneksi, $query)) {
