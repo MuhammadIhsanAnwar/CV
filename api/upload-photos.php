@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Check if files are uploaded
         if (empty($_FILES)) {
+            http_response_code(400);
             $response['message'] = 'No files uploaded';
             echo json_encode($response);
             exit;
@@ -24,7 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Create directory if it doesn't exist
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            if (!mkdir($uploadDir, 0755, true)) {
+                http_response_code(500);
+                $response['message'] = 'Gagal membuat direktori upload';
+                echo json_encode($response);
+                exit;
+            }
         }
         
         $uploadedFiles = array(
@@ -33,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'foto3' => null
         );
         
+        $updates = array();
+        
         // Process each photo upload
         $photoFields = array('foto1', 'foto2', 'foto3');
         
@@ -40,33 +48,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_FILES[$field]) && $_FILES[$field]['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES[$field];
                 
-                // Validate file type
+                // Validate file type using MIME type
                 $allowedTypes = array('image/jpeg', 'image/png', 'image/gif', 'image/webp');
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mimeType = finfo_file($finfo, $file['tmp_name']);
-                finfo_close($finfo);
+                
+                // Try to get MIME type using finfo if available
+                $mimeType = 'application/octet-stream';
+                if (function_exists('finfo_file')) {
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($finfo, $file['tmp_name']);
+                    finfo_close($finfo);
+                } else {
+                    // Fallback: check file extension
+                    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                    $extToMime = array('jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif', 'webp' => 'image/webp');
+                    $mimeType = $extToMime[$ext] ?? 'application/octet-stream';
+                }
                 
                 if (!in_array($mimeType, $allowedTypes)) {
-                    $response['message'] = "File {$field} bukan tipe gambar yang valid";
+                    http_response_code(400);
+                    $response['message'] = "File {$field} bukan tipe gambar yang valid (MIME: {$mimeType})";
                     echo json_encode($response);
                     exit;
                 }
                 
                 // Validate file size (max 5MB)
-                if ($file['size'] > 5 * 1024 * 1024) {
-                    $response['message'] = "File {$field} terlalu besar (max 5MB)";
+                $maxSize = 5 * 1024 * 1024;
+                if ($file['size'] > $maxSize) {
+                    http_response_code(413);
+                    $response['message'] = 'Ukuran file terlalu besar. Maksimal 5MB.';
                     echo json_encode($response);
                     exit;
                 }
                 
                 // Generate unique filename
-                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = 'fotoprofil' . (str_replace('foto', '', $field)) . '_' . time() . '.' . $ext;
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $filename = $field . '_' . time() . '.' . $ext;
                 $filepath = $uploadDir . $filename;
                 
                 // Move uploaded file
                 if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-                    $response['message'] = "Gagal upload file {$field}";
+                    http_response_code(500);
+                    $response['message'] = "Gagal menyimpan file {$field}";
+                    error_log('Failed to move uploaded file to: ' . $filepath);
                     echo json_encode($response);
                     exit;
                 }
@@ -75,20 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 chmod($filepath, 0644);
                 
                 $uploadedFiles[$field] = $filename;
+                $updates[] = $field . " = '" . $conn->real_escape_string($filename) . "'";
             }
         }
         
         // Update database with new filenames
-        $updates = array();
-        if ($uploadedFiles['foto1']) $updates[] = "foto1 = '" . $conn->real_escape_string($uploadedFiles['foto1']) . "'";
-        if ($uploadedFiles['foto2']) $updates[] = "foto2 = '" . $conn->real_escape_string($uploadedFiles['foto2']) . "'";
-        if ($uploadedFiles['foto3']) $updates[] = "foto3 = '" . $conn->real_escape_string($uploadedFiles['foto3']) . "'";
-        
         if (!empty($updates)) {
             $sql = "UPDATE profile SET " . implode(', ', $updates) . " LIMIT 1";
             
             if (!$conn->query($sql)) {
                 $response['message'] = 'Error updating database: ' . $conn->error;
+                error_log('SQL Error in upload-photos.php: ' . $conn->error . ' | SQL: ' . $sql);
+                http_response_code(400);
                 echo json_encode($response);
                 exit;
             }
@@ -101,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode($response);
         
     } catch (Exception $e) {
+        http_response_code(500);
         echo json_encode(array(
             'success' => false,
             'message' => 'Error: ' . $e->getMessage()
@@ -118,9 +140,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ));
         } else {
             echo json_encode(array(
-                'success' => false,
-                'message' => 'No data found'
+                'success' => true,
+                'data' => array('foto1' => null, 'foto2' => null, 'foto3' => null)
             ));
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(array(
+            'success' => false,
+            'message' => $e->getMessage()
+        ));
+    }
+} else {
+    http_response_code(405);
+    echo json_encode(array(
+        'success' => false,
+        'message' => 'Invalid request method'
+    ));
+}
+
+$conn->close();
+?>
         }
     } catch (Exception $e) {
         echo json_encode(array(
