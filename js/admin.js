@@ -109,10 +109,10 @@ function loadAdminForm() {
       document.getElementById('adminSkills').value = profileData.skills.join(', ');
       document.getElementById('adminExperience').value = profileData.experience.join(', ');
       document.getElementById('adminAchievement').value = profileData.achievement.join(', ');
-      console.log('✅ Admin form loaded from API');
+      console.log('[OK] Admin form loaded from API');
     })
     .catch(error => {
-      console.error('❌ Error loading form data:', error.message);
+      console.error('[ERROR] Error loading form data:', error.message);
       console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
       // Fallback ke data lokal jika API error
       document.getElementById('adminName').value = profileData.name;
@@ -199,14 +199,14 @@ function saveData() {
         successMsg.classList.remove('show');
       }, 3000);
       
-      console.log('✅ Data berhasil disimpan ke database:', profileData);
+      console.log('[OK] Data berhasil disimpan ke database:', profileData);
     } else {
-      console.warn('❌ Save data failed:', data.message);
+      console.warn('[WARN] Save data failed:', data.message);
       Swal.fire('Error', data.message || 'Gagal menyimpan data', 'error');
     }
   })
   .catch(error => {
-    console.error('❌ Error saving profile:', error.message);
+    console.error('[ERROR] Error saving profile:', error.message);
     console.warn('Check: Is API endpoint https://neoverse.my.id/api/save-profile.php working?');
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
@@ -256,16 +256,16 @@ function loadProjects() {
     .then(data => {
       if (data.success) {
         projects = data.data;
-        console.log('✅ Projects loaded from API:', projects.length, 'projects');
-        console.log('📦 Projects data:', projects);
+        console.log('[OK] Projects loaded from API:', projects.length, 'projects');
+        console.log('[DATA] Projects data:', projects);
         renderProjectsTable();
       } else {
-        console.warn('⚠️ API returned error:', data);
+        console.warn('[WARN] API returned error:', data);
         Swal.fire('Error', 'Gagal memuat data proyek', 'error');
       }
     })
     .catch(error => {
-      console.error('❌ Error loading projects:', error.message);
+      console.error('[ERROR] Error loading projects:', error.message);
       console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
       Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
     });
@@ -310,13 +310,13 @@ function openProjectModal(projectId = null) {
   const form = document.getElementById('projectForm');
   const deleteBtn = document.getElementById('btnDeleteProject');
   
-  console.log('📋 Opening modal for project ID:', projectId);
-  console.log('📊 Current projects array:', projects);
+  console.log('[INFO] Opening modal for project ID:', projectId);
+  console.log('[DATA] Current projects array:', projects);
   
   if (projectId) {
     // Edit mode - find project by comparing as strings to avoid type mismatch
     const project = projects.find(p => String(p.id) === String(projectId));
-    console.log(`🔍 Searching for project: ${projectId}, Found:`, project);
+    console.log(`[SEARCH] Searching for project: ${projectId}, Found:`, project);
     
     if (project) {
       document.getElementById('projectModalTitle').textContent = 'Edit Proyek';
@@ -328,10 +328,10 @@ function openProjectModal(projectId = null) {
       document.getElementById('projectGithubLink').value = project.github_link || '';
       document.getElementById('projectOrder').value = project.display_order || 1;
       deleteBtn.style.display = 'inline-block';
-      console.log('✅ Project data loaded:', project);
+      console.log('[OK] Project data loaded:', project);
     } else {
       // Project not found in array
-      console.warn('⚠️ Project ID ' + projectId + ' not found in projects array');
+      console.warn('[WARN] Project ID ' + projectId + ' not found in projects array');
       Swal.fire('Peringatan', 'Data proyek tidak ditemukan. Mungkin belum terupdate dari server.', 'warning');
       // Still open modal but empty, so user can see error
       deleteBtn.style.display = 'none';
@@ -422,17 +422,17 @@ function saveProject() {
   })
   .then(data => {
     if (data.success) {
-      console.log('✅ Project saved successfully:', data);
+      console.log('[OK] Project saved successfully:', data);
       Swal.fire('Berhasil', currentEditingProjectId ? 'Proyek berhasil diperbarui' : 'Proyek berhasil ditambahkan', 'success');
       closeProjectModal();
       loadProjects();
     } else {
-      console.warn('❌ Save failed:', data.error);
+      console.warn('[WARN] Save failed:', data.error);
       Swal.fire('Error', data.error || 'Gagal menyimpan proyek', 'error');
     }
   })
   .catch(error => {
-    console.error('❌ Error saving project:', error.message);
+    console.error('[ERROR] Error saving project:', error.message);
     console.warn('Check: Is API endpoint https://neoverse.my.id/api/save-projects.php working?');
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
@@ -445,7 +445,7 @@ function editProject(projectId) {
 
 // Delete project
 function deleteProject(projectId) {
-  console.log('🗑️ Delete button clicked for project ID:', projectId);
+  console.log('[DELETE] Delete button clicked for project ID:', projectId);
   currentEditingProjectId = projectId;
   // Langsung tampil dialog konfirmasi hapus, jangan buka modal edit
   deleteProjectWithConfirm();
@@ -453,10 +453,10 @@ function deleteProject(projectId) {
 
 // Delete project with confirmation
 function deleteProjectWithConfirm() {
-  console.log('🗑️ Delete confirmation dialog for project ID:', currentEditingProjectId);
+  console.log('[DELETE] Delete confirmation dialog for project ID:', currentEditingProjectId);
   // Find project by comparing as strings to avoid type mismatch
   const project = projects.find(p => String(p.id) === String(currentEditingProjectId));
-  console.log('📊 Found project:', project);
+  console.log('[DATA] Found project:', project);
   
   Swal.fire({
     title: 'Hapus Proyek?',
@@ -488,18 +488,18 @@ function deleteProjectWithConfirm() {
       })
       .then(data => {
         if (data.success) {
-          console.log('✅ Project deleted successfully');
+          console.log('[OK] Project deleted successfully');
           Swal.fire('Berhasil', 'Proyek berhasil dihapus', 'success');
           closeProjectModal();
           loadProjects();
         } else {
-          console.warn('❌ Delete failed:', data.error);
+          console.warn('[WARN] Delete failed:', data.error);
           Swal.fire('Error', data.error || 'Gagal menghapus proyek', 'error');
         }
       })
       .catch(error => {
-        console.error('❌ Error deleting project:', error.message);
-        console.warn('Check: Is API endpoint https://neoverse.my.id/api/delete-projects.php working?');
+        console.error('[ERROR] Error deleting project:', error.message);
+        console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/delete-projects.php working?');
         Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
       });
     }

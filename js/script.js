@@ -49,12 +49,12 @@ function loadData() {
       profileData.experience = Array.isArray(data.experience) ? data.experience : [];
       profileData.achievement = Array.isArray(data.achievement) ? data.achievement : [];
       
-      console.log('✅ Data loaded from API:', profileData);
+      console.log('[OK] Data loaded from API:', profileData);
       updatePage();
     })
     .catch(error => {
-      console.error('❌ Error loading data from API:', error.message);
-      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
+      console.error('[ERROR] Error loading data from API:', error.message);
+      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
       console.log('Using default data as fallback');
       updatePage();
     });
@@ -81,13 +81,13 @@ function loadProjects() {
     })
     .then(data => {
       if (data.success && data.data) {
-        console.log('✅ Projects loaded from API:', data.data.length, 'projects');
+        console.log('[OK] Projects loaded from API:', data.data.length, 'projects');
         renderProjects(data.data);
       }
     })
     .catch(error => {
-      console.error('❌ Error loading projects:', error.message);
-      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
+      console.error('[ERROR] Error loading projects:', error.message);
+      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
     });
 }
 

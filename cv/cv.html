@@ -10,6 +10,68 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      @media print {
+        * {
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          background: white;
+          font-family: Arial, sans-serif;
+        }
+        navbar, footer, .btn-download {
+          display: none !important;
+        }
+        section {
+          padding: 20px;
+        }
+        .container {
+          max-width: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        h2 {
+          font-size: 24px;
+          margin: 0 0 15px 0;
+          text-align: center;
+          color: #333;
+        }
+        .content-grid {
+          display: block;
+          gap: 0;
+        }
+        .section-card {
+          page-break-inside: avoid;
+          padding: 10px 0;
+          border: none;
+          box-shadow: none;
+          background: white;
+          margin-bottom: 10px;
+        }
+        .section-card h3 {
+          font-size: 14px;
+          margin: 8px 0 5px 0;
+          color: #0066cc;
+          border-bottom: 2px solid #0066cc;
+          padding-bottom: 3px;
+        }
+        .section-card p {
+          font-size: 12px;
+          margin: 3px 0;
+          line-height: 1.4;
+        }
+        .section-card ul {
+          margin: 3px 0;
+          padding-left: 15px;
+        }
+        .section-card li {
+          font-size: 12px;
+          margin: 2px 0;
+          line-height: 1.3;
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- NAVBAR -->
@@ -27,7 +89,12 @@
     <!-- CV CONTENT -->
     <section>
       <div class="container">
-        <h2>Curriculum Vitae</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+          <h2 style="margin-bottom: 0;">Curriculum Vitae</h2>
+          <button class="btn-download" onclick="downloadPDF()" style="background: linear-gradient(135deg, #0066cc, #0091ff); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-download"></i> Download PDF
+          </button>
+        </div>
         <div class="content-grid">
           <div class="section-card">
             <h3>Data Diri</h3>
@@ -111,5 +178,25 @@
 
     <script src="../js/bootstrap.bundle.min.js"></script>
     <script src="../js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+      function downloadPDF() {
+        const element = document.querySelector('section');
+        const cvName = document.getElementById('cvName').textContent || 'CV';
+        
+        const options = {
+          margin: [8, 8, 8, 8],
+          filename: `CV_${cvName.replace(/\s+/g, '_')}_${new Date().getFullYear()}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+        
+        console.log('[DOWNLOAD] Generating PDF...');
+        html2pdf().set(options).from(element).save();
+        console.log('[OK] PDF downloaded successfully!');
+      }
+    </script>
   </body>
 </html>
