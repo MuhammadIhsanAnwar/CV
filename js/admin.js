@@ -2,6 +2,12 @@
 const ADMIN_PIN = "10982345";
 let isAuthenticated = false;
 
+// GitHub Config
+const GITHUB_TOKEN = "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";
+const GITHUB_OWNER = "MuhammadIhsanAnwar";
+const GITHUB_REPO = "CV";
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;
+
 // Verify password
 function verifyPassword() {
   const passwordInput = document.getElementById('passwordInput');
@@ -92,9 +98,10 @@ function saveDataWithConfirm() {
   }).then((result) => {
     if (result.isConfirmed) {
       saveData();
+      updateGitHub();
       Swal.fire(
         'Berhasil!',
-        'Data Anda telah berhasil disimpan.',
+        'Data Anda telah berhasil disimpan di GitHub.',
         'success'
       );
     }
@@ -131,6 +138,185 @@ function saveData() {
   }, 3000);
 
   console.log('Data disimpan:', profileData);
+}
+
+// Update GitHub dengan data terbaru
+async function updateGitHub() {
+  try {
+    const filePath = "1. Pemrograman Web Lanjutan/1. CV/js/script.js";
+    const updatedScript = generateUpdatedScript();
+    
+    // Get file info
+    const getResponse = await fetch(`${GITHUB_API}/${filePath}`, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (!getResponse.ok) {
+      console.error('Failed to get file from GitHub');
+      return;
+    }
+
+    const fileData = await getResponse.json();
+    
+    // Update file
+    const updateResponse = await fetch(`${GITHUB_API}/${filePath}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify({
+        message: `Update profile data - ${new Date().toLocaleString('id-ID')}`,
+        content: btoa(updatedScript),
+        sha: fileData.sha
+      })
+    });
+
+    if (updateResponse.ok) {
+      console.log('GitHub updated successfully');
+    } else {
+      console.error('Failed to update GitHub');
+    }
+  } catch (error) {
+    console.error('Error updating GitHub:', error);
+  }
+}
+
+// Generate updated script.js content dengan data terbaru
+function generateUpdatedScript() {
+  return `// Data default
+let profileData = ${JSON.stringify(profileData, null, 2)};
+
+// Load data dari localStorage
+function loadData() {
+  const savedData = localStorage.getItem('profileData');
+  if (savedData) {
+    profileData = JSON.parse(savedData);
+  }
+  updatePage();
+}
+
+// Update halaman dengan data
+function updatePage() {
+  // Update Hero Section
+  if (document.getElementById('heroName')) {
+    document.getElementById('heroName').textContent = profileData.name;
+  }
+  if (document.getElementById('heroJob')) {
+    document.getElementById('heroJob').textContent = profileData.job;
+  }
+  if (document.getElementById('heroBio')) {
+    document.getElementById('heroBio').textContent = profileData.bio;
+  }
+
+  // Update Home Page
+  if (document.getElementById('aboutMe')) {
+    document.getElementById('aboutMe').textContent = profileData.about;
+  }
+  if (document.getElementById('educationList')) {
+    document.getElementById('educationList').innerHTML = profileData.education
+      .map(item => \`<li>\${item}</li>\`).join('');
+  }
+  if (document.getElementById('skillsList')) {
+    document.getElementById('skillsList').innerHTML = profileData.skills
+      .map(skill => \`<span class="skill-tag">\${skill}</span>\`).join('');
+  }
+  if (document.getElementById('experienceList')) {
+    document.getElementById('experienceList').innerHTML = profileData.experience
+      .map(item => \`<li>\${item}</li>\`).join('');
+  }
+  if (document.getElementById('achievementList')) {
+    document.getElementById('achievementList').innerHTML = profileData.achievement
+      .map(item => \`<li>\${item}</li>\`).join('');
+  }
+
+  // Update CV Page
+  if (document.getElementById('cvName')) {
+    document.getElementById('cvName').textContent = profileData.name;
+  }
+  if (document.getElementById('cvJob')) {
+    document.getElementById('cvJob').textContent = profileData.job;
+  }
+  if (document.getElementById('cvEmail')) {
+    document.getElementById('cvEmail').textContent = profileData.email;
+  }
+  if (document.getElementById('cvPhone')) {
+    document.getElementById('cvPhone').textContent = profileData.phone;
+  }
+  if (document.getElementById('cvLocation')) {
+    document.getElementById('cvLocation').textContent = profileData.location;
+  }
+  if (document.getElementById('cvAbout')) {
+    document.getElementById('cvAbout').textContent = profileData.about;
+  }
+  if (document.getElementById('cvEducation')) {
+    document.getElementById('cvEducation').innerHTML = profileData.education
+      .map(item => \`<li>\${item}</li>\`).join('');
+  }
+  if (document.getElementById('cvSkills')) {
+    document.getElementById('cvSkills').innerHTML = profileData.skills
+      .map(skill => \`<li>\${skill}</li>\`).join('');
+  }
+  if (document.getElementById('cvExperience')) {
+    document.getElementById('cvExperience').innerHTML = profileData.experience
+      .map(item => \`<li>\${item}</li>\`).join('');
+  }
+  if (document.getElementById('cvAchievement')) {
+    document.getElementById('cvAchievement').innerHTML = profileData.achievement
+      .map(item => \`<li>\${item}</li>\`).join('');
+  }
+
+  // Update navbar active link
+  updateNavbar();
+}
+
+// Update navbar active link
+function updateNavbar() {
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    const href = link.getAttribute('href').split('/').pop();
+    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// Load data saat halaman dimuat
+document.addEventListener('DOMContentLoaded', loadData);
+
+// Intersection Observer untuk scroll animation
+function initScrollAnimation() {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('scroll-visible');
+        entry.target.classList.remove('scroll-hidden');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Observasi semua section cards
+  const cards = document.querySelectorAll('.section-card');
+  cards.forEach(card => {
+    card.classList.add('scroll-hidden');
+    observer.observe(card);
+  });
+}
+
+// Initialize scroll animation setelah halaman dimuat
+window.addEventListener('load', initScrollAnimation);
+`;
 }
 
 // Reset form ke data asli
