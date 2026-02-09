@@ -499,6 +499,208 @@ section h2::after {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+.button-danger {
+  background: #ef4444;
+  color: var(--white);
+}
+
+.button-danger:hover {
+  background: #dc2626;
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+}
+
+/* ADMIN TABS */
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 30px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* PROJECTS TABLE */
+.projects-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.projects-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+}
+
+.projects-table thead {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+}
+
+.projects-table thead th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.projects-table tbody td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.projects-table tbody tr:hover {
+  background: var(--blue-light);
+}
+
+.project-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit, .btn-delete {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-edit {
+  background: #3b82f6;
+  color: var(--white);
+}
+
+.btn-edit:hover {
+  background: #2563eb;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: var(--white);
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+}
+
+.projects-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.projects-header h3 {
+  color: var(--primary);
+  margin: 0;
+}
+
+/* PROJECT MODAL */
+.project-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.project-modal-overlay.show {
+  display: block;
+}
+
+.project-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.project-modal.show {
+  display: block;
+}
+
+.project-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--border);
+}
+
+.project-modal-header h3 {
+  color: var(--primary);
+  margin: 0;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-close:hover {
+  color: var(--primary);
+}
+
+.project-form {
+  padding: 30px;
+}
+
 /* SUCCESS MESSAGE */
 .success-message {
   background: #d1fae5;

@@ -50,9 +50,17 @@
     <div class="container">
       <h2>Panel Admin</h2>
       
+      <!-- ADMIN TABS -->
+      <div class="admin-tabs" style="margin-bottom: 30px;">
+        <button class="tab-btn active" id="tabProfil" onclick="switchTab('profil')"><i class="fas fa-user"></i> Profil</button>
+        <button class="tab-btn" id="tabProyek" onclick="switchTab('proyek')"><i class="fas fa-folder"></i> Proyek</button>
+      </div>
+
       <div class="admin-container">
         <div class="success-message" id="successMessage"><i class="fas fa-check-circle"></i> Data berhasil disimpan!</div>
         
+        <!-- PROFILE SECTION -->
+        <div id="profilSection">
         <form id="adminForm">
           <div class="form-group">
             <label for="adminName">Nama Lengkap</label>
@@ -113,9 +121,96 @@
             <button type="button" class="button" onclick="saveDataWithConfirm()"><i class="fas fa-save"></i> Simpan Data</button>
           </div>
         </form>
+        </div>
+
+        <!-- PROJECTS SECTION -->
+        <div id="proyekSection" style="display: none;">
+          <div class="projects-header" style="margin-bottom: 20px;">
+            <h3>Kelola Proyek</h3>
+            <button class="btn-primary" onclick="openProjectModal()" style="margin-left: auto; display: flex; gap: 8px;"><i class="fas fa-plus"></i> Tambah Proyek</button>
+          </div>
+
+          <div class="projects-table-container">
+            <table class="projects-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Ikon</th>
+                  <th>Judul</th>
+                  <th>Deskripsi</th>
+                  <th>Teknologi</th>
+                  <th>Urutan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="projectsTableBody">
+                <tr style="text-align: center;">
+                  <td colspan="7">Memuat data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- PROJECT MODAL -->
+  <div class="project-modal" id="projectModal">
+    <div class="project-modal-content">
+      <div class="project-modal-header">
+        <h3 id="projectModalTitle">Tambah Proyek Baru</h3>
+        <button class="btn-close" onclick="closeProjectModal()"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="projectForm" class="project-form">
+        <div class="form-group">
+          <label for="projectIcon">Ikon Font Awesome</label>
+          <input type="text" id="projectIcon" placeholder="Contoh: fas fa-code, fas fa-school" value="fas fa-code" required>
+          <small style="color: #666; display: block; margin-top: 5px;">Lihat <a href="https://fontawesome.com/icons" target="_blank" style="color: var(--primary);">Font Awesome</a> untuk daftar ikon</small>
+        </div>
+
+        <div class="form-group">
+          <label for="projectTitle">Judul Proyek</label>
+          <input type="text" id="projectTitle" placeholder="Masukkan judul proyek" required>
+        </div>
+
+        <div class="form-group">
+          <label for="projectDescription">Deskripsi</label>
+          <textarea id="projectDescription" placeholder="Masukkan deskripsi proyek lengkap" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="projectTech">Teknologi (Pisahkan dengan koma)</label>
+          <input type="text" id="projectTech" placeholder="Contoh: HTML, CSS, JavaScript, Bootstrap" required>
+        </div>
+
+        <div class="form-group">
+          <label for="projectDemoLink">Link Live Demo (Opsional)</label>
+          <input type="url" id="projectDemoLink" placeholder="https://demo.example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="projectGithubLink">Link Repository GitHub</label>
+          <input type="url" id="projectGithubLink" placeholder="https://github.com/username/repository" required>
+        </div>
+
+        <div class="form-group">
+          <label for="projectOrder">Urutan Tampil</label>
+          <input type="number" id="projectOrder" placeholder="1, 2, 3..." min="1" value="1" required>
+        </div>
+
+        <div class="button-group" style="gap: 10px;">
+          <button type="submit" class="button"><i class="fas fa-save"></i> Simpan Proyek</button>
+          <button type="button" class="button-secondary" onclick="closeProjectModal()"><i class="fas fa-times"></i> Batal</button>
+          <button type="button" id="btnDeleteProject" class="button-danger" style="display: none;" onclick="deleteProjectWithConfirm()"><i class="fas fa-trash"></i> Hapus</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PROJECT MODAL OVERLAY -->
+  <div class="project-modal-overlay" id="projectModalOverlay" onclick="closeProjectModal()"></div>
 
   <!-- FOOTER -->
   <footer>

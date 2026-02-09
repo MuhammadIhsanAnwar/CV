@@ -1,3 +1,6 @@
+// API URL - Ubah sesuai domain cPanel Anda
+const API_BASE_URL = 'https://neoverse.my.id/api';
+
 // Data default
 let profileData = {
   name: "Nama Lengkap",
@@ -14,13 +17,95 @@ let profileData = {
   achievement: ["Prestasi 1", "Prestasi 2"],
 };
 
-// Load data dari localStorage
+// Load data dari API cPanel
 function loadData() {
-  const savedData = localStorage.getItem("profileData");
-  if (savedData) {
-    profileData = JSON.parse(savedData);
+  fetch(`${API_BASE_URL}/get-profile.php`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Mapping data dari API
+      profileData.name = data.name || profileData.name;
+      profileData.job = data.job || profileData.job;
+      profileData.email = data.email || profileData.email;
+      profileData.phone = data.phone || profileData.phone;
+      profileData.location = data.location || profileData.location;
+      profileData.bio = data.bio || profileData.bio;
+      profileData.about = data.about || profileData.about;
+      
+      // Parse array data
+      profileData.education = Array.isArray(data.education) ? data.education : [];
+      profileData.skills = Array.isArray(data.skills) ? data.skills : [];
+      profileData.experience = Array.isArray(data.experience) ? data.experience : [];
+      profileData.achievement = Array.isArray(data.achievement) ? data.achievement : [];
+      
+      console.log('Data loaded from API:', profileData);
+      updatePage();
+    })
+    .catch(error => {
+      console.error('Error loading data from API:', error);
+      console.log('Using default data');
+      updatePage();
+    });
+  
+  // Load projects from API
+  loadProjects();
+}
+
+// Load projects from API
+function loadProjects() {
+  fetch(`${API_BASE_URL}/get-projects.php`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.data) {
+        renderProjects(data.data);
+      }
+    })
+    .catch(error => {
+      console.error('Error loading projects:', error);
+    });
+}
+
+// Render projects dynamically
+function renderProjects(projects) {
+  const projectsGrid = document.getElementById('projectsGrid');
+  
+  if (!projectsGrid) return;
+  
+  if (!projects || projects.length === 0) {
+    projectsGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px;">Belum ada proyek</p>';
+    return;
   }
-  updatePage();
+  
+  projectsGrid.innerHTML = projects.map(project => `
+    <div class="project-card">
+      <div class="project-image">
+        <i class="${project.icon}"></i>
+      </div>
+      <div class="project-content">
+        <h3>${project.title}</h3>
+        <p>${project.description}</p>
+        <div class="project-tech">
+          ${project.tech_stack && project.tech_stack.length > 0 
+            ? project.tech_stack.map(tech => `<span class="tech-tag">${tech}</span>`).join('')
+            : ''}
+        </div>
+        <div class="project-buttons">
+          ${project.demo_link ? `
+            <a href="${project.demo_link}" class="btn-demo" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Live Demo
+            </a>
+          ` : ''}
+          <a href="${project.github_link}" class="btn-github" target="_blank">
+            <i class="fab fa-github"></i> Repository
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
 // Update halaman dengan data
