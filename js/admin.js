@@ -446,10 +446,9 @@ function editProject(projectId) {
 // Delete project
 function deleteProject(projectId) {
   console.log('🗑️ Delete button clicked for project ID:', projectId);
-  // Open the modal to show delete confirmation
-  // Note: we don't need to find the project in array first
   currentEditingProjectId = projectId;
-  openProjectModal(projectId);
+  // Langsung tampil dialog konfirmasi hapus, jangan buka modal edit
+  deleteProjectWithConfirm();
 }
 
 // Delete project with confirmation
