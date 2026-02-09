@@ -27,11 +27,7 @@ function verifyPassword() {
 function logout() {
   sessionStorage.removeItem('adminAuthenticated');
   isAuthenticated = false;
-  document.getElementById('passwordModal').classList.add('show');
-  document.getElementById('blurOverlay').style.display = 'block';
-  document.getElementById('passwordInput').value = '';
-  document.getElementById('logoutBtn').style.display = 'none';
-  document.getElementById('passwordInput').focus();
+  window.location.href = '../index.html';
 }
 
 // Go back to home

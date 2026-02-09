@@ -44,12 +44,18 @@
     </section>
 
     <!-- MAIN CONTENT -->
-    <section>
+    <section id="profile-section">
       <div class="container">
-        <h2>Profil Saya</h2>
+        <div class="section-header">
+          <h2>Profil Saya</h2>
+          <p class="section-subtitle">Temukan informasi lengkap tentang saya</p>
+        </div>
         <div class="content-grid">
           <!-- TENTANG SAYA -->
-          <div class="section-card">
+          <div class="modern-card card-about">
+            <div class="card-icon">
+              <i class="fas fa-user"></i>
+            </div>
             <h3>Tentang Saya</h3>
             <p class="about-text" id="aboutMe">
               Saya adalah seorang pengembang web yang tertarik pada UI
@@ -60,48 +66,91 @@
           </div>
 
           <!-- PENDIDIKAN -->
-          <div class="section-card">
+          <div class="modern-card card-education">
+            <div class="card-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
             <h3>Pendidikan</h3>
-            <ul id="educationList">
+            <ul id="educationList" class="modern-list">
               <li>
-                S1 Teknologi Informasi – Universitas Sumatera Utara (2025 -
-                Sekarang)
+                <span class="list-badge">S1</span>
+                Teknologi Informasi – USU
               </li>
-              <li>SMA Negeri Asahan (2022 - 2025)</li>
+              <li>
+                <span class="list-badge">SMA</span>
+                SMA Negeri Asahan
+              </li>
             </ul>
           </div>
 
           <!-- KEAHLIAN -->
-          <div class="section-card">
+          <div class="modern-card card-skills">
+            <div class="card-icon">
+              <i class="fas fa-code"></i>
+            </div>
             <h3>Keahlian</h3>
             <div class="skill-list" id="skillsList">
               <span class="skill-tag">HTML</span>
               <span class="skill-tag">CSS</span>
               <span class="skill-tag">JavaScript</span>
-              <span class="skill-tag">UI/UX Design</span>
-              <span class="skill-tag">Git & GitHub</span>
-              <span class="skill-tag">Responsive Design</span>
+              <span class="skill-tag">UI/UX</span>
+              <span class="skill-tag">Git</span>
+              <span class="skill-tag">Responsive</span>
             </div>
           </div>
 
           <!-- PENGALAMAN ORGANISASI -->
-          <div class="section-card">
-            <h3>Pengalaman Organisasi</h3>
-            <ul id="experienceList">
+          <div class="modern-card card-experience">
+            <div class="card-icon">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <h3>Pengalaman</h3>
+            <ul id="experienceList" class="modern-list">
               <li>
-                Junior Web Developer – Contoh Perusahaan (2024 - Sekarang)
+                <span class="list-badge">2024</span>
+                Junior Web Developer
               </li>
-              <li>Freelance UI Designer (2023 - 2024)</li>
+              <li>
+                <span class="list-badge">2023</span>
+                Freelance UI Designer
+              </li>
             </ul>
           </div>
 
           <!-- PRESTASI -->
-          <div class="section-card">
+          <div class="modern-card card-achievement">
+            <div class="card-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
             <h3>Prestasi</h3>
-            <ul id="achievementList">
-              <li>Pemenang Kompetisi Web Design (2024)</li>
-              <li>Best UI/UX Developer Award (2023)</li>
+            <ul id="achievementList" class="modern-list">
+              <li>
+                <span class="list-badge">🥇</span>
+                Kompetisi Web Design
+              </li>
+              <li>
+                <span class="list-badge">🥇</span>
+                Best UI/UX Developer
+              </li>
             </ul>
+          </div>
+
+          <!-- STATISTIK -->
+          <div class="modern-card card-stats">
+            <div class="stats-content">
+              <div class="stat-item">
+                <h4>5+</h4>
+                <p>Projects</p>
+              </div>
+              <div class="stat-item">
+                <h4>2+</h4>
+                <p>Years</p>
+              </div>
+              <div class="stat-item">
+                <h4>100%</h4>
+                <p>Dedicated</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
