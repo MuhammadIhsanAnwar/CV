@@ -2,6 +2,10 @@
 const ADMIN_PIN = "10982345";
 let isAuthenticated = false;
 
+// Projects data
+let projects = [];
+let currentEditingProjectId = null;
+
 // Verify password
 function verifyPassword() {
   const passwordInput = document.getElementById('passwordInput');
@@ -172,7 +176,16 @@ function saveData() {
     },
     body: JSON.stringify(profileData)
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+    return response.text().then(text => {
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(`Server error: ${text.substring(0, 100)}`);
+      }
+    });
+  })
   .then(data => {
     if (data.success) {
       // Tampilkan pesan sukses
@@ -183,15 +196,16 @@ function saveData() {
         successMsg.classList.remove('show');
       }, 3000);
       
-      console.log('Data berhasil disimpan ke database:', profileData);
+      console.log('✅ Data berhasil disimpan ke database:', profileData);
     } else {
+      console.warn('❌ Save data failed:', data.message);
       Swal.fire('Error', data.message || 'Gagal menyimpan data', 'error');
-      console.error('Error:', data.message);
     }
   })
   .catch(error => {
+    console.error('❌ Error saving profile:', error.message);
+    console.warn('Check: Is API endpoint https://neoverse.my.id/api/save-profile.php working?');
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-    console.error('Error:', error);
   });
 }
 
@@ -200,226 +214,7 @@ function resetForm() {
   loadAdminForm();
 }
 
-// ============ PROJECTS MANAGEMENT ============
-
-let currentProjectId = null;
-let allProjects = [];
-
-// Switch between tabs
-function switchTab(tab) {
-  // Show/hide sections
-  document.getElementById('profilSection').style.display = tab === 'profil' ? 'block' : 'none';
-  document.getElementById('proyekSection').style.display = tab === 'proyek' ? 'block' : 'none';
-  
-  // Update tab buttons
-  document.getElementById('tabProfil').classList.toggle('active', tab === 'profil');
-  document.getElementById('tabProyek').classList.toggle('active', tab === 'proyek');
-  
-  // Load projects if switching to projects tab
-  if (tab === 'proyek') {
-    loadProjects();
-  }
-}
-
-// Load all projects from API
-function loadProjects() {
-  fetch(`${API_BASE_URL}/get-projects.php`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.success && data.data) {
-        allProjects = data.data;
-        renderProjectsTable();
-      } else {
-        Swal.fire('Error', 'Gagal mengambil data proyek', 'error');
-      }
-    })
-    .catch(error => {
-      console.error('Error loading projects:', error);
-      Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-    });
-}
-
-// Render projects table
-function renderProjectsTable() {
-  const tbody = document.getElementById('projectsTableBody');
-  
-  if (allProjects.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Belum ada proyek. <a href="#" onclick="openProjectModal(); return false;" style="color: var(--primary);">Tambah proyek baru</a></td></tr>';
-    return;
-  }
-  
-  tbody.innerHTML = allProjects.map((project, index) => `
-    <tr>
-      <td>${index + 1}</td>
-      <td><i class="${project.icon}"></i></td>
-      <td>${project.title}</td>
-      <td>${project.description.substring(0, 30)}...</td>
-      <td>${project.tech_stack && project.tech_stack.length > 0 ? project.tech_stack.join(', ').substring(0, 20) + '...' : '-'}</td>
-      <td>${project.display_order}</td>
-      <td>
-        <div class="project-actions">
-          <button class="btn-edit" onclick="openProjectModal(${project.id})"><i class="fas fa-edit"></i> Edit</button>
-          <button class="btn-delete" onclick="deleteProjectWithConfirm(${project.id})"><i class="fas fa-trash"></i> Hapus</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
-
-// Open project modal for add or edit
-function openProjectModal(projectId = null) {
-  currentProjectId = projectId;
-  const modal = document.getElementById('projectModal');
-  const overlay = document.getElementById('projectModalOverlay');
-  const deleteBtn = document.getElementById('btnDeleteProject');
-  
-  // Reset form
-  document.getElementById('projectForm').reset();
-  document.getElementById('projectIcon').value = 'fas fa-code';
-  document.getElementById('projectOrder').value = allProjects.length + 1;
-  
-  // Show/hide delete button
-  deleteBtn.style.display = projectId ? 'inline-block' : 'none';
-  
-  // Update title
-  document.getElementById('projectModalTitle').textContent = projectId ? 'Edit Proyek' : 'Tambah Proyek Baru';
-  
-  // Load project data if editing
-  if (projectId) {
-    const project = allProjects.find(p => p.id == projectId);
-    if (project) {
-      document.getElementById('projectIcon').value = project.icon;
-      document.getElementById('projectTitle').value = project.title;
-      document.getElementById('projectDescription').value = project.description;
-      document.getElementById('projectTech').value = project.tech_stack ? project.tech_stack.join(', ') : '';
-      document.getElementById('projectDemoLink').value = project.demo_link || '';
-      document.getElementById('projectGithubLink').value = project.github_link || '';
-      document.getElementById('projectOrder').value = project.display_order;
-    }
-  }
-  
-  // Show modal
-  modal.classList.add('show');
-  overlay.classList.add('show');
-  document.getElementById('projectIcon').focus();
-}
-
-// Close project modal
-function closeProjectModal() {
-  const modal = document.getElementById('projectModal');
-  const overlay = document.getElementById('projectModalOverlay');
-  
-  modal.classList.remove('show');
-  overlay.classList.remove('show');
-  currentProjectId = null;
-}
-
-// Submit project form
-document.addEventListener('DOMContentLoaded', function() {
-  const projectForm = document.getElementById('projectForm');
-  if (projectForm) {
-    projectForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      saveProject();
-    });
-  }
-});
-
-// Save project (add or update)
-function saveProject() {
-  const projectData = {
-    id: currentProjectId || null,
-    icon: document.getElementById('projectIcon').value,
-    title: document.getElementById('projectTitle').value,
-    description: document.getElementById('projectDescription').value,
-    tech_stack: document.getElementById('projectTech').value.split(',').map(t => t.trim()).filter(t => t),
-    demo_link: document.getElementById('projectDemoLink').value,
-    github_link: document.getElementById('projectGithubLink').value,
-    display_order: parseInt(document.getElementById('projectOrder').value)
-  };
-  
-  // Validate
-  if (!projectData.title || !projectData.github_link) {
-    Swal.fire('Error', 'Judul dan link repository harus diisi', 'error');
-    return;
-  }
-  
-  fetch(`${API_BASE_URL}/save-projects.php`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(projectData)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      Swal.fire('Berhasil!', currentProjectId ? 'Proyek berhasil diperbarui' : 'Proyek berhasil ditambahkan', 'success');
-      closeProjectModal();
-      loadProjects();
-    } else {
-      Swal.fire('Error', data.error || 'Gagal menyimpan proyek', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error saving project:', error);
-    Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-  });
-}
-
-// Delete project with confirmation
-function deleteProjectWithConfirm(projectId = null) {
-  const id = projectId || currentProjectId;
-  
-  if (!id) {
-    Swal.fire('Error', 'Project ID tidak ditemukan', 'error');
-    return;
-  }
-  
-  Swal.fire({
-    title: 'Konfirmasi Penghapusan',
-    text: 'Apakah Anda yakin ingin menghapus proyek ini? Tindakan ini tidak dapat dibatalkan.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#ef4444',
-    cancelButtonColor: '#666',
-    confirmButtonText: 'Ya, Hapus',
-    cancelButtonText: 'Batal'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      deleteProject(id);
-    }
-  });
-}
-
-// Delete project
-function deleteProject(projectId) {
-  fetch(`${API_BASE_URL}/delete-projects.php`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ id: projectId })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      Swal.fire('Berhasil!', 'Proyek berhasil dihapus', 'success');
-      closeProjectModal();
-      loadProjects();
-    } else {
-      Swal.fire('Error', data.error || 'Gagal menghapus proyek', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error deleting project:', error);
-    Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-  });
-}
 // ===== PROJECT MANAGEMENT FUNCTIONS =====
-
-let projects = [];
-let currentEditingProjectId = null;
 
 // Switch between tabs
 function switchTab(tab) {
@@ -515,24 +310,42 @@ function openProjectModal(projectId = null) {
     const project = projects.find(p => p.id === projectId);
     if (project) {
       document.getElementById('projectModalTitle').textContent = 'Edit Proyek';
-      document.getElementById('projectIcon').value = project.icon;
-      document.getElementById('projectTitle').value = project.title;
-      document.getElementById('projectDescription').value = project.description;
-      document.getElementById('projectTech').value = project.tech_stack.join(', ');
+      document.getElementById('projectIcon').value = project.icon || 'fas fa-code';
+      document.getElementById('projectTitle').value = project.title || '';
+      document.getElementById('projectDescription').value = project.description || '';
+      document.getElementById('projectTech').value = Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : '';
       document.getElementById('projectDemoLink').value = project.demo_link || '';
-      document.getElementById('projectGithubLink').value = project.github_link;
-      document.getElementById('projectOrder').value = project.display_order;
+      document.getElementById('projectGithubLink').value = project.github_link || '';
+      document.getElementById('projectOrder').value = project.display_order || 1;
       deleteBtn.style.display = 'inline-block';
+      console.log('✅ Project data loaded:', project);
+    } else {
+      // Project not found in array
+      console.warn('⚠️ Project ID ' + projectId + ' not found in projects array');
+      Swal.fire('Peringatan', 'Data proyek tidak ditemukan. Mungkin belum terupdate dari server.', 'warning');
+      // Still open modal but empty, so user can see error
+      deleteBtn.style.display = 'none';
     }
   } else {
     // Add mode
     document.getElementById('projectModalTitle').textContent = 'Tambah Proyek Baru';
-    form.reset();
+    document.getElementById('projectIcon').value = 'fas fa-code';
+    document.getElementById('projectTitle').value = '';
+    document.getElementById('projectDescription').value = '';
+    document.getElementById('projectTech').value = '';
+    document.getElementById('projectDemoLink').value = '';
+    document.getElementById('projectGithubLink').value = '';
+    document.getElementById('projectOrder').value = projects.length + 1 || 1;
     deleteBtn.style.display = 'none';
   }
   
   modal.classList.add('show');
   overlay.classList.add('show');
+  
+  // Focus on first input field
+  setTimeout(() => {
+    document.getElementById('projectIcon').focus();
+  }, 100);
 }
 
 // Close project modal
@@ -587,18 +400,30 @@ function saveProject() {
     },
     body: JSON.stringify(projectData)
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+    return response.text().then(text => {
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(`Server error: ${text.substring(0, 100)}`);
+      }
+    });
+  })
   .then(data => {
     if (data.success) {
+      console.log('✅ Project saved successfully:', data);
       Swal.fire('Berhasil', currentEditingProjectId ? 'Proyek berhasil diperbarui' : 'Proyek berhasil ditambahkan', 'success');
       closeProjectModal();
       loadProjects();
     } else {
+      console.warn('❌ Save failed:', data.error);
       Swal.fire('Error', data.error || 'Gagal menyimpan proyek', 'error');
     }
   })
   .catch(error => {
-    console.error('Error:', error);
+    console.error('❌ Error saving project:', error.message);
+    console.warn('Check: Is API endpoint https://neoverse.my.id/api/save-projects.php working?');
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
 }
@@ -639,18 +464,30 @@ function deleteProjectWithConfirm() {
         },
         body: JSON.stringify({ id: currentEditingProjectId })
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        return response.text().then(text => {
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            throw new Error(`Server error: ${text.substring(0, 100)}`);
+          }
+        });
+      })
       .then(data => {
         if (data.success) {
+          console.log('✅ Project deleted successfully');
           Swal.fire('Berhasil', 'Proyek berhasil dihapus', 'success');
           closeProjectModal();
           loadProjects();
         } else {
+          console.warn('❌ Delete failed:', data.error);
           Swal.fire('Error', data.error || 'Gagal menghapus proyek', 'error');
         }
       })
       .catch(error => {
-        console.error('Error:', error);
+        console.error('❌ Error deleting project:', error.message);
+        console.warn('Check: Is API endpoint https://neoverse.my.id/api/delete-projects.php working?');
         Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
       });
     }
