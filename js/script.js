@@ -22,9 +22,16 @@ function loadData() {
   fetch(`${API_BASE_URL}/get-profile.php`)
     .then(response => {
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
       }
-      return response.json();
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('API returned non-JSON response:', text);
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
     })
     .then(data => {
       // Mapping data dari API
@@ -42,12 +49,13 @@ function loadData() {
       profileData.experience = Array.isArray(data.experience) ? data.experience : [];
       profileData.achievement = Array.isArray(data.achievement) ? data.achievement : [];
       
-      console.log('Data loaded from API:', profileData);
+      console.log('✅ Data loaded from API:', profileData);
       updatePage();
     })
     .catch(error => {
-      console.error('Error loading data from API:', error);
-      console.log('Using default data');
+      console.error('❌ Error loading data from API:', error.message);
+      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
+      console.log('Using default data as fallback');
       updatePage();
     });
   
@@ -58,14 +66,28 @@ function loadData() {
 // Load projects from API
 function loadProjects() {
   fetch(`${API_BASE_URL}/get-projects.php`)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('API returned non-JSON response:', text);
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
+    })
     .then(data => {
       if (data.success && data.data) {
+        console.log('✅ Projects loaded from API:', data.data.length, 'projects');
         renderProjects(data.data);
       }
     })
     .catch(error => {
-      console.error('Error loading projects:', error);
+      console.error('❌ Error loading projects:', error.message);
+      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
     });
 }
 

@@ -18,13 +18,13 @@ if ($data) {
     $location = mysqli_real_escape_string($koneksi, $data['location']);
     $bio = mysqli_real_escape_string($koneksi, $data['bio']);
     $about = mysqli_real_escape_string($koneksi, $data['about']);
-    
+
     // Convert array ke JSON
     $education = json_encode($data['education']);
     $skills = json_encode($data['skills']);
     $experience = json_encode($data['experience']);
     $achievement = json_encode($data['achievement']);
-    
+
     // Update database
     $query = "UPDATE profile SET 
         name = '$name',
@@ -39,7 +39,7 @@ if ($data) {
         experience = '$experience',
         achievement = '$achievement'
         WHERE id = 1";
-    
+
     if (mysqli_query($koneksi, $query)) {
         echo json_encode(['success' => true, 'message' => 'Data berhasil disimpan']);
     } else {

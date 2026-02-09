@@ -15,16 +15,16 @@ try {
     // Get JSON from request body
     $input = file_get_contents("php://input");
     $data = json_decode($input, true);
-    
+
     if (!$data) {
         throw new Exception("Invalid JSON format");
     }
-    
+
     // Validate required fields
     if (empty($data['title']) || empty($data['github_link'])) {
         throw new Exception("Title and GitHub link are required");
     }
-    
+
     // Escape data
     $id = isset($data['id']) ? intval($data['id']) : 0;
     $icon = mysqli_real_escape_string($koneksi, $data['icon'] ?? 'fas fa-code');
@@ -34,7 +34,7 @@ try {
     $demo_link = !empty($data['demo_link']) ? mysqli_real_escape_string($koneksi, $data['demo_link']) : NULL;
     $github_link = mysqli_real_escape_string($koneksi, $data['github_link']);
     $display_order = intval($data['display_order'] ?? 0);
-    
+
     // Check if project exists (for update)
     if ($id > 0) {
         $query = "UPDATE projects SET 
@@ -52,10 +52,10 @@ try {
         $query = "INSERT INTO projects (icon, title, description, tech_stack, demo_link, github_link, display_order) 
                   VALUES ('$icon', '$title', '$description', '$tech_stack', " . ($demo_link ? "'$demo_link'" : "NULL") . ", '$github_link', $display_order)";
     }
-    
+
     if (mysqli_query($koneksi, $query)) {
         $last_id = $id > 0 ? $id : mysqli_insert_id($koneksi);
-        
+
         echo json_encode(array(
             'success' => true,
             'id' => $last_id,
@@ -64,9 +64,8 @@ try {
     } else {
         throw new Exception("Query error: " . mysqli_error($koneksi));
     }
-    
+
     mysqli_close($koneksi);
-    
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode(array(
@@ -74,4 +73,3 @@ try {
         'error' => $e->getMessage()
     ));
 }
-?>

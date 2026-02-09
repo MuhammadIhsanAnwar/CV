@@ -1,6 +1,3 @@
-// API URL - Harus sama dengan script.js
-const API_BASE_URL = 'https://neoverse.my.id/api';
-
 // PIN Password
 const ADMIN_PIN = "10982345";
 let isAuthenticated = false;
@@ -66,7 +63,19 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadAdminForm() {
   // Fetch latest data dari API sebelum load form
   fetch(`${API_BASE_URL}/get-profile.php`)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('API returned non-JSON response:', text);
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
+    })
     .then(data => {
       // Update profileData dengan data terbaru dari API
       profileData.name = data.name || profileData.name;
@@ -93,9 +102,11 @@ function loadAdminForm() {
       document.getElementById('adminSkills').value = profileData.skills.join(', ');
       document.getElementById('adminExperience').value = profileData.experience.join(', ');
       document.getElementById('adminAchievement').value = profileData.achievement.join(', ');
+      console.log('✅ Admin form loaded from API');
     })
     .catch(error => {
-      console.error('Error loading form data:', error);
+      console.error('❌ Error loading form data:', error.message);
+      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
       // Fallback ke data lokal jika API error
       document.getElementById('adminName').value = profileData.name;
       document.getElementById('adminJob').value = profileData.job;
@@ -108,6 +119,7 @@ function loadAdminForm() {
       document.getElementById('adminSkills').value = profileData.skills.join(', ');
       document.getElementById('adminExperience').value = profileData.experience.join(', ');
       document.getElementById('adminAchievement').value = profileData.achievement.join(', ');
+      console.log('Using default data as fallback');
     });
 }
 
@@ -430,17 +442,31 @@ function switchTab(tab) {
 // Load all projects from API
 function loadProjects() {
   fetch(`${API_BASE_URL}/get-projects.php`)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('API returned non-JSON response:', text);
+          throw new Error(`Server error: ${text.substring(0, 100)}`);
+        }
+      });
+    })
     .then(data => {
       if (data.success) {
         projects = data.data;
+        console.log('✅ Projects loaded from API:', projects.length, 'projects');
         renderProjectsTable();
       } else {
         Swal.fire('Error', 'Gagal memuat data proyek', 'error');
       }
     })
     .catch(error => {
-      console.error('Error loading projects:', error);
+      console.error('❌ Error loading projects:', error.message);
+      console.warn('Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
       Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
     });
 }

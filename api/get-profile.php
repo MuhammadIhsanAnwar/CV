@@ -10,13 +10,13 @@ $result = mysqli_query($koneksi, $query);
 
 if ($result && mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
-    
+
     // Parse JSON fields
     $row['education'] = json_decode($row['education'], true) ?? [];
     $row['skills'] = json_decode($row['skills'], true) ?? [];
     $row['experience'] = json_decode($row['experience'], true) ?? [];
     $row['achievement'] = json_decode($row['achievement'], true) ?? [];
-    
+
     // Return data sebagai JSON
     echo json_encode($row);
 } else {
@@ -37,4 +37,3 @@ if ($result && mysqli_num_rows($result) > 0) {
 }
 
 mysqli_close($koneksi);
-?>
