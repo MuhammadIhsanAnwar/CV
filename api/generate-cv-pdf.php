@@ -43,26 +43,38 @@ try {
     $result = $koneksi->query("SELECT * FROM profile LIMIT 1");
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $profileData['name'] = !empty($row['nama']) ? $row['nama'] : $profileData['name'];
-        $profileData['job'] = !empty($row['pekerjaan']) ? $row['pekerjaan'] : $profileData['job'];
+        $profileData['name'] = !empty($row['name']) ? $row['name'] : $profileData['name'];
+        $profileData['job'] = !empty($row['job']) ? $row['job'] : $profileData['job'];
         $profileData['email'] = !empty($row['email']) ? $row['email'] : $profileData['email'];
-        $profileData['phone'] = !empty($row['telepon']) ? $row['telepon'] : $profileData['phone'];
-        $profileData['location'] = !empty($row['lokasi']) ? $row['lokasi'] : $profileData['location'];
+        $profileData['phone'] = !empty($row['phone']) ? $row['phone'] : $profileData['phone'];
+        $profileData['location'] = !empty($row['location']) ? $row['location'] : $profileData['location'];
         $profileData['bio'] = !empty($row['bio']) ? $row['bio'] : $profileData['bio'];
-        $profileData['about'] = !empty($row['tentang']) ? $row['tentang'] : $profileData['about'];
+        $profileData['about'] = !empty($row['about']) ? $row['about'] : $profileData['about'];
         
-        // Parse array fields
-        if (!empty($row['pendidikan'])) {
-            $profileData['education'] = array_filter(array_map('trim', explode(',', $row['pendidikan'])));
+        // Parse JSON fields for arrays
+        if (!empty($row['education'])) {
+            $educationArray = json_decode($row['education'], true);
+            if (is_array($educationArray)) {
+                $profileData['education'] = $educationArray;
+            }
         }
-        if (!empty($row['keahlian'])) {
-            $profileData['skills'] = array_filter(array_map('trim', explode(',', $row['keahlian'])));
+        if (!empty($row['skills'])) {
+            $skillsArray = json_decode($row['skills'], true);
+            if (is_array($skillsArray)) {
+                $profileData['skills'] = $skillsArray;
+            }
         }
-        if (!empty($row['pengalaman'])) {
-            $profileData['experience'] = array_filter(array_map('trim', explode(',', $row['pengalaman'])));
+        if (!empty($row['experience'])) {
+            $experienceArray = json_decode($row['experience'], true);
+            if (is_array($experienceArray)) {
+                $profileData['experience'] = $experienceArray;
+            }
         }
-        if (!empty($row['prestasi'])) {
-            $profileData['achievement'] = array_filter(array_map('trim', explode(',', $row['prestasi'])));
+        if (!empty($row['achievement'])) {
+            $achievementArray = json_decode($row['achievement'], true);
+            if (is_array($achievementArray)) {
+                $profileData['achievement'] = $achievementArray;
+            }
         }
     }
 } catch (Exception $e) {
