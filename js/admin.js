@@ -3,7 +3,7 @@ const ADMIN_PIN = "10982345";
 let isAuthenticated = false;
 
 // GitHub Config
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 const GITHUB_OWNER = "MuhammadIhsanAnwar";
 const GITHUB_REPO = "CV";
 const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;

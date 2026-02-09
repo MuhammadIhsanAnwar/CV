@@ -44,6 +44,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   height: 70px;
+  gap: 20px;
 }
 
 .btn-logout {
@@ -72,12 +73,15 @@ nav {
   text-decoration: none;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-menu {
   display: flex;
   gap: 30px;
   list-style: none;
+  align-items: center;
 }
 
 .nav-menu a {
@@ -88,6 +92,8 @@ nav {
   position: relative;
   padding: 8px 12px;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-menu a:hover,
