@@ -363,7 +363,7 @@ function openProjectModal(projectId = null) {
   
   // Focus on first input field
   setTimeout(() => {
-    document.getElementById('projectIcon').focus();
+    document.getElementById('projectPhoto').focus();
   }, 100);
 }
 
@@ -475,6 +475,9 @@ function saveProjectWithPhoto() {
 
 // Save project data to database
 function saveProjectData(projectData) {
+  // Remove icon field - we're using foto_proyek now
+  delete projectData.icon;
+  
   fetch(`${API_BASE_URL}/save-projects.php`, {
     method: 'POST',
     headers: {
