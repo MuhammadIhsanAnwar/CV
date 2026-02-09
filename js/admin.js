@@ -57,7 +57,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('passwordModal').classList.remove('show');
     document.getElementById('blurOverlay').style.display = 'none';
     document.getElementById('logoutBtn').style.display = 'inline-block';
-    setTimeout(loadAdminForm, 100);
+    setTimeout(function() {
+      loadAdminForm();
+      loadProjects();  // Load projects data too
+    }, 100);
   } else {
     document.getElementById('blurOverlay').style.display = 'block';
   }
@@ -254,8 +257,10 @@ function loadProjects() {
       if (data.success) {
         projects = data.data;
         console.log('✅ Projects loaded from API:', projects.length, 'projects');
+        console.log('📦 Projects data:', projects);
         renderProjectsTable();
       } else {
+        console.warn('⚠️ API returned error:', data);
         Swal.fire('Error', 'Gagal memuat data proyek', 'error');
       }
     })
@@ -305,9 +310,14 @@ function openProjectModal(projectId = null) {
   const form = document.getElementById('projectForm');
   const deleteBtn = document.getElementById('btnDeleteProject');
   
+  console.log('📋 Opening modal for project ID:', projectId);
+  console.log('📊 Current projects array:', projects);
+  
   if (projectId) {
-    // Edit mode
-    const project = projects.find(p => p.id === projectId);
+    // Edit mode - find project by comparing as strings to avoid type mismatch
+    const project = projects.find(p => String(p.id) === String(projectId));
+    console.log(`🔍 Searching for project: ${projectId}, Found:`, project);
+    
     if (project) {
       document.getElementById('projectModalTitle').textContent = 'Edit Proyek';
       document.getElementById('projectIcon').value = project.icon || 'fas fa-code';
@@ -435,16 +445,19 @@ function editProject(projectId) {
 
 // Delete project
 function deleteProject(projectId) {
-  const project = projects.find(p => p.id === projectId);
-  if (project) {
-    currentEditingProjectId = projectId;
-    openProjectModal(projectId);
-  }
+  console.log('🗑️ Delete button clicked for project ID:', projectId);
+  // Open the modal to show delete confirmation
+  // Note: we don't need to find the project in array first
+  currentEditingProjectId = projectId;
+  openProjectModal(projectId);
 }
 
 // Delete project with confirmation
 function deleteProjectWithConfirm() {
-  const project = projects.find(p => p.id === currentEditingProjectId);
+  console.log('🗑️ Delete confirmation dialog for project ID:', currentEditingProjectId);
+  // Find project by comparing as strings to avoid type mismatch
+  const project = projects.find(p => String(p.id) === String(currentEditingProjectId));
+  console.log('📊 Found project:', project);
   
   Swal.fire({
     title: 'Hapus Proyek?',
