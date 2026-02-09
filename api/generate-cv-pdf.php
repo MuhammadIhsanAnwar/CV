@@ -40,7 +40,7 @@ try {
     require_once(__DIR__ . '/koneksi.php');
     
     // Query data from database
-    $result = $conn->query("SELECT * FROM profile LIMIT 1");
+    $result = $koneksi->query("SELECT * FROM profile LIMIT 1");
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $profileData['name'] = !empty($row['nama']) ? $row['nama'] : $profileData['name'];
