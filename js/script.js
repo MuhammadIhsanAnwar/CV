@@ -1,5 +1,5 @@
 // API URL - Ubah sesuai domain cPanel Anda
-const API_BASE_URL = 'https://neoverse.my.id/api';
+const API_BASE_URL = "https://neoverse.my.id/api";
 
 // Data default
 let profileData = {
@@ -20,20 +20,22 @@ let profileData = {
 // Load data dari API cPanel
 function loadData() {
   fetch(`${API_BASE_URL}/get-profile.php`)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `HTTP Error: ${response.status} ${response.statusText}`,
+        );
       }
-      return response.text().then(text => {
+      return response.text().then((text) => {
         try {
           return JSON.parse(text);
         } catch (e) {
-          console.error('API returned non-JSON response:', text);
+          console.error("API returned non-JSON response:", text);
           throw new Error(`Server error: ${text.substring(0, 100)}`);
         }
       });
     })
-    .then(data => {
+    .then((data) => {
       // Mapping data dari API
       profileData.name = data.name || profileData.name;
       profileData.job = data.job || profileData.job;
@@ -42,23 +44,31 @@ function loadData() {
       profileData.location = data.location || profileData.location;
       profileData.bio = data.bio || profileData.bio;
       profileData.about = data.about || profileData.about;
-      
+
       // Parse array data
-      profileData.education = Array.isArray(data.education) ? data.education : [];
+      profileData.education = Array.isArray(data.education)
+        ? data.education
+        : [];
       profileData.skills = Array.isArray(data.skills) ? data.skills : [];
-      profileData.experience = Array.isArray(data.experience) ? data.experience : [];
-      profileData.achievement = Array.isArray(data.achievement) ? data.achievement : [];
-      
-      console.log('[OK] Data loaded from API:', profileData);
+      profileData.experience = Array.isArray(data.experience)
+        ? data.experience
+        : [];
+      profileData.achievement = Array.isArray(data.achievement)
+        ? data.achievement
+        : [];
+
+      console.log("[OK] Data loaded from API:", profileData);
       updatePage();
     })
-    .catch(error => {
-      console.error('[ERROR] Error loading data from API:', error.message);
-      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?');
-      console.log('Using default data as fallback');
+    .catch((error) => {
+      console.error("[ERROR] Error loading data from API:", error.message);
+      console.warn(
+        "[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-profile.php working?",
+      );
+      console.log("Using default data as fallback");
       updatePage();
     });
-  
+
   // Load projects from API
   loadProjects();
 }
@@ -66,70 +76,93 @@ function loadData() {
 // Load projects from API
 function loadProjects() {
   fetch(`${API_BASE_URL}/get-projects.php`)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `HTTP Error: ${response.status} ${response.statusText}`,
+        );
       }
-      return response.text().then(text => {
+      return response.text().then((text) => {
         try {
           return JSON.parse(text);
         } catch (e) {
-          console.error('API returned non-JSON response:', text);
+          console.error("API returned non-JSON response:", text);
           throw new Error(`Server error: ${text.substring(0, 100)}`);
         }
       });
     })
-    .then(data => {
+    .then((data) => {
       if (data.success && data.data) {
-        console.log('[OK] Projects loaded from API:', data.data.length, 'projects');
+        console.log(
+          "[OK] Projects loaded from API:",
+          data.data.length,
+          "projects",
+        );
         renderProjects(data.data);
       }
     })
-    .catch(error => {
-      console.error('[ERROR] Error loading projects:', error.message);
-      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?');
+    .catch((error) => {
+      console.error("[ERROR] Error loading projects:", error.message);
+      console.warn(
+        "[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-projects.php working?",
+      );
     });
 }
 
 // Render projects dynamically
 function renderProjects(projects) {
-  const projectsGrid = document.getElementById('projectsGrid');
-  
+  const projectsGrid = document.getElementById("projectsGrid");
+
   if (!projectsGrid) return;
-  
+
   if (!projects || projects.length === 0) {
-    projectsGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px;">Belum ada proyek</p>';
+    projectsGrid.innerHTML =
+      '<p style="grid-column: 1 / -1; text-align: center; padding: 40px;">Belum ada proyek</p>';
     return;
   }
-  
-  projectsGrid.innerHTML = projects.map(project => `
+
+  projectsGrid.innerHTML = projects
+    .map(
+      (project) => `
     <div class="project-card">
       <div class="project-image">
-        ${project.foto_proyek 
-          ? `<img src="https://neoverse.my.id/foto_proyek/${project.foto_proyek}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\'width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;\\'><i class=\\'fas fa-image\\' style=\\'font-size: 48px; color: white;\\'></i></div>';">` 
-          : `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;"><i class="fas fa-image" style="font-size: 48px; color: white;"></i></div>`}
+        ${
+          project.foto_proyek
+            ? `<img src="https://neoverse.my.id/foto_proyek/${project.foto_proyek}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\'width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;\\'><i class=\\'fas fa-image\\' style=\\'font-size: 48px; color: white;\\'></i></div>';">`
+            : `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;"><i class="fas fa-image" style="font-size: 48px; color: white;"></i></div>`
+        }
       </div>
       <div class="project-content">
         <h3>${project.title}</h3>
         <p>${project.description}</p>
         <div class="project-tech">
-          ${project.tech_stack && project.tech_stack.length > 0 
-            ? project.tech_stack.map(tech => `<span class="tech-tag">${tech}</span>`).join('')
-            : ''}
+          ${
+            project.tech_stack && project.tech_stack.length > 0
+              ? project.tech_stack
+                  .map((tech) => `<span class="tech-tag">${tech}</span>`)
+                  .join("")
+              : ""
+          }
         </div>
         <div class="project-buttons">
-          ${project.demo_link ? `
+          ${
+            project.demo_link
+              ? `
             <a href="${project.demo_link}" class="btn-demo" target="_blank">
               <i class="fas fa-external-link-alt"></i> Live Demo
             </a>
-          ` : ''}
+          `
+              : ""
+          }
           <a href="${project.github_link}" class="btn-github" target="_blank">
             <i class="fab fa-github"></i> Repository
           </a>
         </div>
       </div>
     </div>
-  `).join('');
+  `,
+    )
+    .join("");
 }
 
 // Update halaman dengan data
@@ -256,58 +289,63 @@ function initScrollAnimation() {
 // Load photos dari database
 function loadPhotos() {
   fetch(`${API_BASE_URL}/upload-photos.php`)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);
       }
-      return response.text().then(text => {
+      return response.text().then((text) => {
         try {
           return JSON.parse(text);
         } catch (e) {
-          console.error('[ERROR] Invalid JSON from photo API:', text);
+          console.error("[ERROR] Invalid JSON from photo API:", text);
           throw new Error(`Server error: ${text.substring(0, 100)}`);
         }
       });
     })
-    .then(data => {
+    .then((data) => {
       if (data.success && data.data) {
-        console.log('[OK] Photos loaded from database:', data.data);
-        
+        console.log("[OK] Photos loaded from database:", data.data);
+
         // Update foto 1 (hero-avatar)
         if (data.data.foto1) {
-          const heroImg = document.querySelector('.hero-avatar');
+          const heroImg = document.querySelector(".hero-avatar");
           if (heroImg) {
-            heroImg.src = 'foto/' + data.data.foto1;
+            heroImg.src = "foto/" + data.data.foto1;
           }
         }
-        
+
         // Update foto 2 (profile-photo)
         if (data.data.foto2) {
-          const profileImg = document.querySelector('.profile-photo');
+          const profileImg = document.querySelector(".profile-photo");
           if (profileImg) {
-            profileImg.src = 'foto/' + data.data.foto2;
+            profileImg.src = "foto/" + data.data.foto2;
           }
         }
-        
+
         // Update foto 3 (contact-photo-img)
         if (data.data.foto3) {
-          const contactImg = document.querySelector('.contact-photo-img');
+          const contactImg = document.querySelector(".contact-photo-img");
           if (contactImg) {
-            contactImg.src = 'foto/' + data.data.foto3;
+            contactImg.src = "foto/" + data.data.foto3;
           }
         }
       } else {
-        console.log('[INFO] No custom photos in database, using default filenames');
+        console.log(
+          "[INFO] No custom photos in database, using default filenames",
+        );
       }
     })
-    .catch(error => {
-      console.warn('[WARN] Could not load custom photos:', error.message);
-      console.log('[INFO] Using default photo filenames');
+    .catch((error) => {
+      console.warn("[WARN] Could not load custom photos:", error.message);
+      console.log("[INFO] Using default photo filenames");
     });
 }
 
 // Initialize scroll animation setelah halaman dimuat
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
   initScrollAnimation();
   loadPhotos();
 });
+
+// Auto-update tahun di footer
+document.getElementById("year").textContent = new Date().getFullYear();
