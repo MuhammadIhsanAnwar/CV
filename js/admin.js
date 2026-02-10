@@ -1,6 +1,6 @@
-// Authentication state (PIN tidak disimpan di client)
+// PIN Password
+const ADMIN_PIN = "10982345";
 let isAuthenticated = false;
-let adminToken = null;
 
 // Projects data
 let projects = [];
@@ -44,49 +44,21 @@ function fillAdminForm(data) {
 function verifyPassword() {
   const passwordInput = document.getElementById('passwordInput');
   const passwordError = document.getElementById('passwordError');
-  const pin = passwordInput.value;
-
-  if (!pin) {
-    passwordError.textContent = '⚠ PIN tidak boleh kosong';
+  
+  if (passwordInput.value === ADMIN_PIN) {
+    isAuthenticated = true;
+    sessionStorage.setItem('adminAuthenticated', 'true');
+    document.getElementById('passwordModal').classList.remove('show');
+    document.getElementById('blurOverlay').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    loadAdminForm();
+  } else {
+    passwordInput.value = '';
     passwordError.classList.add('show');
-    return;
+    setTimeout(() => {
+      passwordError.classList.remove('show');
+    }, 3000);
   }
-
-  // Verifikasi PIN di server
-  fetch(`${API_BASE_URL}/verify-pin.php`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ pin: pin })
-  })
-    .then(handleFetchResponse)
-    .then(data => {
-      if (data.status === 'success') {
-        adminToken = data.token;
-        sessionStorage.setItem('adminToken', adminToken);
-        isAuthenticated = true;
-        sessionStorage.setItem('adminAuthenticated', 'true');
-        document.getElementById('passwordModal').classList.remove('show');
-        document.getElementById('blurOverlay').style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'inline-block';
-        loadAdminForm();
-        console.log('[OK] PIN verified, authenticated');
-      } else {
-        passwordInput.value = '';
-        passwordError.textContent = '⚠ PIN salah! Silakan coba lagi.';
-        passwordError.classList.add('show');
-        setTimeout(() => {
-          passwordError.classList.remove('show');
-        }, 3000);
-      }
-    })
-    .catch(error => {
-      console.error('[ERROR] Verifikasi PIN gagal:', error.message);
-      passwordInput.value = '';
-      passwordError.textContent = '⚠ Error: ' + error.message;
-      passwordError.classList.add('show');
-    });
 }
 
 function logout() {
