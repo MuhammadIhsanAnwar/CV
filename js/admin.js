@@ -338,25 +338,16 @@ function resetForm() {
 function switchTab(tab) {
   document.getElementById('tabProfil').classList.remove('active');
   document.getElementById('tabProyek').classList.remove('active');
-  document.getElementById('tabKontak').classList.remove('active');
   
   if (tab === 'profil') {
     document.getElementById('tabProfil').classList.add('active');
     document.getElementById('profilSection').style.display = 'block';
     document.getElementById('proyekSection').style.display = 'none';
-    document.getElementById('kontakSection').style.display = 'none';
-  } else if (tab === 'proyek') {
+  } else {
     document.getElementById('tabProyek').classList.add('active');
     document.getElementById('profilSection').style.display = 'none';
     document.getElementById('proyekSection').style.display = 'block';
-    document.getElementById('kontakSection').style.display = 'none';
     loadProjects();
-  } else if (tab === 'kontak') {
-    document.getElementById('tabKontak').classList.add('active');
-    document.getElementById('profilSection').style.display = 'none';
-    document.getElementById('proyekSection').style.display = 'none';
-    document.getElementById('kontakSection').style.display = 'block';
-    loadContactData();
   }
 }
 
@@ -717,145 +708,4 @@ function uploadPhotos() {
     console.error('[ERROR] Error uploading photos:', error.message);
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
-}
-
-// ===== KONTAK & SOSIAL MEDIA =====
-function loadContactData() {
-  fetch(`${API_BASE_URL}/get-contact.php`)
-    .then(handleFetchResponse)
-    .then(data => {
-      if (data.status === 'success') {
-        const contact = data.data.contact;
-        const socialMedia = data.data.social_media;
-
-        // Fill contact form
-        document.getElementById('kontakEmail').value = contact.email || '';
-        document.getElementById('kontakPhone').value = contact.phone || '';
-        document.getElementById('kontakLocation').value = contact.location || '';
-        document.getElementById('kontakWebsite').value = contact.website || '';
-
-        // Create social media list
-        let socialMediaHTML = '';
-        socialMedia.forEach(social => {
-          socialMediaHTML += `
-            <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center;">
-                <div>
-                  <label style="display: block; font-weight: bold; color: #333; margin-bottom: 5px;">${social.platform}</label>
-                  <input type="url" class="social-url" data-platform="${social.platform}" value="${social.urls}" placeholder="Masukkan URL" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                </div>
-                <div>
-                  <label style="display: block; font-weight: bold; color: #333; margin-bottom: 5px;">Aktif</label>
-                  <div style="display: flex; gap: 10px; align-items: center; height: 100%;">
-                    <input type="checkbox" class="social-active" data-platform="${social.platform}" ${social.is_active ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
-                    <input type="number" class="social-order" data-platform="${social.platform}" value="${social.order_position}" min="1" placeholder="Urutan" style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        });
-        document.getElementById('socialMediaList').innerHTML = socialMediaHTML;
-        console.log('[OK] Contact data loaded');
-      } else {
-        Swal.fire('Error', data.message || 'Gagal memuat data kontak', 'error');
-      }
-    })
-    .catch(error => {
-      console.error('[ERROR] Error loading contact data:', error.message);
-      Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-    });
-}
-
-function saveContactInfo() {
-  const email = document.getElementById('kontakEmail').value;
-  const phone = document.getElementById('kontakPhone').value;
-  const location = document.getElementById('kontakLocation').value;
-  const website = document.getElementById('kontakWebsite').value;
-
-  if (!email || !phone || !location) {
-    Swal.fire('Error', 'Email, telepon, dan lokasi harus diisi!', 'error');
-    return;
-  }
-
-  const payload = {
-    type: 'contact',
-    email: email,
-    phone: phone,
-    location: location,
-    website: website
-  };
-
-  fetch(`${API_BASE_URL}/save-contact.php`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload)
-  })
-    .then(handleFetchResponse)
-    .then(data => {
-      if (data.status === 'success') {
-        console.log('[OK] Contact info saved');
-        Swal.fire('Berhasil!', 'Informasi kontak berhasil disimpan', 'success');
-      } else {
-        Swal.fire('Error', data.message || 'Gagal menyimpan data', 'error');
-      }
-    })
-    .catch(error => {
-      console.error('[ERROR] Error saving contact info:', error.message);
-      Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-    });
-}
-
-function saveSocialMedia() {
-  const socialMediaItems = document.querySelectorAll('.social-url');
-  const socialMedia = [];
-
-  socialMediaItems.forEach(item => {
-    const platform = item.getAttribute('data-platform');
-    const urls = item.value;
-    const isActive = document.querySelector(`.social-active[data-platform="${platform}"]`).checked;
-    const order = parseInt(document.querySelector(`.social-order[data-platform="${platform}"]`).value) || 0;
-
-    if (urls) {
-      socialMedia.push({
-        platform: platform,
-        urls: urls,
-        is_active: isActive,
-        order_position: order
-      });
-    }
-  });
-
-  if (socialMedia.length === 0) {
-    Swal.fire('Error', 'Tambahkan minimal satu social media!', 'error');
-    return;
-  }
-
-  const payload = {
-    type: 'social_media',
-    social_media: socialMedia
-  };
-
-  fetch(`${API_BASE_URL}/save-contact.php`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload)
-  })
-    .then(handleFetchResponse)
-    .then(data => {
-      if (data.status === 'success') {
-        console.log('[OK] Social media saved');
-        Swal.fire('Berhasil!', 'Social media berhasil disimpan', 'success');
-      } else {
-        Swal.fire('Error', data.message || 'Gagal menyimpan data', 'error');
-      }
-    })
-    .catch(error => {
-      console.error('[ERROR] Error saving social media:', error.message);
-      Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
-    });
 }
