@@ -1,4 +1,12 @@
 <?php
+// Start output buffering to catch any errors
+ob_start();
+
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
 // Enable CORS for GitHub Pages cross-origin requests
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -10,9 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
+// Check if FPDF library exists
+if (!file_exists(__DIR__ . '/../library/fpdf.php')) {
+    ob_end_clean();
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'FPDF library not found']);
+    exit;
+}
 
 // Load FPDF library
 require_once(__DIR__ . '/../library/fpdf.php');
@@ -45,6 +58,10 @@ $profileData = array(
         'Best UI/UX Developer Award (2023)'
     )
 );
+
+// Initialize variables
+$result = null;
+$row = null;
 
 // Try to fetch fresh data from database if connection exists
 try {
@@ -93,10 +110,12 @@ try {
     error_log("PDF generation using fallback data: " . $e->getMessage());
 }
 
-// Create PDF
-$pdf = new FPDF();
-$pdf->AddPage();
-$pdf->SetFont('Arial', '', 11);
+// Try to generate PDF
+try {
+    // Create PDF
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', '', 11);
 
 // Add profile photo at the top (if exists)
 $photoPath = __DIR__ . '/../foto/';
@@ -244,6 +263,9 @@ if (!empty($profileData['achievement']) && is_array($profileData['achievement'])
 // Set filename and output PDF
 $filename = 'CV_' . str_replace(' ', '_', $profileData['name']) . '_' . date('Y') . '.pdf';
 
+// Clear any buffered output before sending PDF headers
+ob_end_clean();
+
 header('Content-Type: application/pdf');
 header('Content-Disposition: attachment; filename="' . $filename . '"');
 header('Pragma: no-cache');
@@ -251,4 +273,11 @@ header('Expires: 0');
 
 $pdf->Output('D', $filename);
 exit;
+} catch (Exception $e) {
+    ob_end_clean();
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'PDF generation failed: ' . $e->getMessage()]);
+    exit;
+}
 ?>

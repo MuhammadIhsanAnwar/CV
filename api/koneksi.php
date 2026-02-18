@@ -4,10 +4,10 @@ $user = "neoz6813";
 $password = "@Webihsananwar33";
 $database = "neoz6813_portofolio";
 
-$koneksi = mysqli_connect($host, $user, $password, $database);
+$koneksi = @mysqli_connect($host, $user, $password, $database);
 
 if (!$koneksi) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+    throw new Exception("Database connection failed: " . mysqli_connect_error());
 }
 
 // Set charset UTF-8

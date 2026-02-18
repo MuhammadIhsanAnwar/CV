@@ -1,7 +1,7 @@
 function downloadPDF() {
   console.log("[DOWNLOAD] Generating PDF using FPDF...");
 
-  const apiUrl = "https://neoverse.my.id/api/generate-cv-pdf.php";
+  const apiUrl = "./../api/generate-cv-pdf.php";
 
   fetch(apiUrl)
     .then((response) => {
