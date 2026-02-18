@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neoverse - Muhammad Ihsan Anwar</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='50' fill='%23667eea'>M</text></svg>" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='100' fill='%23667eea'>M</text></svg>"
+    />
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link
       rel="stylesheet"
@@ -14,16 +18,7 @@
   </head>
   <body>
     <!-- NAVBAR -->
-    <navbar>
-      <nav>
-        <a href="index.html" class="nav-brand">MIA</a>
-        <ul class="nav-menu">
-          <li><a href="index.html" class="nav-link active">Home</a></li>
-          <li><a href="cv/cv.html" class="nav-link">CV</a></li>
-          <li><a href="admin/admin.html" class="nav-link">Admin</a></li>
-        </ul>
-      </nav>
-    </navbar>
+    <div id="navbar-placeholder"></div>
 
     <!-- HERO SECTION -->
     <section class="hero">
@@ -36,9 +31,7 @@
           />
           <h1 id="heroName">Nama Lengkap</h1>
           <p class="job-title" id="heroJob">Pekerjaan</p>
-          <p class="bio" id="heroBio">
-            Bio Singkat
-          </p>
+          <p class="bio" id="heroBio">Bio Singkat</p>
         </div>
       </div>
     </section>
@@ -57,9 +50,7 @@
               <i class="fas fa-user"></i>
             </div>
             <h3>Tentang Saya</h3>
-            <p class="about-text" id="aboutMe">
-              Bio Lengkap
-            </p>
+            <p class="about-text" id="aboutMe">Bio Lengkap</p>
           </div>
 
           <!-- PENDIDIKAN -->
@@ -134,7 +125,11 @@
 
           <!-- PHOTO -->
           <div class="modern-card card-photo">
-            <img src="foto/fotoprofil2.jpg" alt="Foto Profil Muhammad Ihsan Anwar" class="profile-photo">
+            <img
+              src="foto/fotoprofil2.jpg"
+              alt="Foto Profil Muhammad Ihsan Anwar"
+              class="profile-photo"
+            />
           </div>
         </div>
       </div>
@@ -145,7 +140,9 @@
       <div class="container">
         <div class="section-header">
           <h2>Proyek Saya</h2>
-          <p class="section-subtitle">Beberapa proyek yang telah saya kerjakan</p>
+          <p class="section-subtitle">
+            Beberapa proyek yang telah saya kerjakan
+          </p>
         </div>
         <div class="projects-grid" id="projectsGrid">
           <!-- Projects akan dimuat dari database -->
@@ -161,9 +158,11 @@
       <div class="container">
         <div class="section-header">
           <h2>Hubungi Saya</h2>
-          <p class="section-subtitle">Mari berkolaborasi dan ciptakan sesuatu yang luar biasa</p>
+          <p class="section-subtitle">
+            Mari berkolaborasi dan ciptakan sesuatu yang luar biasa
+          </p>
         </div>
-        
+
         <div class="contact-wrapper">
           <!-- CONTACT INFO -->
           <div class="contact-info">
@@ -203,7 +202,11 @@
               </div>
               <div class="contact-detail">
                 <h3>Website</h3>
-                <p><a id="contactWebsite" href="#" target="_blank" rel="noopener">-</a></p>
+                <p>
+                  <a id="contactWebsite" href="#" target="_blank" rel="noopener"
+                    >-</a
+                  >
+                </p>
               </div>
             </div>
 
@@ -218,19 +221,22 @@
 
           <!-- CONTACT PHOTO -->
           <div class="modern-card card-contact-photo">
-            <img src="foto/fotoprofil3.jpg" alt="Foto Profil Muhammad Ihsan Anwar" class="contact-photo-img">
+            <img
+              src="foto/fotoprofil3.jpg"
+              alt="Foto Profil Muhammad Ihsan Anwar"
+              class="contact-photo-img"
+            />
           </div>
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer>
-      <p>&copy; <span id="year"></span> Muhammad Ihsan Anwar. All rights reserved.</p>
-    </footer>
+    <div id="footer-placeholder"></div>
 
+    <script src="js/navbar.js"></script>
+    <script src="js/footer.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
-    
   </body>
 </html>

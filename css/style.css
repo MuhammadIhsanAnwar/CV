@@ -1262,6 +1262,12 @@ section h2 {
   transition: all 0.3s ease;
 }
 
+.contact-icon i {
+  width: 1.2em;
+  line-height: 1;
+  text-align: center;
+}
+
 .contact-item:hover .contact-icon {
   transform: scale(1.1);
   box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);

@@ -1,358 +1,606 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Muhammad Ihsan Anwar</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='50' fill='%23667eea'>M</text></svg>" />
-  <link rel="stylesheet" href="../css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-  <!-- BLUR OVERLAY -->
-  <div class="blur-overlay" id="blurOverlay"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Muhammad Ihsan Anwar</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='50' fill='%23667eea'>M</text></svg>"
+    />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <!-- BLUR OVERLAY -->
+    <div class="blur-overlay" id="blurOverlay"></div>
 
-  <!-- PASSWORD MODAL -->
-  <div class="password-modal show" id="passwordModal">
-    <div class="password-modal-content">
-      <i class="fas fa-lock lock-icon"></i>
-      <h2>Akses Admin</h2>
-      <p>Masukkan PIN untuk mengakses panel admin</p>
-      <div class="password-input-group">
-        <input type="password" id="passwordInput" placeholder="Masukkan PIN" maxlength="8">
-      </div>
-      <div class="password-error" id="passwordError">
-        <i class="fas fa-exclamation-circle"></i> PIN salah! Silakan coba lagi.
-      </div>
-      <div class="password-button-group">
-        <button class="btn-submit" onclick="verifyPassword()"><i class="fas fa-check"></i> Verifikasi</button>
-        <button class="btn-cancel" onclick="goBack()"><i class="fas fa-times"></i> Batal</button>
+    <!-- PASSWORD MODAL -->
+    <div class="password-modal show" id="passwordModal">
+      <div class="password-modal-content">
+        <i class="fas fa-lock lock-icon"></i>
+        <h2>Akses Admin</h2>
+        <p>Masukkan PIN untuk mengakses panel admin</p>
+        <div class="password-input-group">
+          <input
+            type="password"
+            id="passwordInput"
+            placeholder="Masukkan PIN"
+            maxlength="8"
+          />
+        </div>
+        <div class="password-error" id="passwordError">
+          <i class="fas fa-exclamation-circle"></i> PIN salah! Silakan coba
+          lagi.
+        </div>
+        <div class="password-button-group">
+          <button class="btn-submit" onclick="verifyPassword()">
+            <i class="fas fa-check"></i> Verifikasi
+          </button>
+          <button class="btn-cancel" onclick="goBack()">
+            <i class="fas fa-times"></i> Batal
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- NAVBAR -->
-  <navbar>
-    <nav>
-      <a href="../index.html" class="nav-brand">MIA</a>
-      <ul class="nav-menu">
-        <li><a href="../index.html" class="nav-link">Home</a></li>
-        <li><a href="../cv/cv.html" class="nav-link">CV</a></li>
-        <li><a href="admin.html" class="nav-link active">Admin</a></li>
-      </ul>
-      <button class="btn-logout admin-logout" id="logoutBtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-    </nav>
-  </navbar>
+    <!-- NAVBAR -->
+    <div id="navbar-placeholder"></div>
 
-  <!-- ADMIN SECTION -->
-  <section>
-    <div class="container">
-      <h2>Panel Admin</h2>
-      
-      <!-- ADMIN TABS -->
-      <div class="admin-tabs">
-        <button class="tab-btn active" id="tabProfil" onclick="switchTab('profil')"><i class="fas fa-user"></i> Profil</button>
-        <button class="tab-btn" id="tabProyek" onclick="switchTab('proyek')"><i class="fas fa-folder"></i> Proyek</button>
-        <button class="tab-btn" id="tabKontak" onclick="switchTab('kontak')"><i class="fas fa-phone"></i> Kontak & Media Sosial</button>
+    <!-- ADMIN SECTION -->
+    <section>
+      <div class="container">
+        <h2>Panel Admin</h2>
+
+        <!-- ADMIN TABS -->
+        <div class="admin-tabs">
+          <button
+            class="tab-btn active"
+            id="tabProfil"
+            onclick="switchTab('profil')"
+          >
+            <i class="fas fa-user"></i> Profil
+          </button>
+          <button class="tab-btn" id="tabProyek" onclick="switchTab('proyek')">
+            <i class="fas fa-folder"></i> Proyek
+          </button>
+          <button class="tab-btn" id="tabKontak" onclick="switchTab('kontak')">
+            <i class="fas fa-phone"></i> Kontak & Media Sosial
+          </button>
+        </div>
+
+        <div class="admin-container">
+          <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Data berhasil disimpan!
+          </div>
+
+          <!-- PROFILE SECTION -->
+          <div id="profilSection" class="active">
+            <form id="adminForm">
+              <div class="form-group">
+                <label for="adminName">Nama Lengkap</label>
+                <input
+                  type="text"
+                  id="adminName"
+                  placeholder="Masukkan nama lengkap"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminJob">Posisi / Jabatan</label>
+                <input
+                  type="text"
+                  id="adminJob"
+                  placeholder="Masukkan posisi"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminEmail">Email</label>
+                <input
+                  type="email"
+                  id="adminEmail"
+                  placeholder="Masukkan email"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminPhone">Telepon</label>
+                <input
+                  type="text"
+                  id="adminPhone"
+                  placeholder="Masukkan nomor telepon"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminLocation">Lokasi</label>
+                <input
+                  type="text"
+                  id="adminLocation"
+                  placeholder="Masukkan lokasi"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminBio">Bio Singkat</label>
+                <textarea
+                  id="adminBio"
+                  placeholder="Masukkan bio singkat Anda"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adminAbout">Tentang Saya</label>
+                <textarea
+                  id="adminAbout"
+                  placeholder="Masukkan deskripsi tentang Anda"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adminEducation"
+                  >Pendidikan (Pisahkan dengan ,)</label
+                >
+                <textarea
+                  id="adminEducation"
+                  placeholder="Contoh: S1 IT - USU, SMA Negeri Asahan"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adminSkills">Keahlian (Pisahkan dengan ,)</label>
+                <textarea
+                  id="adminSkills"
+                  placeholder="Contoh: HTML, CSS, JavaScript, UI/UX Design"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adminExperience"
+                  >Pengalaman Organisasi (Pisahkan dengan ,)</label
+                >
+                <textarea
+                  id="adminExperience"
+                  placeholder="Contoh: Junior Developer - PT Abc, Freelance Designer"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adminAchievement"
+                  >Prestasi (Pisahkan dengan ,)</label
+                >
+                <textarea
+                  id="adminAchievement"
+                  placeholder="Contoh: Juara Web Design 2024, Award UI/UX 2023"
+                ></textarea>
+              </div>
+
+              <div class="form-divider">
+                <h3 class="photo-section-heading">
+                  <i class="fas fa-images"></i> Kelola Foto Profil
+                </h3>
+
+                <div class="form-group">
+                  <label for="adminFoto1">Foto 1 (Hero Section)</label>
+                  <div class="form-preview-container">
+                    <input type="file" id="adminFoto1" accept="image/*" />
+                    <img
+                      id="preview1"
+                      src=""
+                      class="form-preview-img"
+                      alt="Preview Foto 1"
+                    />
+                  </div>
+                  <small class="form-help-text"
+                    >Format: JPG, PNG, GIF (Max 5MB)</small
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="adminFoto2">Foto 2 (Section Profil)</label>
+                  <div class="form-preview-container">
+                    <input type="file" id="adminFoto2" accept="image/*" />
+                    <img
+                      id="preview2"
+                      src=""
+                      class="form-preview-img"
+                      alt="Preview Foto 2"
+                    />
+                  </div>
+                  <small class="form-help-text"
+                    >Format: JPG, PNG, GIF (Max 5MB)</small
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="adminFoto3">Foto 3 (Section Kontak)</label>
+                  <div class="form-preview-container">
+                    <input type="file" id="adminFoto3" accept="image/*" />
+                    <img
+                      id="preview3"
+                      src=""
+                      class="form-preview-img"
+                      alt="Preview Foto 3"
+                    />
+                  </div>
+                  <small class="form-help-text"
+                    >Format: JPG, PNG, GIF (Max 5MB)</small
+                  >
+                </div>
+
+                <div class="button-group button-group-gap">
+                  <button
+                    type="button"
+                    class="button upload-btn-gradient"
+                    onclick="uploadPhotos()"
+                  >
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Foto
+                  </button>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button
+                  type="button"
+                  class="button"
+                  onclick="saveDataWithConfirm()"
+                >
+                  <i class="fas fa-save"></i> Simpan Data
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- PROJECTS SECTION -->
+          <div id="proyekSection" class="proyek-section">
+            <div class="projects-header-custom">
+              <h3>Kelola Proyek</h3>
+              <button class="btn-primary" onclick="openProjectModal()">
+                <i class="fas fa-plus"></i> Tambah Proyek
+              </button>
+            </div>
+
+            <div class="projects-table-container">
+              <table class="projects-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Foto Proyek</th>
+                    <th>Judul</th>
+                    <th>Deskripsi</th>
+                    <th>Teknologi</th>
+                    <th>Urutan</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="projectsTableBody">
+                  <tr class="table-center">
+                    <td colspan="7">Memuat data...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- KONTAK SECTION -->
+          <div id="kontakSection" class="kontak-section">
+            <form id="kontakForm">
+              <!-- KONTAK UTAMA (Wajib) -->
+              <div class="kontak-section-header">
+                <h3><i class="fas fa-phone"></i> Informasi Kontak Utama</h3>
+              </div>
+
+              <div class="kontak-grid">
+                <div class="form-group">
+                  <label for="kontakEmail"
+                    >Email <span class="required">*</span></label
+                  >
+                  <input
+                    type="email"
+                    id="kontakEmail"
+                    placeholder="Masukkan email utama"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="kontakPhone"
+                    >Nomor Telepon <span class="required">*</span></label
+                  >
+                  <input
+                    type="tel"
+                    id="kontakPhone"
+                    placeholder="Contoh: +62 821 1234 5678"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="kontakWebsite">Website</label>
+                  <input
+                    type="url"
+                    id="kontakWebsite"
+                    placeholder="https://websiteanda.com"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="kontakAlamat">Alamat</label>
+                  <textarea
+                    id="kontakAlamat"
+                    placeholder="Masukkan alamat lengkap"
+                    rows="2"
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="kontakKota">Kota / Provinsi</label>
+                  <input
+                    type="text"
+                    id="kontakKota"
+                    placeholder="Contoh: Asahan, Sumatera Utara"
+                  />
+                </div>
+              </div>
+
+              <!-- MEDIA SOSIAL (Opsional) -->
+              <div class="kontak-divider">
+                <h3 class="social-section-title">
+                  <i class="fas fa-share-alt"></i> Pilih Media Sosial
+                </h3>
+
+                <div class="social-checkbox-grid">
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkWhatsapp"
+                      class="social-checkbox"
+                      data-field="kontakWhatsapp"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkLinkedin"
+                      class="social-checkbox"
+                      data-field="kontakLinkedin"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkGithub"
+                      class="social-checkbox"
+                      data-field="kontakGithub"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-github"></i> GitHub
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkTwitter"
+                      class="social-checkbox"
+                      data-field="kontakTwitter"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-twitter"></i> Twitter
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkInstagram"
+                      class="social-checkbox"
+                      data-field="kontakInstagram"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-instagram"></i> Instagram
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkFacebook"
+                      class="social-checkbox"
+                      data-field="kontakFacebook"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-facebook"></i> Facebook
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkTiktok"
+                      class="social-checkbox"
+                      data-field="kontakTiktok"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-tiktok"></i> TikTok
+                  </label>
+
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="checkYoutube"
+                      class="social-checkbox"
+                      data-field="kontakYoutube"
+                      onchange="toggleSocialField(this)"
+                    />
+                    <i class="fab fa-youtube"></i> YouTube
+                  </label>
+                </div>
+
+                <!-- SOCIAL MEDIA INPUT FIELDS -->
+                <div id="socialFieldsContainer" class="social-fields-container">
+                  <!-- Fields akan dimunculkan secara dinamis saat checkbox dipilih -->
+                </div>
+              </div>
+
+              <div class="kontak-button-container">
+                <div class="button-group">
+                  <button
+                    type="button"
+                    class="button"
+                    onclick="saveKontakWithConfirm()"
+                  >
+                    <i class="fas fa-save"></i> Simpan Kontak
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="admin-container">
-        <div class="success-message" id="successMessage"><i class="fas fa-check-circle"></i> Data berhasil disimpan!</div>
-        
-        <!-- PROFILE SECTION -->
-        <div id="profilSection" class="active">
-        <form id="adminForm">
-          <div class="form-group">
-            <label for="adminName">Nama Lengkap</label>
-            <input type="text" id="adminName" placeholder="Masukkan nama lengkap">
-          </div>
+    <!-- PROJECT MODAL -->
+    <div class="project-modal" id="projectModal">
+      <div class="project-modal-content">
+        <div class="project-modal-header">
+          <h3 id="projectModalTitle">Tambah Proyek Baru</h3>
+          <button
+            class="btn-close"
+            aria-label="Close modal"
+            onclick="closeProjectModal()"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
 
+        <form id="projectForm" class="project-form">
           <div class="form-group">
-            <label for="adminJob">Posisi / Jabatan</label>
-            <input type="text" id="adminJob" placeholder="Masukkan posisi">
-          </div>
-
-          <div class="form-group">
-            <label for="adminEmail">Email</label>
-            <input type="email" id="adminEmail" placeholder="Masukkan email">
-          </div>
-
-          <div class="form-group">
-            <label for="adminPhone">Telepon</label>
-            <input type="text" id="adminPhone" placeholder="Masukkan nomor telepon">
-          </div>
-
-          <div class="form-group">
-            <label for="adminLocation">Lokasi</label>
-            <input type="text" id="adminLocation" placeholder="Masukkan lokasi">
-          </div>
-
-          <div class="form-group">
-            <label for="adminBio">Bio Singkat</label>
-            <textarea id="adminBio" placeholder="Masukkan bio singkat Anda"></textarea>
+            <label for="projectPhoto">Foto Proyek</label>
+            <input type="file" id="projectPhoto" accept="image/*" />
+            <small class="form-help-text"
+              >Format: JPG, PNG, GIF, WEBP | Max: 5MB</small
+            >
+            <img
+              id="projectPhotoPreview"
+              src=""
+              class="project-preview-img"
+              alt="Preview Foto Proyek"
+            />
           </div>
 
           <div class="form-group">
-            <label for="adminAbout">Tentang Saya</label>
-            <textarea id="adminAbout" placeholder="Masukkan deskripsi tentang Anda"></textarea>
+            <label for="projectTitle">Judul Proyek</label>
+            <input
+              type="text"
+              id="projectTitle"
+              placeholder="Masukkan judul proyek"
+              required
+            />
           </div>
 
           <div class="form-group">
-            <label for="adminEducation">Pendidikan (Pisahkan dengan ,)</label>
-            <textarea id="adminEducation" placeholder="Contoh: S1 IT - USU, SMA Negeri Asahan"></textarea>
+            <label for="projectDescription">Deskripsi</label>
+            <textarea
+              id="projectDescription"
+              placeholder="Masukkan deskripsi proyek lengkap"
+              rows="4"
+              required
+            ></textarea>
           </div>
 
           <div class="form-group">
-            <label for="adminSkills">Keahlian (Pisahkan dengan ,)</label>
-            <textarea id="adminSkills" placeholder="Contoh: HTML, CSS, JavaScript, UI/UX Design"></textarea>
+            <label for="projectTech">Teknologi (Pisahkan dengan koma)</label>
+            <input
+              type="text"
+              id="projectTech"
+              placeholder="Contoh: HTML, CSS, JavaScript, Bootstrap"
+              required
+            />
           </div>
 
           <div class="form-group">
-            <label for="adminExperience">Pengalaman Organisasi (Pisahkan dengan ,)</label>
-            <textarea id="adminExperience" placeholder="Contoh: Junior Developer - PT Abc, Freelance Designer"></textarea>
+            <label for="projectDemoLink">Link Live Demo (Opsional)</label>
+            <input
+              type="url"
+              id="projectDemoLink"
+              placeholder="https://demo.example.com"
+            />
           </div>
 
           <div class="form-group">
-            <label for="adminAchievement">Prestasi (Pisahkan dengan ,)</label>
-            <textarea id="adminAchievement" placeholder="Contoh: Juara Web Design 2024, Award UI/UX 2023"></textarea>
+            <label for="projectGithubLink">Link Repository GitHub</label>
+            <input
+              type="url"
+              id="projectGithubLink"
+              placeholder="https://github.com/username/repository"
+              required
+            />
           </div>
 
-          <div class="form-divider">
-            <h3 class="photo-section-heading"><i class="fas fa-images"></i> Kelola Foto Profil</h3>
-            
-            <div class="form-group">
-              <label for="adminFoto1">Foto 1 (Hero Section)</label>
-              <div class="form-preview-container">
-                <input type="file" id="adminFoto1" accept="image/*">
-                <img id="preview1" src="" class="form-preview-img" alt="Preview Foto 1">
-              </div>
-              <small class="form-help-text">Format: JPG, PNG, GIF (Max 5MB)</small>
-            </div>
-
-            <div class="form-group">
-              <label for="adminFoto2">Foto 2 (Section Profil)</label>
-              <div class="form-preview-container">
-                <input type="file" id="adminFoto2" accept="image/*">
-                <img id="preview2" src="" class="form-preview-img" alt="Preview Foto 2">
-              </div>
-              <small class="form-help-text">Format: JPG, PNG, GIF (Max 5MB)</small>
-            </div>
-
-            <div class="form-group">
-              <label for="adminFoto3">Foto 3 (Section Kontak)</label>
-              <div class="form-preview-container">
-                <input type="file" id="adminFoto3" accept="image/*">
-                <img id="preview3" src="" class="form-preview-img" alt="Preview Foto 3">
-              </div>
-              <small class="form-help-text">Format: JPG, PNG, GIF (Max 5MB)</small>
-            </div>
-
-            <div class="button-group button-group-gap">
-              <button type="button" class="button upload-btn-gradient" onclick="uploadPhotos()"><i class="fas fa-cloud-upload-alt"></i> Upload Foto</button>
-            </div>
+          <div class="form-group">
+            <label for="projectOrder">Urutan Tampil</label>
+            <input
+              type="number"
+              id="projectOrder"
+              placeholder="1, 2, 3..."
+              min="1"
+              value="1"
+              required
+            />
           </div>
 
-          <div class="button-group">
-            <button type="button" class="button" onclick="saveDataWithConfirm()"><i class="fas fa-save"></i> Simpan Data</button>
+          <div class="button-group modal-button-group">
+            <button type="submit" class="button">
+              <i class="fas fa-save"></i> Simpan Proyek
+            </button>
+            <button
+              type="button"
+              class="button-secondary"
+              onclick="closeProjectModal()"
+            >
+              <i class="fas fa-times"></i> Batal
+            </button>
+            <button
+              type="button"
+              id="btnDeleteProject"
+              class="button-danger delete-btn-hidden"
+              onclick="deleteProjectWithConfirm()"
+            >
+              <i class="fas fa-trash"></i> Hapus
+            </button>
           </div>
         </form>
-        </div>
-
-        <!-- PROJECTS SECTION -->
-        <div id="proyekSection" class="proyek-section">
-          <div class="projects-header-custom">
-            <h3>Kelola Proyek</h3>
-            <button class="btn-primary" onclick="openProjectModal()"><i class="fas fa-plus"></i> Tambah Proyek</button>
-          </div>
-
-          <div class="projects-table-container">
-            <table class="projects-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Foto Proyek</th>
-                  <th>Judul</th>
-                  <th>Deskripsi</th>
-                  <th>Teknologi</th>
-                  <th>Urutan</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="projectsTableBody">
-                <tr class="table-center">
-                  <td colspan="7">Memuat data...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- KONTAK SECTION -->
-        <div id="kontakSection" class="kontak-section">
-          <form id="kontakForm">
-            <!-- KONTAK UTAMA (Wajib) -->
-            <div class="kontak-section-header">
-              <h3><i class="fas fa-phone"></i> Informasi Kontak Utama</h3>
-            </div>
-            
-            <div class="kontak-grid">
-              <div class="form-group">
-                <label for="kontakEmail">Email <span class="required">*</span></label>
-                <input type="email" id="kontakEmail" placeholder="Masukkan email utama" required>
-              </div>
-
-              <div class="form-group">
-                <label for="kontakPhone">Nomor Telepon <span class="required">*</span></label>
-                <input type="tel" id="kontakPhone" placeholder="Contoh: +62 821 1234 5678" required>
-              </div>
-
-              <div class="form-group">
-                <label for="kontakWebsite">Website</label>
-                <input type="url" id="kontakWebsite" placeholder="https://websiteanda.com">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakAlamat">Alamat</label>
-                <textarea id="kontakAlamat" placeholder="Masukkan alamat lengkap" rows="2"></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="kontakKota">Kota / Provinsi</label>
-                <input type="text" id="kontakKota" placeholder="Contoh: Asahan, Sumatera Utara">
-              </div>
-            </div>
-
-            <!-- MEDIA SOSIAL (Opsional) -->
-            <div class="kontak-divider">
-              <h3 class="social-section-title"><i class="fas fa-share-alt"></i> Pilih Media Sosial</h3>
-              
-              <div class="social-checkbox-grid">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkWhatsapp" class="social-checkbox" data-field="kontakWhatsapp" onchange="toggleSocialField(this)">
-                  <i class="fab fa-whatsapp"></i> WhatsApp
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkLinkedin" class="social-checkbox" data-field="kontakLinkedin" onchange="toggleSocialField(this)">
-                  <i class="fab fa-linkedin"></i> LinkedIn
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkGithub" class="social-checkbox" data-field="kontakGithub" onchange="toggleSocialField(this)">
-                  <i class="fab fa-github"></i> GitHub
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkTwitter" class="social-checkbox" data-field="kontakTwitter" onchange="toggleSocialField(this)">
-                  <i class="fab fa-twitter"></i> Twitter
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkInstagram" class="social-checkbox" data-field="kontakInstagram" onchange="toggleSocialField(this)">
-                  <i class="fab fa-instagram"></i> Instagram
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkFacebook" class="social-checkbox" data-field="kontakFacebook" onchange="toggleSocialField(this)">
-                  <i class="fab fa-facebook"></i> Facebook
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkTiktok" class="social-checkbox" data-field="kontakTiktok" onchange="toggleSocialField(this)">
-                  <i class="fab fa-tiktok"></i> TikTok
-                </label>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="checkYoutube" class="social-checkbox" data-field="kontakYoutube" onchange="toggleSocialField(this)">
-                  <i class="fab fa-youtube"></i> YouTube
-                </label>
-              </div>
-
-              <!-- SOCIAL MEDIA INPUT FIELDS -->
-              <div id="socialFieldsContainer" class="social-fields-container">
-                <!-- Fields akan dimunculkan secara dinamis saat checkbox dipilih -->
-              </div>
-            </div>
-
-            <div class="kontak-button-container">
-              <div class="button-group">
-                <button type="button" class="button" onclick="saveKontakWithConfirm()"><i class="fas fa-save"></i> Simpan Kontak</button>
-              </div>
-            </div>
-          </form>
-        </div>
       </div>
     </div>
-  </section>
 
-  <!-- PROJECT MODAL -->
-  <div class="project-modal" id="projectModal">
-    <div class="project-modal-content">
-      <div class="project-modal-header">
-        <h3 id="projectModalTitle">Tambah Proyek Baru</h3>
-        <button class="btn-close" aria-label="Close modal" onclick="closeProjectModal()"><i class="fas fa-times"></i></button>
-      </div>
+    <!-- PROJECT MODAL OVERLAY -->
+    <div
+      class="project-modal-overlay"
+      id="projectModalOverlay"
+      onclick="closeProjectModal()"
+    ></div>
 
-      <form id="projectForm" class="project-form">
-        <div class="form-group">
-          <label for="projectPhoto">Foto Proyek</label>
-          <input type="file" id="projectPhoto" accept="image/*">
-          <small class="form-help-text">Format: JPG, PNG, GIF, WEBP | Max: 5MB</small>
-          <img id="projectPhotoPreview" src="" class="project-preview-img" alt="Preview Foto Proyek">
-        </div>
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
 
-        <div class="form-group">
-          <label for="projectTitle">Judul Proyek</label>
-          <input type="text" id="projectTitle" placeholder="Masukkan judul proyek" required>
-        </div>
-
-        <div class="form-group">
-          <label for="projectDescription">Deskripsi</label>
-          <textarea id="projectDescription" placeholder="Masukkan deskripsi proyek lengkap" rows="4" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="projectTech">Teknologi (Pisahkan dengan koma)</label>
-          <input type="text" id="projectTech" placeholder="Contoh: HTML, CSS, JavaScript, Bootstrap" required>
-        </div>
-
-        <div class="form-group">
-          <label for="projectDemoLink">Link Live Demo (Opsional)</label>
-          <input type="url" id="projectDemoLink" placeholder="https://demo.example.com">
-        </div>
-
-        <div class="form-group">
-          <label for="projectGithubLink">Link Repository GitHub</label>
-          <input type="url" id="projectGithubLink" placeholder="https://github.com/username/repository" required>
-        </div>
-
-        <div class="form-group">
-          <label for="projectOrder">Urutan Tampil</label>
-          <input type="number" id="projectOrder" placeholder="1, 2, 3..." min="1" value="1" required>
-        </div>
-
-        <div class="button-group modal-button-group">
-          <button type="submit" class="button"><i class="fas fa-save"></i> Simpan Proyek</button>
-          <button type="button" class="button-secondary" onclick="closeProjectModal()"><i class="fas fa-times"></i> Batal</button>
-          <button type="button" id="btnDeleteProject" class="button-danger delete-btn-hidden" onclick="deleteProjectWithConfirm()"><i class="fas fa-trash"></i> Hapus</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- PROJECT MODAL OVERLAY -->
-  <div class="project-modal-overlay" id="projectModalOverlay" onclick="closeProjectModal()"></div>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>&copy; 2026 Muhammad Ihsan Anwar. All rights reserved.</p>
-  </footer>
-
-  <script src="../js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-  <script src="../js/script.js"></script>
-  <script src="../js/admin.js"></script>
-</body>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/footer.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/admin.js"></script>
+  </body>
 </html>
