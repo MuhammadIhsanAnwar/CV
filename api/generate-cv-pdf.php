@@ -7,6 +7,19 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
+// Custom error handler to catch critical errors only
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    // Only handle critical errors, not notices or warnings
+    if (in_array($errno, [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])) {
+        ob_end_clean();
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => "PHP Error: $errstr"]);
+        exit;
+    }
+    return false; // Continue with default error handling for non-critical errors
+});
+
 // Enable CORS for GitHub Pages cross-origin requests
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -23,7 +36,7 @@ if (!file_exists(__DIR__ . '/../library/fpdf.php')) {
     ob_end_clean();
     http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'FPDF library not found']);
+    echo json_encode(['error' => 'FPDF library not found at: ' . __DIR__ . '/../library/fpdf.php']);
     exit;
 }
 
@@ -121,9 +134,9 @@ try {
 $photoPath = __DIR__ . '/../foto/';
 $profilePhoto = null;
 
-// Try to find first available profile photo
+// Try to find first available profile photo only if we have a database result with image data
 $photoField = ['foto1', 'foto2', 'foto3'];
-if ($result && $result->num_rows > 0) {
+if (!empty($row) && is_array($row)) {
     foreach ($photoField as $field) {
         if (!empty($row[$field])) {
             $testPath = $photoPath . $row[$field];
@@ -140,11 +153,22 @@ $startY = $pdf->GetY();
 $pdf->SetFont('Arial', 'B', 18);
 $pdf->SetTextColor(0, 102, 204);
 
-// Add photo if available
+// Add photo if available (wrapped in try-catch to handle image errors)
 if ($profilePhoto) {
-    $pdf->Image($profilePhoto, 10, $startY, 30, 30, 'PNG');
-    $pdf->SetXY(45, $startY);
-    $pdf->MultiCell(0, 8, $profileData['name']);
+    try {
+        // Detect image type from file extension
+        $imageExt = strtoupper(pathinfo($profilePhoto, PATHINFO_EXTENSION));
+        if (in_array($imageExt, ['PNG', 'JPG', 'JPEG', 'GIF'])) {
+            $pdf->Image($profilePhoto, 10, $startY, 30, 30, $imageExt);
+            $pdf->SetXY(45, $startY);
+            $pdf->MultiCell(0, 8, $profileData['name']);
+        } else {
+            $pdf->Cell(0, 10, $profileData['name'], 0, 1, 'C');
+        }
+    } catch (Exception $e) {
+        // If image fails, just show name without image
+        $pdf->Cell(0, 10, $profileData['name'], 0, 1, 'C');
+    }
 } else {
     $pdf->Cell(0, 10, $profileData['name'], 0, 1, 'C');
 }
