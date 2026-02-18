@@ -22,6 +22,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -158,6 +159,7 @@ section h2::after {
   color: var(--white);
   padding: 80px 0;
   text-align: center;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -213,6 +215,7 @@ section h2::after {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -736,6 +739,7 @@ footer {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   z-index: 1999;
 }
@@ -1068,6 +1072,7 @@ section h2 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -1503,8 +1508,287 @@ ul li {
   box-shadow: var(--glow);
 }
 
+/* KONTAK SECTION STYLES */
+#profilSection {
+  display: none;
+}
+
+#profilSection.active {
+  display: block;
+}
+
+#proyekSection {
+  display: none;
+}
+
+#proyekSection.active {
+  display: block;
+}
+
+#kontakSection {
+  display: none;
+}
+
+#kontakSection.active {
+  display: block;
+}
+
+.kontak-section {
+  display: none;
+}
+
+.kontak-section.active {
+  display: block;
+}
+
+.kontak-section-header {
+  margin-bottom: 30px;
+}
+
+.kontak-section-header h3 {
+  font-size: 20px;
+  color: var(--primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.social-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f0f5ff, #e8f0ff);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: var(--text);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.checkbox-label:hover {
+  background: linear-gradient(135deg, #e8f0ff, #dae8ff);
+  border-color: var(--primary);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.checkbox-label input[type="checkbox"]:checked + i,
+.checkbox-label input[type="checkbox"]:checked ~ i {
+  color: var(--primary);
+}
+
+.checkbox-label i {
+  font-size: 18px;
+  color: #999;
+  transition: color 0.3s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  accent-color: var(--primary);
+}
+
+.checkbox-label:has(input[type="checkbox"]:checked) {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.checkbox-label:has(input[type="checkbox"]:checked) i {
+  color: var(--white);
+}
+
+.social-field-group {
+  background: linear-gradient(135deg, #f9fafb, #f5f7fa);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  animation: slideDown 0.3s ease;
+}
+
+.social-field-group.hidden {
+  display: none;
+}
+
+.social-field-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.social-field-label i {
+  font-size: 20px;
+}
+
+.required {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.kontak-divider {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border);
+}
+
+.form-preview-container {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.form-preview-container input {
+  flex: 1;
+}
+
+.form-preview-img {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 8px;
+  display: none;
+  border: 2px solid var(--primary);
+}
+
+.form-preview-img.show {
+  display: block;
+}
+
+.form-help-text {
+  color: #666;
+  display: block;
+  margin-top: 5px;
+  font-size: 0.875rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.btn-close:hover {
+  color: var(--primary);
+  transform: rotate(90deg);
+}
+
+/* ADMIN SPECIFIC STYLES */
+.admin-tabs {
+  margin-bottom: 30px;
+}
+
+.admin-logout {
+  display: none;
+}
+
+.admin-logout.visible {
+  display: inline-block;
+}
+
+.lock-icon {
+  font-size: 48px;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+.photo-section-heading {
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+
+.button-group-gap {
+  gap: 10px;
+}
+
+.upload-btn-gradient {
+  background: linear-gradient(135deg, #4ecdc4, #44b3aa);
+}
+
+.proyek-section {
+  display: none;
+}
+
+.proyek-section.active {
+  display: block;
+}
+
+.projects-header-custom {
+  margin-bottom: 20px;
+}
+
+.projects-header-custom button {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.table-center {
+  text-align: center;
+}
+
+.project-preview-img {
+  max-width: 150px;
+  max-height: 150px;
+  margin-top: 10px;
+  display: none;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.project-preview-img.show {
+  display: block;
+}
+
+.modal-button-group {
+  gap: 10px;
+}
+
+.delete-btn-hidden {
+  display: none;
+}
+
+.delete-btn-hidden.visible {
+  display: block;
+}
+
 @media (max-width: 900px) {
   .cv-container {
     grid-template-columns: 1fr;
+  }
+  
+  .kontak-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .social-checkbox-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 }

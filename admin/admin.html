@@ -17,7 +17,7 @@
   <!-- PASSWORD MODAL -->
   <div class="password-modal show" id="passwordModal">
     <div class="password-modal-content">
-      <i class="fas fa-lock" style="font-size: 48px; color: var(--primary); margin-bottom: 20px;"></i>
+      <i class="fas fa-lock lock-icon"></i>
       <h2>Akses Admin</h2>
       <p>Masukkan PIN untuk mengakses panel admin</p>
       <div class="password-input-group">
@@ -42,7 +42,7 @@
         <li><a href="../cv/cv.html" class="nav-link">CV</a></li>
         <li><a href="admin.html" class="nav-link active">Admin</a></li>
       </ul>
-      <button class="btn-logout" id="logoutBtn" onclick="logout()" style="display: none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <button class="btn-logout admin-logout" id="logoutBtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </nav>
   </navbar>
 
@@ -52,7 +52,7 @@
       <h2>Panel Admin</h2>
       
       <!-- ADMIN TABS -->
-      <div class="admin-tabs" style="margin-bottom: 30px;">
+      <div class="admin-tabs">
         <button class="tab-btn active" id="tabProfil" onclick="switchTab('profil')"><i class="fas fa-user"></i> Profil</button>
         <button class="tab-btn" id="tabProyek" onclick="switchTab('proyek')"><i class="fas fa-folder"></i> Proyek</button>
         <button class="tab-btn" id="tabKontak" onclick="switchTab('kontak')"><i class="fas fa-phone"></i> Kontak & Media</button>
@@ -62,7 +62,7 @@
         <div class="success-message" id="successMessage"><i class="fas fa-check-circle"></i> Data berhasil disimpan!</div>
         
         <!-- PROFILE SECTION -->
-        <div id="profilSection">
+        <div id="profilSection" class="active">
         <form id="adminForm">
           <div class="form-group">
             <label for="adminName">Nama Lengkap</label>
@@ -119,38 +119,38 @@
             <textarea id="adminAchievement" placeholder="Contoh: Juara Web Design 2024, Award UI/UX 2023"></textarea>
           </div>
 
-          <div class="form-divider" style="margin: 30px 0; padding: 20px 0; border-top: 2px solid #e0e0e0;">
-            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-images"></i> Kelola Foto Profil</h3>
+          <div class="form-divider">
+            <h3 class="photo-section-heading"><i class="fas fa-images"></i> Kelola Foto Profil</h3>
             
             <div class="form-group">
               <label for="adminFoto1">Foto 1 (Hero Section)</label>
-              <div style="display: flex; gap: 15px; align-items: flex-start;">
-                <input type="file" id="adminFoto1" accept="image/*" style="flex: 1;">
-                <img id="preview1" src="" style="max-width: 100px; max-height: 100px; border-radius: 8px; display: none; border: 2px solid var(--primary);">
+              <div class="form-preview-container">
+                <input type="file" id="adminFoto1" accept="image/*">
+                <img id="preview1" src="" class="form-preview-img" alt="Preview Foto 1">
               </div>
-              <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 5MB)</small>
+              <small class="form-help-text">Format: JPG, PNG, GIF (Max 5MB)</small>
             </div>
 
             <div class="form-group">
               <label for="adminFoto2">Foto 2 (Section Profil)</label>
-              <div style="display: flex; gap: 15px; align-items: flex-start;">
-                <input type="file" id="adminFoto2" accept="image/*" style="flex: 1;">
-                <img id="preview2" src="" style="max-width: 100px; max-height: 100px; border-radius: 8px; display: none; border: 2px solid var(--primary);">
+              <div class="form-preview-container">
+                <input type="file" id="adminFoto2" accept="image/*">
+                <img id="preview2" src="" class="form-preview-img" alt="Preview Foto 2">
               </div>
-              <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 5MB)</small>
+              <small class="form-help-text">Format: JPG, PNG, GIF (Max 5MB)</small>
             </div>
 
             <div class="form-group">
               <label for="adminFoto3">Foto 3 (Section Kontak)</label>
-              <div style="display: flex; gap: 15px; align-items: flex-start;">
-                <input type="file" id="adminFoto3" accept="image/*" style="flex: 1;">
-                <img id="preview3" src="" style="max-width: 100px; max-height: 100px; border-radius: 8px; display: none; border: 2px solid var(--primary);">
+              <div class="form-preview-container">
+                <input type="file" id="adminFoto3" accept="image/*">
+                <img id="preview3" src="" class="form-preview-img" alt="Preview Foto 3">
               </div>
-              <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 5MB)</small>
+              <small class="form-help-text">Format: JPG, PNG, GIF (Max 5MB)</small>
             </div>
 
-            <div class="button-group" style="gap: 10px;">
-              <button type="button" class="button" onclick="uploadPhotos()" style="background: linear-gradient(135deg, #4ecdc4, #44b3aa);"><i class="fas fa-cloud-upload-alt"></i> Upload Foto</button>
+            <div class="button-group button-group-gap">
+              <button type="button" class="button upload-btn-gradient" onclick="uploadPhotos()"><i class="fas fa-cloud-upload-alt"></i> Upload Foto</button>
               <button type="button" class="button-secondary" onclick="loadCurrentPhotos()"><i class="fas fa-refresh"></i> Refresh</button>
             </div>
           </div>
@@ -162,10 +162,10 @@
         </div>
 
         <!-- PROJECTS SECTION -->
-        <div id="proyekSection" style="display: none;">
-          <div class="projects-header" style="margin-bottom: 20px;">
+        <div id="proyekSection" class="proyek-section">
+          <div class="projects-header-custom">
             <h3>Kelola Proyek</h3>
-            <button class="btn-primary" onclick="openProjectModal()" style="margin-left: auto; display: flex; gap: 8px;"><i class="fas fa-plus"></i> Tambah Proyek</button>
+            <button class="btn-primary" onclick="openProjectModal()"><i class="fas fa-plus"></i> Tambah Proyek</button>
           </div>
 
           <div class="projects-table-container">
@@ -182,7 +182,7 @@
                 </tr>
               </thead>
               <tbody id="projectsTableBody">
-                <tr style="text-align: center;">
+                <tr class="table-center">
                   <td colspan="7">Memuat data...</td>
                 </tr>
               </tbody>
@@ -191,57 +191,22 @@
         </div>
 
         <!-- KONTAK SECTION -->
-        <div id="kontakSection" style="display: none;">
+        <div id="kontakSection" class="kontak-section">
           <form id="kontakForm">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- KONTAK UTAMA (Wajib) -->
+            <div class="kontak-section-header">
+              <h3><i class="fas fa-phone"></i> Informasi Kontak Utama</h3>
+            </div>
+            
+            <div class="kontak-grid">
               <div class="form-group">
-                <label for="kontakEmail">Email</label>
-                <input type="email" id="kontakEmail" placeholder="Masukkan email utama">
+                <label for="kontakEmail">Email <span class="required">*</span></label>
+                <input type="email" id="kontakEmail" placeholder="Masukkan email utama" required>
               </div>
 
               <div class="form-group">
-                <label for="kontakPhone">Nomor Telepon</label>
-                <input type="tel" id="kontakPhone" placeholder="Masukkan nomor telepon">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakWhatsapp">WhatsApp</label>
-                <input type="tel" id="kontakWhatsapp" placeholder="Masukkan nomor WhatsApp">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakLinkedin">LinkedIn URL</label>
-                <input type="url" id="kontakLinkedin" placeholder="https://linkedin.com/in/username">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakGithub">GitHub URL</label>
-                <input type="url" id="kontakGithub" placeholder="https://github.com/username">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakTwitter">Twitter URL</label>
-                <input type="url" id="kontakTwitter" placeholder="https://twitter.com/username">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakInstagram">Instagram URL</label>
-                <input type="url" id="kontakInstagram" placeholder="https://instagram.com/username">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakFacebook">Facebook URL</label>
-                <input type="url" id="kontakFacebook" placeholder="https://facebook.com/username">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakTiktok">TikTok URL</label>
-                <input type="url" id="kontakTiktok" placeholder="https://tiktok.com/@username">
-              </div>
-
-              <div class="form-group">
-                <label for="kontakYoutube">YouTube URL</label>
-                <input type="url" id="kontakYoutube" placeholder="https://youtube.com/c/username">
+                <label for="kontakPhone">Nomor Telepon <span class="required">*</span></label>
+                <input type="tel" id="kontakPhone" placeholder="Contoh: +62 821 1234 5678" required>
               </div>
 
               <div class="form-group">
@@ -251,11 +216,63 @@
 
               <div class="form-group">
                 <label for="kontakKota">Kota / Provinsi</label>
-                <input type="text" id="kontakKota" placeholder="Masukkan kota dan provinsi">
+                <input type="text" id="kontakKota" placeholder="Contoh: Asahan, Sumatera Utara">
               </div>
             </div>
 
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+            <!-- MEDIA SOSIAL (Opsional) -->
+            <div class="kontak-divider">
+              <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-share-alt"></i> Pilih Media Sosial</h3>
+              
+              <div class="social-checkbox-grid">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkWhatsapp" class="social-checkbox" data-field="kontakWhatsapp" onchange="toggleSocialField(this)">
+                  <i class="fab fa-whatsapp"></i> WhatsApp
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkLinkedin" class="social-checkbox" data-field="kontakLinkedin" onchange="toggleSocialField(this)">
+                  <i class="fab fa-linkedin"></i> LinkedIn
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkGithub" class="social-checkbox" data-field="kontakGithub" onchange="toggleSocialField(this)">
+                  <i class="fab fa-github"></i> GitHub
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkTwitter" class="social-checkbox" data-field="kontakTwitter" onchange="toggleSocialField(this)">
+                  <i class="fab fa-twitter"></i> Twitter
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkInstagram" class="social-checkbox" data-field="kontakInstagram" onchange="toggleSocialField(this)">
+                  <i class="fab fa-instagram"></i> Instagram
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkFacebook" class="social-checkbox" data-field="kontakFacebook" onchange="toggleSocialField(this)">
+                  <i class="fab fa-facebook"></i> Facebook
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkTiktok" class="social-checkbox" data-field="kontakTiktok" onchange="toggleSocialField(this)">
+                  <i class="fab fa-tiktok"></i> TikTok
+                </label>
+
+                <label class="checkbox-label">
+                  <input type="checkbox" id="checkYoutube" class="social-checkbox" data-field="kontakYoutube" onchange="toggleSocialField(this)">
+                  <i class="fab fa-youtube"></i> YouTube
+                </label>
+              </div>
+
+              <!-- SOCIAL MEDIA INPUT FIELDS -->
+              <div id="socialFieldsContainer" style="margin-top: 30px;">
+                <!-- Fields akan dimunculkan secara dinamis saat checkbox dipilih -->
+              </div>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
               <div class="button-group">
                 <button type="button" class="button" onclick="saveKontakWithConfirm()"><i class="fas fa-save"></i> Simpan Kontak</button>
               </div>
@@ -271,15 +288,15 @@
     <div class="project-modal-content">
       <div class="project-modal-header">
         <h3 id="projectModalTitle">Tambah Proyek Baru</h3>
-        <button class="btn-close" onclick="closeProjectModal()"><i class="fas fa-times"></i></button>
+        <button class="btn-close" aria-label="Close modal" onclick="closeProjectModal()"><i class="fas fa-times"></i></button>
       </div>
 
       <form id="projectForm" class="project-form">
         <div class="form-group">
           <label for="projectPhoto">Foto Proyek</label>
           <input type="file" id="projectPhoto" accept="image/*">
-          <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF, WEBP | Max: 5MB</small>
-          <img id="projectPhotoPreview" src="" style="max-width: 150px; max-height: 150px; margin-top: 10px; display: none; border-radius: 8px; object-fit: cover;" alt="Preview Foto Proyek">
+          <small class="form-help-text">Format: JPG, PNG, GIF, WEBP | Max: 5MB</small>
+          <img id="projectPhotoPreview" src="" class="project-preview-img" alt="Preview Foto Proyek">
         </div>
 
         <div class="form-group">
@@ -312,10 +329,10 @@
           <input type="number" id="projectOrder" placeholder="1, 2, 3..." min="1" value="1" required>
         </div>
 
-        <div class="button-group" style="gap: 10px;">
+        <div class="button-group modal-button-group">
           <button type="submit" class="button"><i class="fas fa-save"></i> Simpan Proyek</button>
           <button type="button" class="button-secondary" onclick="closeProjectModal()"><i class="fas fa-times"></i> Batal</button>
-          <button type="button" id="btnDeleteProject" class="button-danger" style="display: none;" onclick="deleteProjectWithConfirm()"><i class="fas fa-trash"></i> Hapus</button>
+          <button type="button" id="btnDeleteProject" class="button-danger delete-btn-hidden" onclick="deleteProjectWithConfirm()"><i class="fas fa-trash"></i> Hapus</button>
         </div>
       </form>
     </div>

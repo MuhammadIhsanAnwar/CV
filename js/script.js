@@ -341,10 +341,112 @@ function loadPhotos() {
     });
 }
 
+// Social media configuration
+const socialMediaConfig = {
+  whatsapp: { icon: "fab fa-whatsapp", prefix: "https://wa.me/" },
+  linkedin: { icon: "fab fa-linkedin", prefix: "https://linkedin.com/in/" },
+  github: { icon: "fab fa-github", prefix: "https://github.com/" },
+  twitter: { icon: "fab fa-twitter", prefix: "https://twitter.com/" },
+  instagram: { icon: "fab fa-instagram", prefix: "https://instagram.com/" },
+  facebook: { icon: "fab fa-facebook", prefix: "https://facebook.com/" },
+  tiktok: { icon: "fab fa-tiktok", prefix: "https://tiktok.com/@" },
+  youtube: { icon: "fab fa-youtube", prefix: "https://youtube.com/" },
+};
+
+// Load kontak data dari API
+function loadKontakData() {
+  fetch(`${API_BASE_URL}/get-kontak.php`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `HTTP Error: ${response.status} ${response.statusText}`,
+        );
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("[OK] Kontak data loaded:", data);
+
+      // Update Email
+      if (data.email) {
+        const emailLink = document.getElementById("contactEmail");
+        if (emailLink) {
+          emailLink.href = `mailto:${data.email}`;
+          emailLink.textContent = data.email;
+        }
+      }
+
+      // Update Phone
+      if (data.phone) {
+        const phoneLink = document.getElementById("contactPhone");
+        if (phoneLink) {
+          const phoneNumber = data.phone.replace(/\D/g, "");
+          phoneLink.href = `tel:+${phoneNumber}`;
+          phoneLink.textContent = data.phone;
+        }
+      }
+
+      // Update Location
+      if (data.alamat && data.kota) {
+        const locationLink = document.getElementById("contactLocation");
+        if (locationLink) {
+          const locationText = `${data.alamat}, ${data.kota}`;
+          locationLink.href = `https://www.google.com/maps/search/${encodeURIComponent(locationText)}`;
+          locationLink.textContent = locationText;
+        }
+      } else if (data.kota) {
+        const locationLink = document.getElementById("contactLocation");
+        if (locationLink) {
+          locationLink.href = `https://www.google.com/maps/search/${encodeURIComponent(data.kota)}`;
+          locationLink.textContent = data.kota;
+        }
+      }
+
+      // Populate social media links
+      populateSocialMedia(data);
+    })
+    .catch((error) => {
+      console.error("[ERROR] Error loading kontak data:", error.message);
+      console.warn(
+        "[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-kontak.php working?",
+      );
+    });
+}
+
+// Populate social media links dynamically
+function populateSocialMedia(data) {
+  const socialContainer = document.getElementById("socialMediaContainer");
+  if (!socialContainer) return;
+
+  socialContainer.innerHTML = "";
+
+  for (const [key, config] of Object.entries(socialMediaConfig)) {
+    const value = data[key];
+    if (value && value.trim()) {
+      let url = value;
+
+      // Handle bare usernames (add prefix if not full URL)
+      if (!value.startsWith("http://") && !value.startsWith("https://")) {
+        url = config.prefix + value;
+      }
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.className = "social-btn";
+      link.title = key.charAt(0).toUpperCase() + key.slice(1);
+      link.innerHTML = `<i class="${config.icon}"></i>`;
+
+      socialContainer.appendChild(link);
+    }
+  }
+}
+
 // Initialize scroll animation setelah halaman dimuat
 window.addEventListener("load", function () {
   initScrollAnimation();
   loadPhotos();
+  loadKontakData();
 });
 
 // Auto-update tahun di footer

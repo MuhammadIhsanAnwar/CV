@@ -50,7 +50,7 @@ function verifyPassword() {
     sessionStorage.setItem('adminAuthenticated', 'true');
     document.getElementById('passwordModal').classList.remove('show');
     document.getElementById('blurOverlay').style.display = 'none';
-    document.getElementById('logoutBtn').style.display = 'inline-block';
+    document.getElementById('logoutBtn').classList.add('visible');
     loadAdminForm();
   } else {
     passwordInput.value = '';
@@ -340,22 +340,20 @@ function switchTab(tab) {
   document.getElementById('tabProyek').classList.remove('active');
   document.getElementById('tabKontak').classList.remove('active');
   
+  document.getElementById('profilSection').classList.remove('active');
+  document.getElementById('proyekSection').classList.remove('active');
+  document.getElementById('kontakSection').classList.remove('active');
+  
   if (tab === 'profil') {
     document.getElementById('tabProfil').classList.add('active');
-    document.getElementById('profilSection').style.display = 'block';
-    document.getElementById('proyekSection').style.display = 'none';
-    document.getElementById('kontakSection').style.display = 'none';
+    document.getElementById('profilSection').classList.add('active');
   } else if (tab === 'proyek') {
     document.getElementById('tabProyek').classList.add('active');
-    document.getElementById('profilSection').style.display = 'none';
-    document.getElementById('proyekSection').style.display = 'block';
-    document.getElementById('kontakSection').style.display = 'none';
+    document.getElementById('proyekSection').classList.add('active');
     loadProjects();
   } else if (tab === 'kontak') {
     document.getElementById('tabKontak').classList.add('active');
-    document.getElementById('profilSection').style.display = 'none';
-    document.getElementById('proyekSection').style.display = 'none';
-    document.getElementById('kontakSection').style.display = 'block';
+    document.getElementById('kontakSection').classList.add('active');
     loadKontakForm();
   }
 }
@@ -441,19 +439,21 @@ function openProjectModal(projectId = null) {
       const photoPreview = document.getElementById('projectPhotoPreview');
       if (project.foto_proyek) {
         photoPreview.src = '../foto_proyek/' + project.foto_proyek;
-        photoPreview.style.display = 'block';
+        photoPreview.classList.add('show');
       } else {
-        photoPreview.style.display = 'none';
+        photoPreview.classList.remove('show');
       }
       
-      deleteBtn.style.display = 'inline-block';
+      deleteBtn.classList.remove('delete-btn-hidden');
+      deleteBtn.classList.add('visible');
       console.log('[OK] Project data loaded:', project);
     } else {
       // Project not found in array
       console.warn('[WARN] Project ID ' + projectId + ' not found in projects array');
       Swal.fire('Peringatan', 'Data proyek tidak ditemukan. Mungkin belum terupdate dari server.', 'warning');
       // Still open modal but empty, so user can see error
-      deleteBtn.style.display = 'none';
+      deleteBtn.classList.remove('visible');
+      deleteBtn.classList.add('delete-btn-hidden');
     }
   } else {
     // Add mode
@@ -721,19 +721,97 @@ function uploadPhotos() {
 
 // ===== KONTAK MANAGEMENT =====
 
+// Social Media Icons mapping
+const socialMediaConfig = {
+  kontakWhatsapp: { label: 'WhatsApp', icon: 'fab fa-whatsapp', placeholder: 'Contoh: +62 821 1234 5678', type: 'tel' },
+  kontakLinkedin: { label: 'LinkedIn', icon: 'fab fa-linkedin', placeholder: 'https://linkedin.com/in/username', type: 'url' },
+  kontakGithub: { label: 'GitHub', icon: 'fab fa-github', placeholder: 'https://github.com/username', type: 'url' },
+  kontakTwitter: { label: 'Twitter', icon: 'fab fa-twitter', placeholder: 'https://twitter.com/username', type: 'url' },
+  kontakInstagram: { label: 'Instagram', icon: 'fab fa-instagram', placeholder: 'https://instagram.com/username', type: 'url' },
+  kontakFacebook: { label: 'Facebook', icon: 'fab fa-facebook', placeholder: 'https://facebook.com/username', type: 'url' },
+  kontakTiktok: { label: 'TikTok', icon: 'fab fa-tiktok', placeholder: 'https://tiktok.com/@username', type: 'url' },
+  kontakYoutube: { label: 'YouTube', icon: 'fab fa-youtube', placeholder: 'https://youtube.com/c/username', type: 'url' }
+};
+
+function toggleSocialField(checkbox) {
+  const fieldId = checkbox.dataset.field;
+  const container = document.getElementById('socialFieldsContainer');
+  const config = socialMediaConfig[fieldId];
+  
+  if (checkbox.checked) {
+    // Cek apakah field group sudah ada
+    if (!document.getElementById(`group-${fieldId}`)) {
+      const fieldGroup = document.createElement('div');
+      fieldGroup.id = `group-${fieldId}`;
+      fieldGroup.className = 'social-field-group';
+      fieldGroup.innerHTML = `
+        <div class="social-field-label">
+          <i class="${config.icon}"></i> ${config.label}
+        </div>
+        <input type="text" id="${fieldId}" placeholder="${config.placeholder}" class="form-control" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit;">
+      `;
+      container.appendChild(fieldGroup);
+      
+      // Load value jika ada
+      if (window.currentKontakData && window.currentKontakData[fieldId]) {
+        document.getElementById(fieldId).value = window.currentKontakData[fieldId];
+      }
+    }
+  } else {
+    // Hapus field group
+    const fieldGroup = document.getElementById(`group-${fieldId}`);
+    if (fieldGroup) {
+      fieldGroup.remove();
+    }
+  }
+}
+
 function fillKontakForm(data) {
+  // Simpan data untuk digunakan nanti
+  window.currentKontakData = data;
+  
+  // Fill kontak utama
   document.getElementById('kontakEmail').value = data.email || '';
   document.getElementById('kontakPhone').value = data.phone || '';
-  document.getElementById('kontakWhatsapp').value = data.whatsapp || '';
-  document.getElementById('kontakLinkedin').value = data.linkedin || '';
-  document.getElementById('kontakGithub').value = data.github || '';
-  document.getElementById('kontakTwitter').value = data.twitter || '';
-  document.getElementById('kontakInstagram').value = data.instagram || '';
-  document.getElementById('kontakFacebook').value = data.facebook || '';
-  document.getElementById('kontakTiktok').value = data.tiktok || '';
-  document.getElementById('kontakYoutube').value = data.youtube || '';
   document.getElementById('kontakAlamat').value = data.alamat || '';
   document.getElementById('kontakKota').value = data.kota || '';
+  
+  // Clear social fields container
+  const container = document.getElementById('socialFieldsContainer');
+  container.innerHTML = '';
+  
+  // Social field mapping ke checkbox ID
+  const fieldToCheckboxMap = {
+    whatsapp: 'checkWhatsapp',
+    linkedin: 'checkLinkedin',
+    github: 'checkGithub',
+    twitter: 'checkTwitter',
+    instagram: 'checkInstagram',
+    facebook: 'checkFacebook',
+    tiktok: 'checkTiktok',
+    youtube: 'checkYoutube'
+  };
+  
+  // Check dan tampilkan social fields yang punya nilai
+  Object.entries(fieldToCheckboxMap).forEach(([shortName, checkboxId]) => {
+    const fullFieldId = `kontak${shortName.charAt(0).toUpperCase()}${shortName.slice(1)}`;
+    
+    if (data[shortName] && data[shortName].trim() !== '') {
+      // Auto-check checkbox
+      const checkbox = document.getElementById(checkboxId);
+      if (checkbox) {
+        checkbox.checked = true;
+        toggleSocialField(checkbox);
+        // Set value
+        setTimeout(() => {
+          const input = document.getElementById(`kontak${shortName.charAt(0).toUpperCase()}${shortName.slice(1)}`);
+          if (input) {
+            input.value = data[shortName];
+          }
+        }, 100);
+      }
+    }
+  });
 }
 
 function loadKontakForm() {
@@ -779,14 +857,14 @@ function saveKontak() {
   const kontakData = {
     email: document.getElementById('kontakEmail').value.trim(),
     phone: document.getElementById('kontakPhone').value.trim(),
-    whatsapp: document.getElementById('kontakWhatsapp').value.trim(),
-    linkedin: document.getElementById('kontakLinkedin').value.trim(),
-    github: document.getElementById('kontakGithub').value.trim(),
-    twitter: document.getElementById('kontakTwitter').value.trim(),
-    instagram: document.getElementById('kontakInstagram').value.trim(),
-    facebook: document.getElementById('kontakFacebook').value.trim(),
-    tiktok: document.getElementById('kontakTiktok').value.trim(),
-    youtube: document.getElementById('kontakYoutube').value.trim(),
+    whatsapp: document.getElementById('kontakWhatsapp')?.value.trim() || '',
+    linkedin: document.getElementById('kontakLinkedin')?.value.trim() || '',
+    github: document.getElementById('kontakGithub')?.value.trim() || '',
+    twitter: document.getElementById('kontakTwitter')?.value.trim() || '',
+    instagram: document.getElementById('kontakInstagram')?.value.trim() || '',
+    facebook: document.getElementById('kontakFacebook')?.value.trim() || '',
+    tiktok: document.getElementById('kontakTiktok')?.value.trim() || '',
+    youtube: document.getElementById('kontakYoutube')?.value.trim() || '',
     alamat: document.getElementById('kontakAlamat').value.trim(),
     kota: document.getElementById('kontakKota').value.trim()
   };
