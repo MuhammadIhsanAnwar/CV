@@ -1573,8 +1573,8 @@ ul li {
   transition: all 0.3s ease;
   font-weight: 500;
   color: var(--text);
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 
 .checkbox-label:hover {
