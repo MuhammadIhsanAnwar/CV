@@ -402,6 +402,20 @@ function loadKontakData() {
         }
       }
 
+      // Update Website
+      if (data.website) {
+        const websiteLink = document.getElementById("contactWebsite");
+        if (websiteLink) {
+          const rawWebsite = data.website.trim();
+          const websiteUrl =
+            rawWebsite.startsWith("http://") || rawWebsite.startsWith("https://")
+              ? rawWebsite
+              : `https://${rawWebsite}`;
+          websiteLink.href = websiteUrl;
+          websiteLink.textContent = rawWebsite;
+        }
+      }
+
       // Populate social media links
       populateSocialMedia(data);
     })

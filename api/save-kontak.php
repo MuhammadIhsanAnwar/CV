@@ -13,6 +13,7 @@ if ($data) {
     // Escape data untuk security
     $email = mysqli_real_escape_string($koneksi, $data['email']);
     $phone = mysqli_real_escape_string($koneksi, $data['phone']);
+    $website = mysqli_real_escape_string($koneksi, $data['website']);
     $whatsapp = mysqli_real_escape_string($koneksi, $data['whatsapp']);
     $linkedin = mysqli_real_escape_string($koneksi, $data['linkedin']);
     $github = mysqli_real_escape_string($koneksi, $data['github']);
@@ -33,6 +34,7 @@ if ($data) {
         $query = "UPDATE kontak SET 
             email = '$email',
             phone = '$phone',
+            website = '$website',
             whatsapp = '$whatsapp',
             linkedin = '$linkedin',
             github = '$github',
@@ -47,8 +49,8 @@ if ($data) {
             WHERE id = 1";
     } else {
         // Insert new contact
-        $query = "INSERT INTO kontak (email, phone, whatsapp, linkedin, github, twitter, instagram, facebook, tiktok, youtube, alamat, kota, created_at, updated_at)
-            VALUES ('$email', '$phone', '$whatsapp', '$linkedin', '$github', '$twitter', '$instagram', '$facebook', '$tiktok', '$youtube', '$alamat', '$kota', NOW(), NOW())";
+        $query = "INSERT INTO kontak (email, phone, website, whatsapp, linkedin, github, twitter, instagram, facebook, tiktok, youtube, alamat, kota, created_at, updated_at)
+            VALUES ('$email', '$phone', '$website', '$whatsapp', '$linkedin', '$github', '$twitter', '$instagram', '$facebook', '$tiktok', '$youtube', '$alamat', '$kota', NOW(), NOW())";
     }
 
     if (mysqli_query($koneksi, $query)) {

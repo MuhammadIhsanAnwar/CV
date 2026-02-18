@@ -773,6 +773,7 @@ function fillKontakForm(data) {
   // Fill kontak utama
   document.getElementById('kontakEmail').value = data.email || '';
   document.getElementById('kontakPhone').value = data.phone || '';
+  document.getElementById('kontakWebsite').value = data.website || '';
   document.getElementById('kontakAlamat').value = data.alamat || '';
   document.getElementById('kontakKota').value = data.kota || '';
   
@@ -857,6 +858,7 @@ function saveKontak() {
   const kontakData = {
     email: document.getElementById('kontakEmail').value.trim(),
     phone: document.getElementById('kontakPhone').value.trim(),
+    website: document.getElementById('kontakWebsite').value.trim(),
     whatsapp: document.getElementById('kontakWhatsapp')?.value.trim() || '',
     linkedin: document.getElementById('kontakLinkedin')?.value.trim() || '',
     github: document.getElementById('kontakGithub')?.value.trim() || '',
