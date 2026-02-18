@@ -722,7 +722,7 @@ function uploadPhotos() {
 // ===== KONTAK MANAGEMENT =====
 
 // Social Media Icons mapping
-const socialMediaConfig = {
+const adminSocialMediaConfig = {
   kontakWhatsapp: { label: 'WhatsApp', icon: 'fab fa-whatsapp', placeholder: 'Contoh: +62 821 1234 5678', type: 'tel' },
   kontakLinkedin: { label: 'LinkedIn', icon: 'fab fa-linkedin', placeholder: 'https://linkedin.com/in/username', type: 'url' },
   kontakGithub: { label: 'GitHub', icon: 'fab fa-github', placeholder: 'https://github.com/username', type: 'url' },
@@ -736,7 +736,7 @@ const socialMediaConfig = {
 function toggleSocialField(checkbox) {
   const fieldId = checkbox.dataset.field;
   const container = document.getElementById('socialFieldsContainer');
-  const config = socialMediaConfig[fieldId];
+  const config = adminSocialMediaConfig[fieldId];
   
   if (checkbox.checked) {
     // Cek apakah field group sudah ada
