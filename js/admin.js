@@ -338,16 +338,25 @@ function resetForm() {
 function switchTab(tab) {
   document.getElementById('tabProfil').classList.remove('active');
   document.getElementById('tabProyek').classList.remove('active');
+  document.getElementById('tabKontak').classList.remove('active');
   
   if (tab === 'profil') {
     document.getElementById('tabProfil').classList.add('active');
     document.getElementById('profilSection').style.display = 'block';
     document.getElementById('proyekSection').style.display = 'none';
-  } else {
+    document.getElementById('kontakSection').style.display = 'none';
+  } else if (tab === 'proyek') {
     document.getElementById('tabProyek').classList.add('active');
     document.getElementById('profilSection').style.display = 'none';
     document.getElementById('proyekSection').style.display = 'block';
+    document.getElementById('kontakSection').style.display = 'none';
     loadProjects();
+  } else if (tab === 'kontak') {
+    document.getElementById('tabKontak').classList.add('active');
+    document.getElementById('profilSection').style.display = 'none';
+    document.getElementById('proyekSection').style.display = 'none';
+    document.getElementById('kontakSection').style.display = 'block';
+    loadKontakForm();
   }
 }
 
@@ -706,6 +715,107 @@ function uploadPhotos() {
   })
   .catch(error => {
     console.error('[ERROR] Error uploading photos:', error.message);
+    Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
+  });
+}
+
+// ===== KONTAK MANAGEMENT =====
+
+function fillKontakForm(data) {
+  document.getElementById('kontakEmail').value = data.email || '';
+  document.getElementById('kontakPhone').value = data.phone || '';
+  document.getElementById('kontakWhatsapp').value = data.whatsapp || '';
+  document.getElementById('kontakLinkedin').value = data.linkedin || '';
+  document.getElementById('kontakGithub').value = data.github || '';
+  document.getElementById('kontakTwitter').value = data.twitter || '';
+  document.getElementById('kontakInstagram').value = data.instagram || '';
+  document.getElementById('kontakFacebook').value = data.facebook || '';
+  document.getElementById('kontakTiktok').value = data.tiktok || '';
+  document.getElementById('kontakYoutube').value = data.youtube || '';
+  document.getElementById('kontakAlamat').value = data.alamat || '';
+  document.getElementById('kontakKota').value = data.kota || '';
+}
+
+function loadKontakForm() {
+  fetch(`${API_BASE_URL}/get-kontak.php`)
+    .then(handleFetchResponse)
+    .then(data => {
+      console.log('[OK] Kontak data loaded from API:', data);
+      fillKontakForm(data);
+    })
+    .catch(error => {
+      console.error('[ERROR] Error loading kontak form:', error.message);
+      console.warn('[INFO] Check: Is API endpoint https://neoverse.my.id/api/get-kontak.php working?');
+      fillKontakForm({});
+      console.log('[INFO] Using empty data as fallback');
+    });
+}
+
+function saveKontakWithConfirm() {
+  // Validasi email
+  const email = document.getElementById('kontakEmail').value.trim();
+  if (!email) {
+    Swal.fire('Validasi', 'Email tidak boleh kosong', 'warning');
+    return;
+  }
+
+  Swal.fire({
+    title: 'Konfirmasi',
+    text: 'Simpan data kontak yang telah diubah?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Simpan',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#667eea',
+    cancelButtonColor: '#ccc'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      saveKontak();
+    }
+  });
+}
+
+function saveKontak() {
+  const kontakData = {
+    email: document.getElementById('kontakEmail').value.trim(),
+    phone: document.getElementById('kontakPhone').value.trim(),
+    whatsapp: document.getElementById('kontakWhatsapp').value.trim(),
+    linkedin: document.getElementById('kontakLinkedin').value.trim(),
+    github: document.getElementById('kontakGithub').value.trim(),
+    twitter: document.getElementById('kontakTwitter').value.trim(),
+    instagram: document.getElementById('kontakInstagram').value.trim(),
+    facebook: document.getElementById('kontakFacebook').value.trim(),
+    tiktok: document.getElementById('kontakTiktok').value.trim(),
+    youtube: document.getElementById('kontakYoutube').value.trim(),
+    alamat: document.getElementById('kontakAlamat').value.trim(),
+    kota: document.getElementById('kontakKota').value.trim()
+  };
+
+  console.log('[INFO] Saving kontak data:', kontakData);
+
+  fetch(`${API_BASE_URL}/save-kontak.php`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(kontakData)
+  })
+  .then(handleFetchResponse)
+  .then(data => {
+    if (data.success) {
+      console.log('[OK] Kontak data saved successfully');
+      Swal.fire('Berhasil!', 'Data kontak berhasil disimpan', 'success');
+      document.getElementById('successMessage').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('successMessage').style.display = 'none';
+      }, 3000);
+    } else {
+      console.warn('[WARN] Save failed:', data.message);
+      Swal.fire('Error', data.message || 'Gagal menyimpan data kontak', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('[ERROR] Error saving kontak data:', error.message);
     Swal.fire('Error', 'Gagal menghubungi server: ' + error.message, 'error');
   });
 }

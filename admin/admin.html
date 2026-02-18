@@ -55,6 +55,7 @@
       <div class="admin-tabs" style="margin-bottom: 30px;">
         <button class="tab-btn active" id="tabProfil" onclick="switchTab('profil')"><i class="fas fa-user"></i> Profil</button>
         <button class="tab-btn" id="tabProyek" onclick="switchTab('proyek')"><i class="fas fa-folder"></i> Proyek</button>
+        <button class="tab-btn" id="tabKontak" onclick="switchTab('kontak')"><i class="fas fa-phone"></i> Kontak & Media</button>
       </div>
 
       <div class="admin-container">
@@ -187,6 +188,79 @@
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- KONTAK SECTION -->
+        <div id="kontakSection" style="display: none;">
+          <form id="kontakForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="kontakEmail">Email</label>
+                <input type="email" id="kontakEmail" placeholder="Masukkan email utama">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakPhone">Nomor Telepon</label>
+                <input type="tel" id="kontakPhone" placeholder="Masukkan nomor telepon">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakWhatsapp">WhatsApp</label>
+                <input type="tel" id="kontakWhatsapp" placeholder="Masukkan nomor WhatsApp">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakLinkedin">LinkedIn URL</label>
+                <input type="url" id="kontakLinkedin" placeholder="https://linkedin.com/in/username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakGithub">GitHub URL</label>
+                <input type="url" id="kontakGithub" placeholder="https://github.com/username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakTwitter">Twitter URL</label>
+                <input type="url" id="kontakTwitter" placeholder="https://twitter.com/username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakInstagram">Instagram URL</label>
+                <input type="url" id="kontakInstagram" placeholder="https://instagram.com/username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakFacebook">Facebook URL</label>
+                <input type="url" id="kontakFacebook" placeholder="https://facebook.com/username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakTiktok">TikTok URL</label>
+                <input type="url" id="kontakTiktok" placeholder="https://tiktok.com/@username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakYoutube">YouTube URL</label>
+                <input type="url" id="kontakYoutube" placeholder="https://youtube.com/c/username">
+              </div>
+
+              <div class="form-group">
+                <label for="kontakAlamat">Alamat</label>
+                <textarea id="kontakAlamat" placeholder="Masukkan alamat lengkap" rows="2"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="kontakKota">Kota / Provinsi</label>
+                <input type="text" id="kontakKota" placeholder="Masukkan kota dan provinsi">
+              </div>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+              <div class="button-group">
+                <button type="button" class="button" onclick="saveKontakWithConfirm()"><i class="fas fa-save"></i> Simpan Kontak</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
