@@ -193,7 +193,7 @@ try {
         
         if (!empty($photoRow['foto1'])) {
             // Use the same path as web view
-            $photoPath = __DIR__ . '/../foto/' . $photoRow['foto1'];
+            $photoPath = __DIR__ . '/../neoverse.my.id/foto/' . $photoRow['foto1'];
             if (file_exists($photoPath)) {
                 $profilePhoto = $photoPath;
             }
