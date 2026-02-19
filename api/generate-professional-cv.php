@@ -17,8 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Check if FPDF exists
 $fpdfPaths = [
+    __DIR__ . '/../neoverse.my.id/library/fpdf.php',  // public_html/api -> public_html/neoverse.my.id/library
     __DIR__ . '/../library/fpdf.php',
     __DIR__ . '/../../library/fpdf.php',
+    $_SERVER['DOCUMENT_ROOT'] . '/neoverse.my.id/library/fpdf.php',
     $_SERVER['DOCUMENT_ROOT'] . '/library/fpdf.php',
     dirname(dirname(__FILE__)) . '/library/fpdf.php'
 ];
@@ -153,14 +155,21 @@ try {
     $resultPhoto = $koneksi->query("SELECT foto1, foto2, foto3 FROM photos LIMIT 1");
     if ($resultPhoto && $resultPhoto->num_rows > 0) {
         $photoRow = $resultPhoto->fetch_assoc();
-        $photoPath = __DIR__ . '/../foto/';
+        
+        // Check multiple possible photo paths
+        $photoPaths = [
+            __DIR__ . '/../neoverse.my.id/foto/',  // public_html/api -> public_html/neoverse.my.id/foto
+            __DIR__ . '/../foto/'
+        ];
         
         foreach (['foto1', 'foto2', 'foto3'] as $field) {
             if (!empty($photoRow[$field])) {
-                $testPath = $photoPath . $photoRow[$field];
-                if (file_exists($testPath)) {
-                    $profilePhoto = $testPath;
-                    break;
+                foreach ($photoPaths as $photoPath) {
+                    $testPath = $photoPath . $photoRow[$field];
+                    if (file_exists($testPath)) {
+                        $profilePhoto = $testPath;
+                        break 2;  // Break both loops
+                    }
                 }
             }
         }
