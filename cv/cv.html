@@ -25,7 +25,29 @@
     <section>
       <div class="container">
         <div class="cv-header">
-          <h2 class="cv-title">Curriculum Vitae</h2>
+          <div class="cv-header-left">
+            <img
+              src=""
+              alt="Profile"
+              class="cv-profile-photo"
+              id="cvProfilePhoto"
+              style="display: none;"
+            />
+            <svg
+              class="cv-profile-placeholder"
+              id="cvProfilePlaceholder"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 100 100"
+            >
+              <circle cx="50" cy="50" r="50" fill="#0066cc" />
+              <circle cx="50" cy="35" r="15" fill="#ffffff" />
+              <path d="M 20 80 Q 50 60 80 80" fill="#ffffff" />
+            </svg>
+            <div>
+              <h2 class="cv-title" id="cvFullName">Nama</h2>
+              <p class="cv-subtitle" id="cvPosition">Pekerjaan</p>
+            </div>
+          </div>
           <button class="btn-download" onclick="downloadPDF()">
             <i class="fas fa-download"></i> Download PDF
           </button>
@@ -45,49 +67,70 @@
               <strong>Email:</strong>
               <span id="cvEmail">Email</span>
             </p>
-            <p><strong>Telepon:</strong> <span id="cvPhone">No Hp</span></p>
+            <p>
+              <strong>Telepon:</strong>
+              <span id="cvPhone">+62 812-3456-7890</span>
+            </p>
             <p>
               <strong>Lokasi:</strong>
-              <span id="cvLocation">Lokasi</span>
+              <span id="cvLocation">Indonesia</span>
             </p>
           </div>
 
           <div class="section-card">
             <h3>Tentang Saya</h3>
-            <p id="cvAbout">Tentang Saya</p>
+            <p id="cvAbout">Tentang Saya.</p>
           </div>
 
           <div class="section-card">
             <h3>Pendidikan</h3>
             <ul id="cvEducation">
-              <li>Pendidikan 1</li>
-              <li>Pendidikan 2</li>
+              <li><strong>Pendidikan 1</strong></li>
+              <li><strong>Pendidikan 2</strong></li>
             </ul>
           </div>
 
           <div class="section-card">
             <h3>Keahlian</h3>
             <ul id="cvSkills">
-              <li>Skill 1</li>
-              <li>Skill 2</li>
-              <li>Skill 3</li>
-              <li>Skill 4</li>
+              <li>
+                <strong>Skill 1</strong>
+              </li>
+              <li>
+                <strong>Skill 2</strong>
+              </li>
+              <li><strong>Skill 3</strong></li>
+              <li>
+                <strong>Skill 4</strong>
+              </li>
+              <li>
+                <strong>Skill 5</strong>
+              </li>
             </ul>
           </div>
 
           <div class="section-card">
             <h3>Pengalaman Organisasi</h3>
             <ul id="cvExperience">
-              <li>Pengalaman 1</li>
-              <li>Pengalaman 2</li>
+              <li>
+                <strong>Pengalaman 1</strong>
+              </li>
+              <li>
+                <strong>Pengalaman 2</strong>
+              </li>
+              <li>
+                <strong>Pengalaman 3</strong>
+              </li>
             </ul>
           </div>
 
           <div class="section-card">
             <h3>Prestasi</h3>
             <ul id="cvAchievement">
-              <li>Prestasi 1</li>
-              <li>Prestasi 2</li>
+              <li><strong>Prestasi 1</strong></li>
+              <li><strong>Prestasi 2</strong></li>
+              <li><strong>Prestasi 3</strong></li>
+              <li><strong>Prestasi 4</strong></li>
             </ul>
           </div>
         </div>
