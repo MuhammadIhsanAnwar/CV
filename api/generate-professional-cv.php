@@ -191,10 +191,14 @@ try {
     if ($resultPhoto && $resultPhoto->num_rows > 0) {
         $photoRow = $resultPhoto->fetch_assoc();
         
-        // Check multiple possible photo paths
+        // Check multiple possible photo paths with expanded options
         $photoPaths = [
-            __DIR__ . '/../neoverse.my.id/foto/',  // public_html/api -> public_html/neoverse.my.id/foto
-            __DIR__ . '/../foto/'
+            __DIR__ . '/../neoverse.my.id/foto/',
+            __DIR__ . '/../foto/',
+            __DIR__ . '/../../neoverse.my.id/foto/',
+            __DIR__ . '/../../foto/',
+            $_SERVER['DOCUMENT_ROOT'] . '/neoverse.my.id/foto/',
+            $_SERVER['DOCUMENT_ROOT'] . '/foto/'
         ];
         
         foreach (['foto1', 'foto2', 'foto3'] as $field) {
@@ -266,10 +270,6 @@ try {
     $pdf->SetTextColor(0, 102, 204);
     $pdf->Cell($sidebarWidth - 6, 8, 'KONTAK', 0, 1);
     $pdf->SetX($sidebarX + 3);
-    $pdf->SetLineWidth(0.5);
-    $pdf->SetDrawColor(0, 102, 204);
-    $currentY = $pdf->GetY();
-    $pdf->Line($sidebarX + 3, $currentY, $sidebarX + 35, $currentY);
     $pdf->Ln(5);
     
     $pdf->SetFont('Arial', '', 8);
@@ -308,10 +308,6 @@ try {
     $pdf->SetTextColor(0, 102, 204);
     $pdf->Cell($sidebarWidth - 6, 8, 'KEAHLIAN', 0, 1);
     $pdf->SetX($sidebarX + 3);
-    $pdf->SetLineWidth(0.5);
-    $pdf->SetDrawColor(0, 102, 204);
-    $currentY = $pdf->GetY();
-    $pdf->Line($sidebarX + 3, $currentY, $sidebarX + 35, $currentY);
     $pdf->Ln(5);
     
     $pdf->SetFont('Arial', '', 9);
