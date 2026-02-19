@@ -16,14 +16,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Check if FPDF exists
-if (!file_exists(__DIR__ . '/../library/fpdf.php')) {
+$fpdfPaths = [
+    __DIR__ . '/../library/fpdf.php',
+    __DIR__ . '/../../library/fpdf.php',
+    $_SERVER['DOCUMENT_ROOT'] . '/library/fpdf.php',
+    dirname(dirname(__FILE__)) . '/library/fpdf.php'
+];
+
+$fpdfPath = null;
+foreach ($fpdfPaths as $path) {
+    if (file_exists($path)) {
+        $fpdfPath = $path;
+        break;
+    }
+}
+
+if (!$fpdfPath) {
     http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'FPDF library not found']);
+    echo json_encode([
+        'error' => 'FPDF library not found',
+        'tried_paths' => $fpdfPaths,
+        'current_dir' => __DIR__
+    ]);
     exit;
 }
 
-require_once(__DIR__ . '/../library/fpdf.php');
+require_once($fpdfPath);
 
 // Custom PDF class for professional CV
 class ProfessionalCV extends FPDF {
