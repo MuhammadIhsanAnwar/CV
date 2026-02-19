@@ -19,11 +19,16 @@
           <li><a href="${basePath}cv/cv.html" class="nav-link${current === "cv" ? " active" : ""}">CV</a></li>
           <li><a href="${basePath}admin/admin.html" class="nav-link${current === "admin" ? " active" : ""}">Admin</a></li>
         </ul>
-        ${
-          isInAdmin
-            ? "<button class=\"btn-logout admin-logout\" id=\"logoutBtn\" onclick=\"logout()\"><i class=\"fas fa-sign-out-alt\"></i> Logout</button>"
-            : ""
-        }
+        <div class="nav-actions">
+          <button class="btn-dark-mode" id="darkModeToggle" title="Toggle Dark Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+          ${
+            isInAdmin
+              ? "<button class=\"btn-logout admin-logout\" id=\"logoutBtn\" onclick=\"logout()\"><i class=\"fas fa-sign-out-alt\"></i> Logout</button>"
+              : ""
+          }
+        </div>
       </nav>
     </navbar>
   `;

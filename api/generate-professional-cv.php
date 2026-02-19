@@ -68,6 +68,41 @@ class ProfessionalCV extends FPDF {
         $this->Rect($x, $y, $w, $h, 'F');
     }
     
+    function Circle($x, $y, $r, $style='D') {
+        $this->Ellipse($x, $y, $r, $r, $style);
+    }
+    
+    function Ellipse($x, $y, $rx, $ry, $style='D') {
+        if($style=='F')
+            $op='f';
+        elseif($style=='FD' || $style=='DF')
+            $op='B';
+        else
+            $op='S';
+        $lx=4/3*(M_SQRT2-1)*$rx;
+        $ly=4/3*(M_SQRT2-1)*$ry;
+        $k=$this->k;
+        $h=$this->h;
+        $this->_out(sprintf('%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c',
+            ($x+$rx)*$k,($h-$y)*$k,
+            ($x+$rx)*$k,($h-($y-$ly))*$k,
+            ($x+$lx)*$k,($h-($y-$ry))*$k,
+            $x*$k,($h-($y-$ry))*$k));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c',
+            ($x-$lx)*$k,($h-($y-$ry))*$k,
+            ($x-$rx)*$k,($h-($y-$ly))*$k,
+            ($x-$rx)*$k,($h-$y)*$k));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c',
+            ($x-$rx)*$k,($h-($y+$ly))*$k,
+            ($x-$lx)*$k,($h-($y+$ry))*$k,
+            $x*$k,($h-($y+$ry))*$k));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c %s',
+            ($x+$lx)*$k,($h-($y+$ry))*$k,
+            ($x+$rx)*$k,($h-($y+$ly))*$k,
+            ($x+$rx)*$k,($h-$y)*$k,
+            $op));
+    }
+    
     function SectionTitle($title, $fullWidth = false) {
         $this->SetFont('Arial', 'B', 13);
         $this->SetTextColor($this->primaryColor[0], $this->primaryColor[1], $this->primaryColor[2]);
@@ -201,18 +236,27 @@ try {
             if ($imageExt === 'JPG') $imageExt = 'JPEG';
             
             if (in_array($imageExt, ['PNG', 'JPEG', 'GIF'])) {
-                // Center photo in sidebar
-                $photoSize = 45;
+                // Center photo in sidebar with rounded border
+                $photoSize = 40;
                 $photoX = $sidebarX + ($sidebarWidth - $photoSize) / 2;
-                $pdf->Image($profilePhoto, $photoX, 23, $photoSize, $photoSize, $imageExt);
-                $pdf->SetY(73);
+                $photoY = 25;
+                
+                // Draw blue border circle
+                $pdf->SetDrawColor(0, 102, 204);
+                $pdf->SetLineWidth(1.5);
+                $pdf->Circle($photoX + $photoSize/2, $photoY + $photoSize/2, $photoSize/2 + 1, 'D');
+                
+                // Insert photo
+                $pdf->Image($profilePhoto, $photoX, $photoY, $photoSize, $photoSize, $imageExt);
+                $pdf->SetY($photoY + $photoSize + 8);
             }
         } catch (Exception $e) {
             error_log("Photo error: " . $e->getMessage());
+            $pdf->SetY(75);
         }
     } else {
-        // Placeholder - skip, will be replaced by initials or icon text
-        $pdf->SetY(73);
+        // No photo - start from top
+        $pdf->SetY(25);
     }
     
     $pdf->SetX($sidebarX + 3);
@@ -220,12 +264,13 @@ try {
     // === CONTACT INFO ===
     $pdf->SetFont('Arial', 'B', 11);
     $pdf->SetTextColor(0, 102, 204);
-    $pdf->Cell($sidebarWidth - 6, 7, 'KONTAK', 0, 1);
+    $pdf->Cell($sidebarWidth - 6, 8, 'KONTAK', 0, 1);
     $pdf->SetX($sidebarX + 3);
-    $pdf->SetLineWidth(0.3);
+    $pdf->SetLineWidth(0.5);
     $pdf->SetDrawColor(0, 102, 204);
-    $pdf->Line($sidebarX + 3, $pdf->GetY(), $sidebarX + 30, $pdf->GetY());
-    $pdf->Ln(3);
+    $currentY = $pdf->GetY();
+    $pdf->Line($sidebarX + 3, $currentY, $sidebarX + 35, $currentY);
+    $pdf->Ln(5);
     
     $pdf->SetFont('Arial', '', 8);
     $pdf->SetTextColor(50, 50, 50);
@@ -261,10 +306,13 @@ try {
     $pdf->SetX($sidebarX + 3);
     $pdf->SetFont('Arial', 'B', 11);
     $pdf->SetTextColor(0, 102, 204);
-    $pdf->Cell($sidebarWidth - 6, 7, 'KEAHLIAN', 0, 1);
+    $pdf->Cell($sidebarWidth - 6, 8, 'KEAHLIAN', 0, 1);
     $pdf->SetX($sidebarX + 3);
-    $pdf->Line($sidebarX + 3, $pdf->GetY(), $sidebarX + 30, $pdf->GetY());
-    $pdf->Ln(3);
+    $pdf->SetLineWidth(0.5);
+    $pdf->SetDrawColor(0, 102, 204);
+    $currentY = $pdf->GetY();
+    $pdf->Line($sidebarX + 3, $currentY, $sidebarX + 35, $currentY);
+    $pdf->Ln(5);
     
     $pdf->SetFont('Arial', '', 9);
     $pdf->SetTextColor(0, 0, 0);
