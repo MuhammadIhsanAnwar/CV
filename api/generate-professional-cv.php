@@ -186,30 +186,16 @@ try {
         }
     }
     
-    // Get profile photo from database
-    $resultPhoto = $koneksi->query("SELECT foto1, foto2, foto3 FROM photos LIMIT 1");
+    // Get profile photo from database (using profile table, only foto1)
+    $resultPhoto = $koneksi->query("SELECT foto1 FROM profile LIMIT 1");
     if ($resultPhoto && $resultPhoto->num_rows > 0) {
         $photoRow = $resultPhoto->fetch_assoc();
         
-        // Check multiple possible photo paths with expanded options
-        $photoPaths = [
-            __DIR__ . '/../neoverse.my.id/foto/',
-            __DIR__ . '/../foto/',
-            __DIR__ . '/../../neoverse.my.id/foto/',
-            __DIR__ . '/../../foto/',
-            $_SERVER['DOCUMENT_ROOT'] . '/neoverse.my.id/foto/',
-            $_SERVER['DOCUMENT_ROOT'] . '/foto/'
-        ];
-        
-        foreach (['foto1', 'foto2', 'foto3'] as $field) {
-            if (!empty($photoRow[$field])) {
-                foreach ($photoPaths as $photoPath) {
-                    $testPath = $photoPath . $photoRow[$field];
-                    if (file_exists($testPath)) {
-                        $profilePhoto = $testPath;
-                        break 2;  // Break both loops
-                    }
-                }
+        if (!empty($photoRow['foto1'])) {
+            // Use the same path as web view
+            $photoPath = __DIR__ . '/../foto/' . $photoRow['foto1'];
+            if (file_exists($photoPath)) {
+                $profilePhoto = $photoPath;
             }
         }
     }
@@ -240,17 +226,12 @@ try {
             if ($imageExt === 'JPG') $imageExt = 'JPEG';
             
             if (in_array($imageExt, ['PNG', 'JPEG', 'GIF'])) {
-                // Center photo in sidebar with rounded border
+                // Center photo in sidebar
                 $photoSize = 40;
                 $photoX = $sidebarX + ($sidebarWidth - $photoSize) / 2;
                 $photoY = 25;
                 
-                // Draw blue border circle
-                $pdf->SetDrawColor(0, 102, 204);
-                $pdf->SetLineWidth(1.5);
-                $pdf->Circle($photoX + $photoSize/2, $photoY + $photoSize/2, $photoSize/2 + 1, 'D');
-                
-                // Insert photo
+                // Insert photo (no border)
                 $pdf->Image($profilePhoto, $photoX, $photoY, $photoSize, $photoSize, $imageExt);
                 $pdf->SetY($photoY + $photoSize + 8);
             }
