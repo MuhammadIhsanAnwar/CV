@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        // Define upload directory
-        $uploadDir = __DIR__ . '/../foto/';
+        // Define upload directory - UBAH KE SERVER PATH
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/foto/';
         
         // Create directory if it doesn't exist
         if (!is_dir($uploadDir)) {
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Generate unique filename
                 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                $filename = $field . '_' . time() . '.' . $ext;
+                $filename = $field . '_' . time() . '_' . uniqid() . '.' . $ext;
                 $filepath = $uploadDir . $filename;
                 
                 // Move uploaded file

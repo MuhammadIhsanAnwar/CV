@@ -1,3 +1,89 @@
+// LOADING SCREEN HANDLER
+let currentProgress = 0;
+
+function updateLoadingProgress() {
+  const percentText = document.getElementById('percentText');
+  const barFill = document.querySelector('.loading-bar-fill');
+  
+  if (currentProgress < 95) {
+    currentProgress += Math.random() * 30;
+  }
+  
+  if (percentText) {
+    percentText.textContent = Math.min(Math.floor(currentProgress), 99);
+  }
+  
+  if (barFill) {
+    barFill.style.width = Math.min(currentProgress, 99) + '%';
+  }
+  
+  if (currentProgress < 95) {
+    setTimeout(updateLoadingProgress, 200 + Math.random() * 400);
+  }
+}
+
+function spawnParticles() {
+  const particlesContainer = document.querySelector('.particles');
+  if (!particlesContainer) return;
+  
+  const particleCount = Math.random() > 0.5 ? 2 : 3;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    
+    const x = Math.random() * 400;
+    const y = Math.random() * 250 + 50;
+    const tx = (Math.random() - 0.5) * 100;
+    
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.setProperty('--tx', tx + 'px');
+    
+    particlesContainer.appendChild(particle);
+    
+    setTimeout(() => particle.remove(), 2000);
+  }
+}
+
+function hideLoadingScreen() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  const percentText = document.getElementById('percentText');
+  
+  if (percentText) {
+    percentText.textContent = '100';
+  }
+  
+  if (loadingScreen) {
+    setTimeout(() => {
+      loadingScreen.style.opacity = '0';
+      loadingScreen.style.pointerEvents = 'none';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 800);
+    }, 2500);
+  }
+}
+
+// Initialize loading screen
+window.addEventListener('DOMContentLoaded', () => {
+  updateLoadingProgress();
+  const particleInterval = setInterval(spawnParticles, 300);
+  
+  setTimeout(() => {
+    clearInterval(particleInterval);
+    hideLoadingScreen();
+  }, 2500);
+});
+
+// Fallback: hide loading screen after 3.5 seconds
+setTimeout(() => {
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen && loadingScreen.style.display !== 'none') {
+    hideLoadingScreen();
+  }
+}, 3500);
+
 // API URL - Ubah sesuai domain cPanel Anda
 const API_BASE_URL = "https://neoverse.my.id/api";
 

@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Ensure folder exists
-$upload_dir = __DIR__ . '/../foto_proyek/';
+// Path absolut ke server neoverse.my.id
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/foto_proyek/';
 if (!is_dir($upload_dir)) {
     mkdir($upload_dir, 0755, true);
 }
@@ -20,11 +20,11 @@ if (!is_dir($upload_dir)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Check if file was uploaded
-        if (!isset($_FILES['project_photo']) || $_FILES['project_photo']['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES['projectPhoto']) || $_FILES['projectPhoto']['error'] !== UPLOAD_ERR_OK) {
             throw new Exception('No file uploaded or upload error occurred');
         }
 
-        $file = $_FILES['project_photo'];
+        $file = $_FILES['projectPhoto'];
         
         // Validate MIME type
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Generate unique filename with timestamp
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'foto_proyek_' . time() . '.' . $ext;
+        $filename = 'foto_proyek_' . time() . '_' . uniqid() . '.' . $ext;
         $filepath = $upload_dir . $filename;
         
         // Move uploaded file
@@ -55,10 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Set file permissions
         chmod($filepath, 0644);
         
+        // Return URL lengkap untuk akses publik
+        $public_url = 'https://neoverse.my.id/foto_proyek/' . $filename;
+        
         $response = [
             'success' => true,
             'message' => 'Foto berhasil diupload',
-            'filename' => $filename
+            'filename' => $filename,
+            'url' => $public_url,
+            'path' => 'foto_proyek/' . $filename
         ];
         
         echo json_encode($response);
@@ -77,3 +82,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'message' => 'Method not allowed'
     ]);
 }
+?>

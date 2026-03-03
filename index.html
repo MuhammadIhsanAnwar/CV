@@ -17,6 +17,34 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- LOADING SCREEN -->
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-container">
+        <div class="game-area">
+          <!-- Character -->
+          <div class="game-character">🚀</div>
+          <!-- Obstacles -->
+          <div class="obstacle obstacle-1"></div>
+          <div class="obstacle obstacle-2"></div>
+          <div class="obstacle obstacle-3"></div>
+          <!-- Stars -->
+          <div class="star star-1">⭐</div>
+          <div class="star star-2">⭐</div>
+          <div class="star star-3">⭐</div>
+          <!-- Particles -->
+          <div class="particles"></div>
+        </div>
+        
+        <div class="loading-info">
+          <p class="loading-text">Memuat Halaman Mengagumkan...</p>
+          <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+          </div>
+          <div class="loading-percentage"><span id="percentText">0</span>%</div>
+        </div>
+      </div>
+    </div>
+
     <!-- NAVBAR -->
     <div id="navbar-placeholder"></div>
 
