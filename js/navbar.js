@@ -16,6 +16,7 @@
         <a href="${basePath}index.html" class="nav-brand">MIA</a>
         <ul class="nav-menu">
           <li><a href="${basePath}index.html" class="nav-link${current === "home" ? " active" : ""}">Home</a></li>
+          <li><a href="${basePath}index.html#games-section" class="nav-link${current === "home" ? "" : ""}">Games</a></li>
           <li><a href="${basePath}cv/cv.html" class="nav-link${current === "cv" ? " active" : ""}">CV</a></li>
           <li><a href="${basePath}admin/admin.html" class="nav-link${current === "admin" ? " active" : ""}">Admin</a></li>
         </ul>

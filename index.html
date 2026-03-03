@@ -22,15 +22,15 @@
       <div class="loading-container">
         <div class="game-area">
           <!-- Character -->
-          <div class="game-character">🚀</div>
+          <div class="game-character"><i class="fas fa-rocket"></i></div>
           <!-- Obstacles -->
           <div class="obstacle obstacle-1"></div>
           <div class="obstacle obstacle-2"></div>
           <div class="obstacle obstacle-3"></div>
           <!-- Stars -->
-          <div class="star star-1">⭐</div>
-          <div class="star star-2">⭐</div>
-          <div class="star star-3">⭐</div>
+          <div class="star star-1"><i class="fas fa-star"></i></div>
+          <div class="star star-2"><i class="fas fa-star"></i></div>
+          <div class="star star-3"><i class="fas fa-star"></i></div>
           <!-- Particles -->
           <div class="particles"></div>
         </div>
@@ -141,11 +141,11 @@
             <h3>Prestasi</h3>
             <ul id="achievementList" class="modern-list">
               <li>
-                <span class="list-badge">🥇</span>
+                <span class="list-badge"><i class="fas fa-medal"></i></span>
                 Prestasi 1
               </li>
               <li>
-                <span class="list-badge">🥇</span>
+                <span class="list-badge"><i class="fas fa-medal"></i></span>
                 Prestasi 2
               </li>
             </ul>
@@ -196,6 +196,127 @@
           <!-- Projects akan dimuat dari database -->
           <div class="projects-loading">
             <p><i class="fas fa-spinner fa-spin"></i> Memuat proyek...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MINI GAMES SECTION -->
+    <section id="games-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>🎮 Mini Games</h2>
+          <p class="section-subtitle">Hiburan seru untuk mengisi waktu luang Anda</p>
+        </div>
+
+        <div class="games-grid">
+          <!-- FLAPPY BIRD GAME -->
+          <div class="game-card">
+            <div class="game-header">
+              <h3><i class="fas fa-dove"></i> Flappy Bird</h3>
+              <p class="game-desc">Hindari obstacle dan kumpulkan poin</p>
+            </div>
+            <div id="flappyGame" class="game-canvas"></div>
+            <div class="game-controls">
+              <button id="flappyStart" class="btn-game-play">Mainkan</button>
+              <div class="game-score">Score: <span id="flappyScore">0</span></div>
+            </div>
+          </div>
+
+          <!-- CLICK SPEED TEST -->
+          <div class="game-card">
+            <div class="game-header">
+              <h3><i class="fas fa-zap"></i> Click Speed</h3>
+              <p class="game-desc">Klik sebanyak mungkin dalam 10 detik</p>
+            </div>
+            <div class="game-canvas" id="clickGame">
+              <div class="click-counter" id="clickCounter">0</div>
+              <div class="game-timer" id="clickTimer">10s</div>
+            </div>
+            <div class="game-controls">
+              <button id="clickStart" class="btn-game-play">Mainkan</button>
+              <div class="game-score">Rekor: <span id="clickScore">0</span></div>
+            </div>
+          </div>
+
+          <!-- TAP THE BALL -->
+          <div class="game-card">
+            <div class="game-header">
+              <h3><i class="fas fa-bullseye"></i> Tap the Ball</h3>
+              <p class="game-desc">Tap bola yang bergerak secepat mungkin</p>
+            </div>
+            <div id="ballGame" class="game-canvas">
+              <div class="ball" id="ball"><i class="fas fa-circle"></i></div>
+              <div class="game-timer" id="ballTimer">20s</div>
+            </div>
+            <div class="game-controls">
+              <button id="ballStart" class="btn-game-play">Mainkan</button>
+              <div class="game-score">Score: <span id="ballScore">0</span></div>
+            </div>
+          </div>
+
+          <!-- MEMORY GAME -->
+          <div class="game-card">
+            <div class="game-header">
+              <h3><i class="fas fa-brain"></i> Memory Match</h3>
+              <p class="game-desc">Cocokkan kartu yang sama dengan cepat</p>
+            </div>
+            <div id="memoryGame" class="memory-grid">
+              <div class="memory-card" data-id="0"><span>❓</span></div>
+              <div class="memory-card" data-id="1"><span>❓</span></div>
+              <div class="memory-card" data-id="2"><span>❓</span></div>
+              <div class="memory-card" data-id="3"><span>❓</span></div>
+              <div class="memory-card" data-id="4"><span>❓</span></div>
+              <div class="memory-card" data-id="5"><span>❓</span></div>
+              <div class="memory-card" data-id="6"><span>❓</span></div>
+              <div class="memory-card" data-id="7"><span>❓</span></div>
+              <div class="memory-card" data-id="8"><span>❓</span></div>
+              <div class="memory-card" data-id="9"><span>❓</span></div>
+              <div class="memory-card" data-id="10"><span>❓</span></div>
+              <div class="memory-card" data-id="11"><span>❓</span></div>
+              <div class="memory-card" data-id="12"><span>❓</span></div>
+              <div class="memory-card" data-id="13"><span>❓</span></div>
+              <div class="memory-card" data-id="14"><span>❓</span></div>
+              <div class="memory-card" data-id="15"><span>❓</span></div>
+              <div class="game-timer" id="memoryTimer">60s</div>
+            </div>
+            <div class="game-controls">
+              <button id="memoryStart" class="btn-game-play">Reset</button>
+              <div class="game-score">Pasangan: <span id="memoryScore">0/8</span></div>
+            </div>
+          </div>
+
+          <!-- SIMON SAYS -->
+          <div class="game-card">
+            <div class="game-header">
+              <h3><i class="fas fa-lightbulb"></i> Simon Says</h3>
+              <p class="game-desc">Ikuti urutan warna yang ditampilkan</p>
+            </div>
+            <div id="simonGame" class="simon-canvas">
+              <div id="simonRed" class="simon-button simon-red" data-color="red"></div>
+              <div id="simonGreen" class="simon-button simon-green" data-color="green"></div>
+              <div id="simonBlue" class="simon-button simon-blue" data-color="blue"></div>
+              <div id="simonYellow" class="simon-button simon-yellow" data-color="yellow"></div>
+            </div>
+            <div class="game-controls">
+              <button id="simonStart" class="btn-game-play">Mainkan</button>
+              <div class="game-score">Level: <span id="simonScore">0</span></div>
+            </div>
+          </div>
+
+          <!-- REACTION TIME -->
+          <div class="game-card">
+            <div class="game-header">
+              <h3><i class="fas fa-stopwatch"></i> Reaction Time</h3>
+              <p class="game-desc">Klik saat layar berubah hijau</p>
+            </div>
+            <div id="reactionGame" class="game-canvas">
+              <div class="reaction-message" id="reactionMessage"><i class="fas fa-mouse-pointer"></i><br>Klik "Main" untuk mulai</div>
+            </div>
+            <div class="game-controls">
+              <button id="reactionStart" class="btn-game-play">Mainkan</button>
+              <div class="game-score">Terbaik: <span id="reactionScore">0</span>s</div>
+            </div>
           </div>
         </div>
       </div>
@@ -287,5 +408,6 @@
     <script src="js/footer.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/games.js"></script>
   </body>
 </html>
