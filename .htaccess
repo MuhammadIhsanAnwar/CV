@@ -1,0 +1,21 @@
+# Disable directory listing so users cannot browse folders via URL
+Options -Indexes
+
+# Hide server signature on generated error pages
+ServerSignature Off
+
+# Block access to hidden files/folders (example: .git, .env)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule "(^|/)\." - [F]
+</IfModule>
+
+# Block direct access to common sensitive files
+<FilesMatch "^(composer\.(json|lock)|package\.json|phpunit\.xml|README\.md)$">
+    Require all denied
+</FilesMatch>
+
+# Prevent direct URL access to DB connection file
+<Files "koneksi.php">
+    Require all denied
+</Files>
