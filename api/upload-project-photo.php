@@ -59,11 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Path absolut ke folder foto_proyek di neoverse.my.id
-// Script: /home/neoz6813/public_html/neoverse.my.id/CV/api/upload-project-photo.php
-// dirname(__DIR__) = /home/neoz6813/public_html/neoverse.my.id/CV
-// dirname(dirname(__DIR__)) = /home/neoz6813/public_html/neoverse.my.id
-// dirname(dirname(__DIR__)) . '/foto_proyek/' = /home/neoz6813/public_html/neoverse.my.id/foto_proyek/
-$upload_dir = dirname(dirname(__DIR__)) . '/foto_proyek/';
+// Script: /home/neoz6813/public_html/api/upload-project-photo.php
+// dirname(__DIR__) = /home/neoz6813/public_html
+// dirname(__DIR__) . '/neoverse.my.id/foto_proyek/' = /home/neoz6813/public_html/neoverse.my.id/foto_proyek/
+$upload_dir = dirname(__DIR__) . '/neoverse.my.id/foto_proyek/';
 if (!is_dir($upload_dir)) {
     if (!mkdir($upload_dir, 0755, true)) {
         http_response_code(500);
