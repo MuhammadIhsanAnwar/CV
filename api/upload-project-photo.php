@@ -11,10 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Path absolut ke folder domain di dalam public_html
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/neoverse.my.id/foto_proyek/';
-if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0755, true);
+// Path absolut ke root folder proyek ini, lalu ke folder foto_proyek
+$upload_dir = dirname(__DIR__) . '/foto_proyek/';
+if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error: Gagal membuat folder upload di ' . $upload_dir
+    ]);
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
