@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
 // Connect to database
-require_once('koneksi.php');
+$koneksi = require_once('koneksi.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
