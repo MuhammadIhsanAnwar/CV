@@ -518,6 +518,12 @@ function saveProjectWithPhoto() {
 
   // If there's a photo, upload it first
   if (projectPhoto) {
+    const maxUploadSize = 5 * 1024 * 1024;
+    if (projectPhoto.size > maxUploadSize) {
+      Swal.fire('Error', 'Ukuran foto proyek maksimal 5MB', 'error');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('projectPhoto', projectPhoto);
     if (currentEditingProjectId) {

@@ -28,7 +28,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uploadedFile = $_FILES['projectPhoto'] ?? $_FILES['project_photo'] ?? null;
 
         if (!$uploadedFile || $uploadedFile['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception('No file uploaded or upload error occurred');
+            $uploadError = $uploadedFile['error'] ?? UPLOAD_ERR_NO_FILE;
+            $errorMessages = [
+                UPLOAD_ERR_INI_SIZE => 'File melebihi upload_max_filesize di server',
+                UPLOAD_ERR_FORM_SIZE => 'File melebihi batas MAX_FILE_SIZE dari form',
+                UPLOAD_ERR_PARTIAL => 'File hanya terupload sebagian',
+                UPLOAD_ERR_NO_FILE => 'Tidak ada file yang diterima server',
+                UPLOAD_ERR_NO_TMP_DIR => 'Folder temporary upload tidak tersedia',
+                UPLOAD_ERR_CANT_WRITE => 'Gagal menulis file ke disk',
+                UPLOAD_ERR_EXTENSION => 'Upload dihentikan oleh ekstensi PHP',
+            ];
+
+            $serverLimits = [
+                'upload_max_filesize' => ini_get('upload_max_filesize'),
+                'post_max_size' => ini_get('post_max_size'),
+                'max_file_uploads' => ini_get('max_file_uploads'),
+            ];
+
+            throw new Exception(
+                ($errorMessages[$uploadError] ?? 'No file uploaded or upload error occurred') .
+                ' (code: ' . $uploadError . ', limits: ' . json_encode($serverLimits) . ')'
+            );
         }
 
         $file = $uploadedFile;
