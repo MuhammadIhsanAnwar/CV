@@ -209,12 +209,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Return URL lengkap untuk akses publik
         $public_url = 'https://neoverse.my.id/foto_proyek/' . $filename;
         
+        // Debug info: tampilkan lokasi file sebenarnya
+        $debug_info = [
+            'script_dir' => __DIR__,
+            'upload_dir_configured' => $upload_dir,
+            'file_saved_at' => $filepath,
+            'file_exists' => file_exists($filepath),
+            'file_size' => file_exists($filepath) ? filesize($filepath) : 0,
+            'directory_exists' => is_dir($upload_dir),
+            'directory_writable' => is_writable($upload_dir)
+        ];
+        
         $response = [
             'success' => true,
             'message' => 'Foto berhasil diupload',
             'filename' => $filename,
             'url' => $public_url,
-            'path' => 'foto_proyek/' . $filename
+            'path' => 'foto_proyek/' . $filename,
+            'debug' => $debug_info  // Info untuk debugging
         ];
         
         echo json_encode($response);

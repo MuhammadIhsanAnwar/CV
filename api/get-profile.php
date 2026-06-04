@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require 'koneksi.php';
+$koneksi = require 'koneksi.php';
 
 // Query data dari database
 $query = "SELECT * FROM profile WHERE id = 1";

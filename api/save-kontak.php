@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 
-require 'koneksi.php';
+$koneksi = require 'koneksi.php';
 
 // Terima JSON dari JavaScript
 $json = file_get_contents('php://input');

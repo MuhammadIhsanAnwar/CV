@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-require 'koneksi.php';
+$koneksi = require 'koneksi.php';
 
 // Ambil data kontak dari database
 $query = "SELECT * FROM kontak WHERE id = 1";
