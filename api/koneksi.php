@@ -12,3 +12,5 @@ if (!$koneksi) {
 
 // Set charset UTF-8
 mysqli_set_charset($koneksi, "utf8");
+
+return $koneksi;
