@@ -13,7 +13,11 @@ function parseJSON(text) {
   try {
     return JSON.parse(text);
   } catch (e) {
-    throw new Error(`Invalid JSON: ${text.substring(0, 100)}`);
+    const preview = text
+      .replace(/\s+/g, ' ')
+      .trim()
+      .substring(0, 120);
+    throw new Error(`Server returned non-JSON response: ${preview}`);
   }
 }
 
@@ -532,7 +536,7 @@ function saveProjectWithPhoto() {
 
     console.log('[UPLOAD] Uploading project photo...');
 
-    fetch(`${API_BASE_URL}/upload-project-photo-v2.php`, {
+    fetch(`${API_BASE_URL}/upload-project-photo.php`, {
       method: 'POST',
       body: formData
     })
