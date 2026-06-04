@@ -34,6 +34,15 @@ function handleFetchResponse(response) {
   });
 }
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Gagal membaca file foto'));
+    reader.readAsDataURL(file);
+  });
+}
+
 // Fill admin form with profile data
 function fillAdminForm(data) {
   document.getElementById('adminName').value = data.name || '';
@@ -528,33 +537,38 @@ function saveProjectWithPhoto() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('projectPhoto', projectPhoto);
-    if (currentEditingProjectId) {
-      formData.append('project_id', currentEditingProjectId);
-    }
-
     console.log('[UPLOAD] Uploading project photo...');
 
-    fetch(`${API_BASE_URL}/upload-project-photo.php`, {
-      method: 'POST',
-      body: formData
-    })
-    .then(handleFetchResponse)
-    .then(photoData => {
-      if (photoData.success) {
-        console.log('[OK] Project photo uploaded:', photoData.filename);
-        projectData.foto_proyek = photoData.filename;
-        saveProjectData(projectData);
-      } else {
-        console.warn('[WARN] Photo upload failed:', photoData.message);
-        Swal.fire('Error', photoData.message || 'Gagal upload foto proyek', 'error');
-      }
-    })
-    .catch(error => {
-      console.error('[ERROR] Error uploading photo:', error.message);
-      Swal.fire('Error', 'Gagal upload foto: ' + error.message, 'error');
-    });
+    fileToDataUrl(projectPhoto)
+      .then((projectPhotoData) => {
+        return fetch(`${API_BASE_URL}/upload-project-photo.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            projectPhotoData,
+            projectPhotoName: projectPhoto.name,
+            projectPhotoType: projectPhoto.type || null,
+            project_id: currentEditingProjectId || null
+          })
+        });
+      })
+      .then(handleFetchResponse)
+      .then(photoData => {
+        if (photoData.success) {
+          console.log('[OK] Project photo uploaded:', photoData.filename);
+          projectData.foto_proyek = photoData.filename;
+          saveProjectData(projectData);
+        } else {
+          console.warn('[WARN] Photo upload failed:', photoData.message);
+          Swal.fire('Error', photoData.message || 'Gagal upload foto proyek', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('[ERROR] Error uploading photo:', error.message);
+        Swal.fire('Error', 'Gagal upload foto: ' + error.message, 'error');
+      });
   } else {
     // No photo, just save project data
     saveProjectData(projectData);
