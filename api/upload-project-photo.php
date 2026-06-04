@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Path absolut ke server neoverse.my.id
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/foto_proyek/';
+// Path absolut ke folder domain di dalam public_html
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/neoverse.my.id/foto_proyek/';
 if (!is_dir($upload_dir)) {
     mkdir($upload_dir, 0755, true);
 }
