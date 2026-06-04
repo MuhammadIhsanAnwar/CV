@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-include 'koneksi.php';
+$koneksi = require_once __DIR__ . '/koneksi.php';
 
 try {
     // Get JSON from request body

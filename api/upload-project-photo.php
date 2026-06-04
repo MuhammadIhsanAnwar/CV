@@ -5,6 +5,27 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=utf-8');
 
+function parseSizeToBytes($value) {
+    $value = trim((string) $value);
+    if ($value === '') {
+        return 0;
+    }
+
+    $unit = strtolower(substr($value, -1));
+    $number = (float) $value;
+
+    switch ($unit) {
+        case 'g':
+            return (int) ($number * 1024 * 1024 * 1024);
+        case 'm':
+            return (int) ($number * 1024 * 1024);
+        case 'k':
+            return (int) ($number * 1024);
+        default:
+            return (int) $number;
+    }
+}
+
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -24,6 +45,18 @@ if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        $contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
+        $postMaxSize = parseSizeToBytes(ini_get('post_max_size'));
+
+        if ($contentLength > 0 && $postMaxSize > 0 && $contentLength > $postMaxSize) {
+            http_response_code(413);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Request upload melebihi batas post_max_size server. Ukuran request: ' . $contentLength . ' bytes, batas: ' . ini_get('post_max_size')
+            ]);
+            exit;
+        }
+
         // Check if file was uploaded
         $uploadedFile = $_FILES['projectPhoto'] ?? $_FILES['project_photo'] ?? null;
 
