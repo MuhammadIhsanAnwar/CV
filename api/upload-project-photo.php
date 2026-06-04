@@ -58,18 +58,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Path absolut ke folder foto_proyek yang writable
-// Berdasarkan test.php: /home/neoz6813/foto_proyek/ adalah satu-satunya folder yang exists dan writable
-// DOCUMENT_ROOT = /home/neoz6813/public_html
-// Jadi path absolut = dirname(DOCUMENT_ROOT) . '/foto_proyek/'
-$upload_dir = dirname($_SERVER['DOCUMENT_ROOT']) . '/foto_proyek/';
-if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Error: Gagal membuat folder upload di ' . $upload_dir
-    ]);
-    exit;
+// Path absolut ke folder foto_proyek di neoverse.my.id
+// Script: /home/neoz6813/public_html/neoverse.my.id/CV/api/upload-project-photo.php
+// dirname(__DIR__) = /home/neoz6813/public_html/neoverse.my.id/CV
+// dirname(dirname(__DIR__)) = /home/neoz6813/public_html/neoverse.my.id
+// dirname(dirname(__DIR__)) . '/foto_proyek/' = /home/neoz6813/public_html/neoverse.my.id/foto_proyek/
+$upload_dir = dirname(dirname(__DIR__)) . '/foto_proyek/';
+if (!is_dir($upload_dir)) {
+    if (!mkdir($upload_dir, 0755, true)) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error: Gagal membuat folder upload di ' . $upload_dir . '. Parent folder: ' . dirname($upload_dir) . ' exists=' . (is_dir(dirname($upload_dir)) ? 'yes' : 'no')
+        ]);
+        exit;
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
