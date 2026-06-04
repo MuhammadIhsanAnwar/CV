@@ -19,10 +19,15 @@ function parseJSON(text) {
 
 // Handle fetch response (convert to JSON)
 function handleFetchResponse(response) {
-  if (!response.ok) {
-    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
-  }
-  return response.text().then(text => parseJSON(text));
+  return response.text().then(text => {
+    const data = parseJSON(text);
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    return data;
+  });
 }
 
 // Fill admin form with profile data

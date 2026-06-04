@@ -33,13 +33,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $file = $uploadedFile;
         
-        // Validate MIME type
+        // Validate MIME type with fallback to extension if fileinfo is unavailable
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime_type = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-        
-        if (!in_array($mime_type, $allowed_types)) {
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        $mime_type = 'application/octet-stream';
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo) {
+                $detectedMime = finfo_file($finfo, $file['tmp_name']);
+                if ($detectedMime) {
+                    $mime_type = $detectedMime;
+                }
+                finfo_close($finfo);
+            }
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $mimeAllowed = in_array($mime_type, $allowed_types, true);
+        $extensionAllowed = in_array($ext, $allowed_extensions, true);
+
+        if (!$mimeAllowed && !$extensionAllowed) {
             throw new Exception('File type tidak diizinkan. Hanya JPG, PNG, GIF, dan WEBP yang diterima.');
         }
         
@@ -50,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         // Generate unique filename with timestamp
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'foto_proyek_' . time() . '_' . uniqid() . '.' . $ext;
         $filepath = $upload_dir . $filename;
         
