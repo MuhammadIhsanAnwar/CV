@@ -532,7 +532,7 @@ function saveProjectWithPhoto() {
 
     console.log('[UPLOAD] Uploading project photo...');
 
-    fetch(`${API_BASE_URL}/upload-project-photo.php`, {
+    fetch(`${API_BASE_URL}/upload-project-photo-v2.php`, {
       method: 'POST',
       body: formData
     })
