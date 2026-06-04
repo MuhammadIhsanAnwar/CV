@@ -43,6 +43,36 @@ function fileToDataUrl(file) {
   });
 }
 
+function uploadProjectPhotoMultipart(projectPhoto, projectId) {
+  const formData = new FormData();
+  formData.append('projectPhoto', projectPhoto);
+  if (projectId) {
+    formData.append('project_id', projectId);
+  }
+
+  return fetch(`${API_BASE_URL}/upload-project-photo.php`, {
+    method: 'POST',
+    body: formData
+  }).then(handleFetchResponse);
+}
+
+function uploadProjectPhotoJson(projectPhoto, projectId) {
+  return fileToDataUrl(projectPhoto).then((projectPhotoData) => {
+    return fetch(`${API_BASE_URL}/upload-project-photo.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        projectPhotoData,
+        projectPhotoName: projectPhoto.name,
+        projectPhotoType: projectPhoto.type || null,
+        project_id: projectId || null
+      })
+    }).then(handleFetchResponse);
+  });
+}
+
 // Fill admin form with profile data
 function fillAdminForm(data) {
   document.getElementById('adminName').value = data.name || '';
@@ -539,22 +569,7 @@ function saveProjectWithPhoto() {
 
     console.log('[UPLOAD] Uploading project photo...');
 
-    fileToDataUrl(projectPhoto)
-      .then((projectPhotoData) => {
-        return fetch(`${API_BASE_URL}/upload-project-photo.php`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            projectPhotoData,
-            projectPhotoName: projectPhoto.name,
-            projectPhotoType: projectPhoto.type || null,
-            project_id: currentEditingProjectId || null
-          })
-        });
-      })
-      .then(handleFetchResponse)
+    uploadProjectPhotoMultipart(projectPhoto, currentEditingProjectId)
       .then(photoData => {
         if (photoData.success) {
           console.log('[OK] Project photo uploaded:', photoData.filename);
@@ -566,8 +581,23 @@ function saveProjectWithPhoto() {
         }
       })
       .catch(error => {
-        console.error('[ERROR] Error uploading photo:', error.message);
-        Swal.fire('Error', 'Gagal upload foto: ' + error.message, 'error');
+        console.warn('[WARN] Multipart upload failed, retrying with JSON payload:', error.message);
+
+        uploadProjectPhotoJson(projectPhoto, currentEditingProjectId)
+          .then(photoData => {
+            if (photoData.success) {
+              console.log('[OK] Project photo uploaded via JSON fallback:', photoData.filename);
+              projectData.foto_proyek = photoData.filename;
+              saveProjectData(projectData);
+            } else {
+              console.warn('[WARN] Photo upload failed:', photoData.message);
+              Swal.fire('Error', photoData.message || 'Gagal upload foto proyek', 'error');
+            }
+          })
+          .catch(jsonError => {
+            console.error('[ERROR] Error uploading photo:', jsonError.message);
+            Swal.fire('Error', 'Gagal upload foto: ' + jsonError.message, 'error');
+          });
       });
   } else {
     // No photo, just save project data
