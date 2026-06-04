@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uploadedFile = $_FILES['projectPhoto'] ?? $_FILES['project_photo'] ?? null;
 
         if (!$uploadedFile || $uploadedFile['error'] !== UPLOAD_ERR_OK) {
-            $uploadError = $uploadedFile['error'] ?? UPLOAD_ERR_NO_FILE;
+            $uploadError = is_array($uploadedFile) ? ($uploadedFile['error'] ?? UPLOAD_ERR_NO_FILE) : UPLOAD_ERR_NO_FILE;
             $errorMessages = [
                 UPLOAD_ERR_INI_SIZE => 'File melebihi upload_max_filesize di server',
                 UPLOAD_ERR_FORM_SIZE => 'File melebihi batas MAX_FILE_SIZE dari form',
@@ -43,11 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'upload_max_filesize' => ini_get('upload_max_filesize'),
                 'post_max_size' => ini_get('post_max_size'),
                 'max_file_uploads' => ini_get('max_file_uploads'),
+                'file_uploads' => ini_get('file_uploads'),
+                'upload_tmp_dir' => ini_get('upload_tmp_dir'),
+                'content_length' => $_SERVER['CONTENT_LENGTH'] ?? null,
+                'content_type' => $_SERVER['CONTENT_TYPE'] ?? null,
             ];
+
+            $receivedFiles = array_keys($_FILES ?? []);
 
             throw new Exception(
                 ($errorMessages[$uploadError] ?? 'No file uploaded or upload error occurred') .
-                ' (code: ' . $uploadError . ', limits: ' . json_encode($serverLimits) . ')'
+                ' (code: ' . $uploadError . ', files: ' . json_encode($receivedFiles) . ', limits: ' . json_encode($serverLimits) . ')'
             );
         }
 
