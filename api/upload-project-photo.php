@@ -58,8 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Path absolut ke folder foto_proyek (naik 2 level dari /CV/api/, hasilnya /CV/foto_proyek/)
-$upload_dir = dirname(dirname(__DIR__)) . '/foto_proyek/';
+// Path absolut ke folder foto_proyek yang writable
+// Berdasarkan test.php: /home/neoz6813/foto_proyek/ adalah satu-satunya folder yang exists dan writable
+// DOCUMENT_ROOT = /home/neoz6813/public_html
+// Jadi path absolut = dirname(DOCUMENT_ROOT) . '/foto_proyek/'
+$upload_dir = dirname($_SERVER['DOCUMENT_ROOT']) . '/foto_proyek/';
 if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {
     http_response_code(500);
     echo json_encode([
@@ -207,18 +210,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         chmod($filepath, 0644);
 
         // Return URL lengkap untuk akses publik
+        // Note: File disimpan di /home/neoz6813/foto_proyek/
+        // Perlu create symlink atau route untuk accessible via web
         $public_url = 'https://neoverse.my.id/foto_proyek/' . $filename;
-        
-        // Debug info: tampilkan lokasi file sebenarnya
-        $debug_info = [
-            'script_dir' => __DIR__,
-            'upload_dir_configured' => $upload_dir,
-            'file_saved_at' => $filepath,
-            'file_exists' => file_exists($filepath),
-            'file_size' => file_exists($filepath) ? filesize($filepath) : 0,
-            'directory_exists' => is_dir($upload_dir),
-            'directory_writable' => is_writable($upload_dir)
-        ];
         
         $response = [
             'success' => true,
@@ -226,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'filename' => $filename,
             'url' => $public_url,
             'path' => 'foto_proyek/' . $filename,
-            'debug' => $debug_info  // Info untuk debugging
+            'absolute_path' => $filepath
         ];
         
         echo json_encode($response);
