@@ -514,7 +514,7 @@ function saveProjectWithPhoto() {
   // If there's a photo, upload it first
   if (projectPhoto) {
     const formData = new FormData();
-    formData.append('project_photo', projectPhoto);
+    formData.append('projectPhoto', projectPhoto);
     if (currentEditingProjectId) {
       formData.append('project_id', currentEditingProjectId);
     }

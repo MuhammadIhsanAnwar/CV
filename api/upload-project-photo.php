@@ -20,11 +20,13 @@ if (!is_dir($upload_dir)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Check if file was uploaded
-        if (!isset($_FILES['projectPhoto']) || $_FILES['projectPhoto']['error'] !== UPLOAD_ERR_OK) {
+        $uploadedFile = $_FILES['projectPhoto'] ?? $_FILES['project_photo'] ?? null;
+
+        if (!$uploadedFile || $uploadedFile['error'] !== UPLOAD_ERR_OK) {
             throw new Exception('No file uploaded or upload error occurred');
         }
 
-        $file = $_FILES['projectPhoto'];
+        $file = $uploadedFile;
         
         // Validate MIME type
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
